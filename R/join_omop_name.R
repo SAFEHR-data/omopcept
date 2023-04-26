@@ -5,7 +5,7 @@
 #'
 #' @param df dataframe
 #' @param namestart start of *_concept_id column, if NULL will join on concept_name
-#' @example
+#' @examples
 #' df1 <- tibble(concept_id=(c(3571338L,4002075L)))
 #' join_omop_name(df1)
 #' df2 <- tibble(drug_concept_id=(c(4000794L,4002592L)))

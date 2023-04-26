@@ -10,7 +10,7 @@
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
 #' @return a filtered dataframe of concepts and attributes
-#' @example
+#' @examples
 #' concept |> filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |> count(domain_id,vocabulary_id)
 
 filter_concepts <- function(df,
