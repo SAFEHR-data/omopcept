@@ -33,3 +33,6 @@ a filtered dataframe of concepts and attributes
 one or more of : concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
 used by other functions
 }
+\examples{
+concept |> filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |> count(domain_id,vocabulary_id)
+}

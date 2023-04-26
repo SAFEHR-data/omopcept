@@ -15,3 +15,10 @@ join_omop_name(df, namestart = NULL)
 joins on \link{arg}_name based on \link{arg}_concept_id
 e.g. drug_concept_id to get drug_name
 }
+\examples{
+df1 <- tibble(concept_id=(c(3571338L,4002075L)))
+join_omop_name(df1)
+df2 <- tibble(drug_concept_id=(c(4000794L,4002592L)))
+join_omop_name(df2, namestart="drug")
+#df2 <- drug_exposure \%>\% distinct(route_concept_id) \%>\% join_omop_name(route_concept_id)
+}

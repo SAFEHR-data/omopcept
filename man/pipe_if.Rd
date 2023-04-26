@@ -16,3 +16,6 @@ pipe_if(df, cond, func)
 \description{
 conditionally apply a pipe
 }
+\examples{
+data.frame(a=c(1:5)) |> pipe_if(TRUE, \(d) d |> mutate(b=a*2))
+}
