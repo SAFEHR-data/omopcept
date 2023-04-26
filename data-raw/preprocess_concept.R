@@ -58,7 +58,9 @@ concept <- read_tsv(here::here(pathdata,"CONCEPT.csv"), col_types = "icccccciic"
   filter(vocabulary_id %in% c("SNOMED","LOINC","Cancer Modifier"))
 
 concept |>  save(file=here(pathdata,"concept_slcm.rda"),compress="xz")
-#usethis::use_data(DATASET, overwrite = TRUE)
+
+# to save data in the package
+usethis::use_data(concept, overwrite = TRUE)
 
 # Maybe I want to create an SQLIte database to make it smaller ?
 # e.g. by coding the domains & vocabs
