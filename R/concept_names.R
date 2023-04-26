@@ -9,6 +9,7 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @export
 #' @examples
 #' concept_names("AJCC/UICC Stage")
 #' chemo <- concept_names("chemotherapy", v_ids="LOINC")
@@ -52,6 +53,7 @@ concept_names <- function(#df1 = NULL,
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @export
 #' @examples
 #' concept_codes("AJCC/UICC-Stage")
 

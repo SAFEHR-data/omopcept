@@ -40,6 +40,28 @@ join_omop_name(df1)
 #> 2    4002075       BLUE LOTION
 ```
 
+## String search in concept_name field
+
+``` r
+
+concept_names("chemotherapy", v_ids="LOINC")
+#> # A tibble: 71 × 7
+#>    concept_id concept_name               domai…¹ vocab…² conce…³ stand…⁴ conce…⁵
+#>         <int> <chr>                      <chr>   <chr>   <chr>   <chr>   <chr>  
+#>  1    3010410 Chemotherapy records       Observ… LOINC   Clinic… S       11486-8
+#>  2    3002377 Chemotherapy treatment at… Measur… LOINC   Clinic… S       21881-8
+#>  3    3011998 Date 1st chemotherapy tre… Observ… LOINC   Clinic… S       21927-9
+#>  4    3003037 Chemotherapy treatment Ca… Measur… LOINC   Clinic… S       21946-9
+#>  5    3000897 Reason for no chemotherap… Measur… LOINC   Clinic… S       21951-9
+#>  6    3014397 Chemotherapy Cancer        Measur… LOINC   Clinic… S       21967-5
+#>  7    3027104 Chemotherapy treatment Ca… Measur… LOINC   Clinic… S       22041-8
+#>  8    3037369 2nd course chemotherapy C… Measur… LOINC   Clinic… S       42045-5
+#>  9    3032293 3rd course chemotherapy C… Measur… LOINC   Clinic… S       42051-3
+#> 10    3028808 4th course chemotherapy C… Measur… LOINC   Clinic… S       42057-0
+#> # … with 61 more rows, and abbreviated variable names ¹​domain_id,
+#> #   ²​vocabulary_id, ³​concept_class_id, ⁴​standard_concept, ⁵​concept_code
+```
+
 ## Vocabularies included
 
 Initially just a few vocabularies are included to keep the size of the

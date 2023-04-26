@@ -48,6 +48,14 @@ join_omop_name(df1)
 
 ```
 
+## String search in concept_name field
+
+```{r concept_names, echo=TRUE}
+
+concept_names("chemotherapy", v_ids="LOINC")
+
+```
+
 ## Vocabularies included
 
 Initially just a few vocabularies are included to keep the size of the data file down. Later we may offer option to add other vocabularies.
