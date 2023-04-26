@@ -22,7 +22,7 @@ join_omop_name <- function(df, namestart=NULL) {
 
   #beware rename concept_name column before joining in case
   #there is already a concept_name column in df
-  id_and_name <- concept |>
+  id_and_name <- omopcepts::concept |>
     select(.data$concept_id,.data$concept_name) |>
     rename_with(~name_col_name, .data$concept_name)
 

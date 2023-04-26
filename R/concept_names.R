@@ -24,8 +24,8 @@ concept_names <- function(#df1 = NULL,
   cc_ids=NULL,
   standard=NULL) {
 
-  df1 <- concept |>
-    filter(str_detect(concept_name, regex(pattern, ignore_case=ignore_case), negate=negate)) |>
+  df1 <- omopcepts::concept |>
+    filter(str_detect(.data$concept_name, regex(pattern, ignore_case=ignore_case), negate=negate)) |>
     filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
 
   return(df1)
@@ -66,8 +66,8 @@ concept_codes <- function( pattern,
                            cc_ids=NULL,
                            standard=NULL) {
 
-  df1 <- concept |>
-    filter(str_detect(concept_code, regex(pattern, ignore_case=ignore_case), negate=negate)) |>
+  df1 <- omopcepts::concept |>
+    filter(str_detect(.data$concept_code, regex(pattern, ignore_case=ignore_case), negate=negate)) |>
     filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
 
   return(df1)
