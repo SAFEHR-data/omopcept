@@ -1,5 +1,5 @@
 Package: omopcepts
-Title: Tools to query OMOP medical vocabularies
+Title: Tools to query OMOP concepts, for selected standard health vocabularies
 Version: 0.0.0.9000
 Authors@R: 
     c(
@@ -15,5 +15,7 @@ BugReports: https://github.com/andysouth/omopcepts/issues
 Depends: 
     R (>= 3.5.0)
 LazyData: true
+LazyDataCompression: xz
 Imports: 
-    dplyr
+    dplyr,
+    rlang

@@ -4,8 +4,9 @@
 ## usethis namespace: start
 #' @importFrom dplyr filter
 #' @importFrom dplyr left_join
+#' @importFrom dplyr mutate
 #' @importFrom dplyr rename_with
 #' @importFrom dplyr select
-#' @importFrom dplyr tibble
+#' @importFrom rlang .data
 ## usethis namespace: end
 NULL

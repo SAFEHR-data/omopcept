@@ -4,7 +4,7 @@
 \name{omopcepts-package}
 \alias{omopcepts}
 \alias{omopcepts-package}
-\title{omopcepts: Tools to query OMOP medical vocabularies}
+\title{omopcepts: Tools to query OMOP concepts, for selected standard health vocabularies}
 \description{
 Access to a subset of OMOP Common Data Model medical vocabularies and flexible tidyverse compatible R functions for querying.
 }

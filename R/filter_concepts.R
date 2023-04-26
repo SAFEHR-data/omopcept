@@ -25,13 +25,13 @@ filter_concepts <- function(df,
                             standard=NULL) {
 
   df1 <- df |>
-    pipe_if(!is.null(c_ids), \(d) d |> filter(concept_id %in% c_ids) ) |>
+    pipe_if(!is.null(c_ids), \(d) d |> filter(.data$concept_id %in% c_ids) ) |>
     #pipe_if(!is.null(r_ids), \(d) d |> filter(relationship_id %in% r_ids) ) |>
     #tolower() to make case insensitive
-    pipe_if(!is.null(d_ids), \(d) d |> filter(tolower(domain_id) %in% tolower(d_ids)) ) |>
-    pipe_if(!is.null(v_ids), \(d) d |> filter(tolower(vocabulary_id) %in% tolower(v_ids)) ) |>
-    pipe_if(!is.null(cc_ids), \(d) d |> filter(tolower(concept_class_id) %in% tolower(cc_ids)) ) |>
-    pipe_if(!is.null(standard), \(d) d |> filter(tolower(standard_concept) %in% tolower(standard)) )
+    pipe_if(!is.null(d_ids), \(d) d |> filter(tolower(.data$domain_id) %in% tolower(d_ids)) ) |>
+    pipe_if(!is.null(v_ids), \(d) d |> filter(tolower(.data$vocabulary_id) %in% tolower(v_ids)) ) |>
+    pipe_if(!is.null(cc_ids), \(d) d |> filter(tolower(.data$concept_class_id) %in% tolower(cc_ids)) ) |>
+    pipe_if(!is.null(standard), \(d) d |> filter(tolower(.data$standard_concept) %in% tolower(standard)) )
 
   return(df1)
 

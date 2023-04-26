@@ -3,6 +3,7 @@
 \docType{data}
 \name{concept}
 \alias{concept}
+\alias{omop_concept}
 \title{concept table for selected OMOP vocabularies}
 \format{
 \code{dataframe}
@@ -18,10 +19,4 @@ concept
 \description{
 concept table for selected OMOP vocabularies
 }
-\section{Slots}{
-
-\describe{
-\item{\code{data}}{OMOP concepts}
-}}
-
 \keyword{datasets}

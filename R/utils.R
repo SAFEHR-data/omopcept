@@ -6,7 +6,9 @@
 #' @param func function to run
 #' @export
 #' @examples
-#' data.frame(a=c(1:5)) |> pipe_if(TRUE, \(d) d |> mutate(b=a*2))
+#' #data.frame(a=c(1:5)) |>
+#' #   pipe_if(TRUE, \(d) d |>
+#' #   mutate(b=a*2))
 pipe_if <- function(df, cond, func) {
   if (cond) func(df)
   else df
