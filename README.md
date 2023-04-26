@@ -28,15 +28,6 @@ Later there may be options to include more.
 
 library(omopvocabr)
 library(dplyr)
-#> Warning: package 'dplyr' was built under R version 4.2.2
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 
 ## showing what vocabs are included
 concept |> count(vocabulary_id)
@@ -52,9 +43,7 @@ concept |> count(vocabulary_id)
 
 ``` r
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 4.2.2
 library(forcats)
-#> Warning: package 'forcats' was built under R version 4.2.2
 
 ggplot(concept, aes(y=fct_rev(fct_infreq(domain_id)), 
                     fill=vocabulary_id)) +
