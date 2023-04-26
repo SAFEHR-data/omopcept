@@ -8,5 +8,6 @@
 #' @importFrom dplyr rename_with
 #' @importFrom dplyr select
 #' @importFrom rlang .data
+#' @importFrom stringr str_detect
 ## usethis namespace: end
 NULL

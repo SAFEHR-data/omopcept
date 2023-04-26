@@ -18,4 +18,5 @@ LazyData: true
 LazyDataCompression: xz
 Imports: 
     dplyr,
-    rlang
+    rlang,
+    stringr
