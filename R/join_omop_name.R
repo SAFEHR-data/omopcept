@@ -1,10 +1,11 @@
 #' join omop concept name onto a dataframe with a *_concept_id column
 #'
-#' joins on [arg]_name based on [arg]_concept_id
+#' adds (namestart)_name based on (namestart)_concept_id
 #' e.g. drug_concept_id to get drug_name
 #'
 #' @param df dataframe
 #' @param namestart start of *_concept_id column, if NULL will join on concept_name
+#' @export
 #' @examples
 #' df1 <- tibble(concept_id=(c(3571338L,4002075L)))
 #' join_omop_name(df1)

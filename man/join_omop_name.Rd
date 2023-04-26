@@ -12,7 +12,7 @@ join_omop_name(df, namestart = NULL)
 \item{namestart}{start of *_concept_id column, if NULL will join on concept_name}
 }
 \description{
-joins on \link{arg}_name based on \link{arg}_concept_id
+adds (namestart)_name based on (namestart)_concept_id
 e.g. drug_concept_id to get drug_name
 }
 \examples{

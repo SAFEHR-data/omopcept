@@ -5,7 +5,7 @@ library(here)
 library(readr)
 library(tidyverse)
 
-pathdata <- here::here("inst","extdata")
+pathdata <- here::here("..","omop_vocab_data")
 
 concept <- read_tsv(here::here(pathdata,"CONCEPT.csv"), col_types = "icccccciic") |>
   #unselect unecessary
