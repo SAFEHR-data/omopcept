@@ -2,22 +2,22 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- use devtools::build_readme() -->
 
-# omopvocabr
+# omopcepts
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopvocabr provides access to a subset of OMOP Common Data Model medical
+omopcepts provides access to a subset of OMOP Common Data Model medical
 vocabularies and flexible tidyverse compatible R functions for querying.
 
 ## Installation
 
-Install the development version of omopvocabr from
+Install the development version of omopcepts from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("andysouth/omopvocabr")
+remotes::install_github("andysouth/omopcepts")
 ```
 
 ## Example showing what vocabularies are included
@@ -26,7 +26,7 @@ Later there may be options to include more.
 
 ``` r
 
-library(omopvocabr)
+library(omopcepts)
 library(dplyr)
 
 ## showing what vocabs are included

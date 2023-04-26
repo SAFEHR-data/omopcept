@@ -1,4 +1,4 @@
-Package: omopvocabr
+Package: omopcepts
 Title: Tools to query OMOP medical vocabularies
 Version: 0.0.0.9000
 Authors@R: 
@@ -10,8 +10,8 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-URL: https://github.com/andysouth/omopvocabr
-BugReports: https://github.com/andysouth/omopvocabr/issues
+URL: https://github.com/andysouth/omopcepts
+BugReports: https://github.com/andysouth/omopcepts/issues
 Depends: 
     R (>= 2.10)
 LazyData: true

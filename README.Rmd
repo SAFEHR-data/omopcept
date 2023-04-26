@@ -16,20 +16,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# omopvocabr
+# omopcepts
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopvocabr provides access to a subset of OMOP Common Data Model medical vocabularies and flexible tidyverse compatible R functions for querying.
+omopcepts provides access to a subset of OMOP Common Data Model medical vocabularies and flexible tidyverse compatible R functions for querying.
 
 ## Installation
 
-Install the development version of omopvocabr from [GitHub](https://github.com/) with:
+Install the development version of omopcepts from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("andysouth/omopvocabr")
+remotes::install_github("andysouth/omopcepts")
 ```
 
 ## Example showing what vocabularies are included
@@ -38,7 +38,7 @@ Later there may be options to include more.
 
 ```{r example}
 
-library(omopvocabr)
+library(omopcepts)
 library(dplyr)
 
 ## showing what vocabs are included
