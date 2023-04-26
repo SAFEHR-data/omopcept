@@ -9,3 +9,11 @@ pipe_if <- function(df, cond, func) {
   if (cond) func(df)
   else df
 }
+
+#' Produces a list from string variables suitable for use in join expressions
+#' For example, (by=dynamic_by(variable,"rhs"))
+dynamic_by <- function(lhs,rhs) {
+  res <- c()
+  res[lhs] <- rhs
+  res
+}
