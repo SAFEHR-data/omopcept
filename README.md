@@ -1,55 +1,66 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- use devtools::build_readme() -->
 
 # omopvocabr
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of omopvocabr is to …
+omopvocabr provides access to a subset of OMOP Common Data Model medical
+vocabularies and flexible tidyverse compatible R functions for querying.
 
 ## Installation
 
-You can install the development version of omopvocabr from
+Install the development version of omopvocabr from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("andysouth/omopvocabr")
+# install.packages("remotes")
+remotes::install_github("andysouth/omopvocabr")
 ```
 
-## Example
+## Example showing what vocabularies are included
 
-This is a basic example which shows you how to solve a common problem:
+Later there may be options to include more.
 
 ``` r
+
 library(omopvocabr)
-## basic example code
+library(dplyr)
+#> Warning: package 'dplyr' was built under R version 4.2.2
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+
+## showing what vocabs are included
+concept |> count(vocabulary_id)
+#> # A tibble: 3 × 2
+#>   vocabulary_id         n
+#>   <chr>             <int>
+#> 1 Cancer Modifier    6043
+#> 2 LOINC            265076
+#> 3 SNOMED          1054935
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+### Numbers of concepts in the package by domain and vocabulary
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+library(ggplot2)
+#> Warning: package 'ggplot2' was built under R version 4.2.2
+library(forcats)
+#> Warning: package 'forcats' was built under R version 4.2.2
+
+ggplot(concept, aes(y=fct_rev(fct_infreq(domain_id)), 
+                    fill=vocabulary_id)) +
+  geom_bar() +
+  labs(y = "domain_id") +
+  theme_minimal()
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<img src="man/figures/README-conceptplot-1.png" width="100%" />

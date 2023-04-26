@@ -5,7 +5,7 @@ Authors@R:
     c(
     person("Andy", "South", email = "southandy@gmail.com", role = c("aut", "cre"),comment = c(ORCID = "0000-0003-4051-6135"))
     )
-Description: Access to OMOP Common Data Model medical vocabularies (a subset) and flexible R functions for querying.
+Description: Access to a subset of OMOP Common Data Model medical vocabularies and flexible tidyverse compatible R functions for querying.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
