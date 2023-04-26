@@ -21,7 +21,9 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopcepts provides access to a subset of OMOP Common Data Model medical vocabularies and flexible tidyverse compatible R functions for querying.
+omopcepts provides access to a subset of **OMOP** con**cepts** and flexible tidyverse compatible R functions for querying.    
+
+The [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/) is an open standard for health data. "[It is] designed to standardize the structure and content of observational data and to enable efficient analyses that can produce reliable evidence".
 
 ## Installation
 
