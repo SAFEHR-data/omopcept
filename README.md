@@ -17,17 +17,33 @@ analyses that can produce reliable evidence”.
 
 ## Installation
 
-Install the development version of omopcepts from
-[GitHub](https://github.com/) with:
+Install the development version of omopcepts with:
 
 ``` r
 # install.packages("remotes")
 remotes::install_github("andysouth/omopcepts")
 ```
 
-## Example showing what vocabularies are included
+## Join OMOP names onto a dataframe containing \*concept_id
 
-Later there may be options to include more.
+Helps to interpret OMOP data.
+
+``` r
+
+library(omopcepts)
+
+df1 <- data.frame(concept_id=(c(3571338L,4002075L)))
+
+join_omop_name(df1)
+#>   concept_id      concept_name
+#> 1    3571338 Problem behaviour
+#> 2    4002075       BLUE LOTION
+```
+
+## Vocabularies included
+
+Initially just a few vocabularies are included to keep the size of the
+data file down. Later we may offer option to add other vocabularies.
 
 ``` r
 
