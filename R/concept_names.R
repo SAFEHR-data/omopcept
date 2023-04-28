@@ -12,7 +12,8 @@
 #' @export
 #' @examples
 #' concept_names("AJCC/UICC Stage")
-#' chemo <- concept_names("chemotherapy", v_ids="LOINC")
+#' concept_names("chemotherapy", v_ids="LOINC")
+#' concept_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 
 concept_names <- function(#df1 = NULL,
   pattern,

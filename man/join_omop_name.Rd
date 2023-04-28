@@ -16,9 +16,7 @@ adds (namestart)_name based on (namestart)_concept_id
 e.g. drug_concept_id to get drug_name
 }
 \examples{
-df1 <- data.frame(concept_id=(c(3571338L,4002075L)))
-join_omop_name(df1)
-df2 <- data.frame(drug_concept_id=(c(4000794L,4002592L)))
-join_omop_name(df2, namestart="drug")
+data.frame(concept_id=(c(3571338L,4002075L))) |> join_omop_name()
+data.frame(drug_concept_id=(c(4000794L,4002592L))) |> join_omop_name(namestart="drug")
 #df2 <- drug_exposure \%>\% distinct(route_concept_id) \%>\% join_omop_name(route_concept_id)
 }

@@ -23,7 +23,13 @@ knitr::opts_chunk$set(
 
 omopcepts provides access to a subset of **OMOP** con**cepts** and flexible tidyverse compatible R functions for querying.    
 
-The [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/) is an open standard for health data. "[It is] designed to standardize the structure and content of observational data and to enable efficient analyses that can produce reliable evidence".
+The [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/) is an open standard for health data. "[It is] designed to standardize the structure and content of observational data and to enable efficient analyses that can produce reliable evidence".    
+    
+OMOP is maintained by OHDSI (pronounced "Odyssey"). "The Observational Health Data Sciences and Informatics  program is a multi-stakeholder, interdisciplinary collaborative that strives to improve medical decision making and bring better health outcomes to patients around the world."    
+    
+OMOP concepts can be searched and downloaded from [Athena – the  OHDSI vocabularies repository](https://athena.ohdsi.org).    
+    
+This package provides R tools to interact with the concepts in a more reproducible way.
 
 ## Installation
 
@@ -31,21 +37,26 @@ Install the development version of omopcepts with:
 
 ``` r
 # install.packages("remotes")
+
 remotes::install_github("andysouth/omopcepts")
+
 ```
 
-## Join OMOP names onto a dataframe containing *concept_id
+## Concept data
 
-Helps to interpret OMOP data.
+OMOP vocab data downloaded from Athena includes a table called CONCEPT.csv, that is used in this package.
 
-```{r join_omop_name, echo=TRUE}
+```{r concept table, echo=FALSE}
 
 library(omopcepts)
+data(concept)
 
-df1 <- data.frame(concept_id=(c(3571338L,4002075L)))
+df1 <- data.frame(fields=names(concept),
+                  about=c("unique id","descriptive name","e.g. drug, measurement","e.g. LOINC, SNOMED","e.g. Clinical Observation, Organism","standard or not","source code"),
+                  query_arguments=c("c_ids","pattern","d_ids","v_ids","cc_ids","standard","")
+                  )
 
-join_omop_name(df1)
-
+knitr::kable(df1)
 ```
 
 ## String search in concept_name field
@@ -54,7 +65,27 @@ join_omop_name(df1)
 
 concept_names("chemotherapy", v_ids="LOINC")
 
+concept_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+
 ```
+
+## Join OMOP names onto a dataframe containing concept ids in a column called *concept_id
+
+Helps to interpret OMOP data.
+
+```{r join_omop_name, echo=TRUE}
+
+
+data.frame(concept_id=(c(3571338L,4002075L))) |> 
+  join_omop_name()
+ 
+
+data.frame(drug_concept_id=(c(4000794L,4002592L))) |> 
+  join_omop_name(namestart="drug")
+
+
+```
+
 
 ## Vocabularies included
 
@@ -62,7 +93,6 @@ Initially just a few vocabularies are included to keep the size of the data file
 
 ```{r example}
 
-library(omopcepts)
 library(dplyr)
 
 ## showing what vocabs are included

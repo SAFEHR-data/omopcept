@@ -7,10 +7,8 @@
 #' @param namestart start of *_concept_id column, if NULL will join on concept_name
 #' @export
 #' @examples
-#' df1 <- data.frame(concept_id=(c(3571338L,4002075L)))
-#' join_omop_name(df1)
-#' df2 <- data.frame(drug_concept_id=(c(4000794L,4002592L)))
-#' join_omop_name(df2, namestart="drug")
+#' data.frame(concept_id=(c(3571338L,4002075L))) |> join_omop_name()
+#' data.frame(drug_concept_id=(c(4000794L,4002592L))) |> join_omop_name(namestart="drug")
 #' #df2 <- drug_exposure %>% distinct(route_concept_id) %>% join_omop_name(route_concept_id)
 join_omop_name <- function(df, namestart=NULL) {
 

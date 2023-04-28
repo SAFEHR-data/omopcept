@@ -37,5 +37,6 @@ string search of concept_name in omop concepts table
 }
 \examples{
 concept_names("AJCC/UICC Stage")
-chemo <- concept_names("chemotherapy", v_ids="LOINC")
+concept_names("chemotherapy", v_ids="LOINC")
+concept_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 }
