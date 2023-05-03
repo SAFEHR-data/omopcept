@@ -5,7 +5,7 @@
 \title{string search of concept_code in omop concepts table}
 \usage{
 concept_codes(
-  pattern,
+  findstring,
   ignore_case = TRUE,
   negate = FALSE,
   c_ids = NULL,
@@ -16,7 +16,7 @@ concept_codes(
 )
 }
 \arguments{
-\item{pattern}{string to search for or regex}
+\item{findstring}{string to search for or regex}
 
 \item{ignore_case}{ignore case in string comparison, default TRUE}
 
