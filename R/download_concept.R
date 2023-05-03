@@ -8,10 +8,27 @@ download_concept <- function( location="https://omopes.blob.core.windows.net/new
 
   options(timeout = 360)
 
+  message("downloading concept file, may take a minute or so")
+
+  #where to save concept file ? to allow user to update.
+  # https://r-pkgs.org/data.html#sec-data-persistent
+  # Persistent user data
+  # Sometimes there is data that your package obtains, on behalf of itself or the user,
+  # that should persist even across R sessions.  This is our last and probably least common
+  # form of storing package data.
+  # The primary function you should use to derive acceptable locations for user data is tools::R_user_dir()
+
+  #dest_path <- tools::R_user_dir("omopcepts", which = "data")
+  #[1] "C:\\Users\\andy.south\\AppData\\Roaming/R/data/R/omopcepts"
+  #above didn't work, I thinbk because higher folder didn't exist
+  dest_path <- tools::R_user_dir("omopcepts", which = "cache")
+  #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcepts"
+
+  if (!dir.exists(dest_path)) {dir.create(dest_path)}
+
   download <- function(f, mode) {
-    download.file(paste0(location,f),
-                  #saving to extdata to replace existing package file
-                  destfile = here("extdata",f),
+    utils::download.file(paste0(location,f),
+                  destfile = file.path(dest_path,f),
                   mode = mode)
   }
   download("concept.parquet", "wb")

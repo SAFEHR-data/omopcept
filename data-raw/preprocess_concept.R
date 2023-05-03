@@ -1,3 +1,4 @@
+## DEPRECATED replaced by download_concept()
 ## code to prepare `DATASET` dataset goes here
 ## initially copied from omop_es preprocess_metadata.r
 

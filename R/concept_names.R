@@ -25,9 +25,20 @@ concept_names <- function(#df1 = NULL,
   cc_ids=NULL,
   standard=NULL) {
 
-  df1 <- omopcepts::concept |>
-    filter(str_detect(.data$concept_name, regex(pattern, ignore_case=ignore_case), negate=negate)) |>
-    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
+  df1 <- omopcepts::open_concept() |>
+
+    #TODO put negate & ignore_case back in
+    #TODO arrow str_detect() weirdly fails due to arg being called pattern
+
+    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
+    filter(str_detect(concept_name, pattern)) |>
+
+    #filter(str_detect(concept_name, regex(pattern, ignore_case=ignore_case))) |>
+
+    collect()
+    #filter(grepl(pattern,.data$concept_name, ignore.case=ignore_case))
+    #filter(stringr::str_detect(.data$concept_name, stringr::regex(pattern, ignore_case=ignore_case), negate=negate)) |>
+
 
   return(df1)
 
@@ -67,9 +78,20 @@ concept_codes <- function( pattern,
                            cc_ids=NULL,
                            standard=NULL) {
 
-  df1 <- omopcepts::concept |>
-    filter(str_detect(.data$concept_code, regex(pattern, ignore_case=ignore_case), negate=negate)) |>
-    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
+  df1 <- omopcepts::open_concept() |>
+
+    #TODO put negate and ignore_case back in
+    #TODO arrow str_detect() weirdly fails due to arg being called pattern
+
+    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
+    filter(str_detect(concept_code, pattern)) |>
+    collect()
+
+    #filter(grepl(pattern,.data$concept_code, ignore.case=ignore_case))
+    #Error: Filter expression not supported for Arrow Datasets: grepl(pattern, .data$concept_name, ignore_case = ignore_case)
+    #Call collect() first to pull data into R.
+    #filter(stringr::str_detect(.data$concept_code, stringr::regex(pattern, ignore_case=ignore_case), negate=negate)) |>
+
 
   return(df1)
 

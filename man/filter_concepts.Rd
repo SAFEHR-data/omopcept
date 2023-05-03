@@ -34,7 +34,8 @@ one or more of : concept_id, domain_id, vocabulary_id, concept_class_id, standar
 used by other functions
 }
 \examples{
-concept |>
+open_concept() |>
   filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
+  collect() |>
   dplyr::count(domain_id,vocabulary_id)
 }

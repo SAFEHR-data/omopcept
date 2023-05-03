@@ -7,8 +7,10 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr rename_with
 #' @importFrom dplyr select
+#' @importFrom dplyr collect
 #' @importFrom rlang .data
 #' @importFrom stringr regex
 #' @importFrom stringr str_detect
+#' @importFrom arrow open_dataset
 ## usethis namespace: end
 NULL

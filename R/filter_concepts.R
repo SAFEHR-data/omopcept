@@ -12,8 +12,9 @@
 #' @return a filtered dataframe of concepts and attributes
 #' @export
 #' @examples
-#' concept |>
+#' open_concept() |>
 #'   filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
+#'   collect() |>
 #'   dplyr::count(domain_id,vocabulary_id)
 
 filter_concepts <- function(df,
@@ -31,7 +32,8 @@ filter_concepts <- function(df,
     pipe_if(!is.null(d_ids), \(d) d |> filter(tolower(.data$domain_id) %in% tolower(d_ids)) ) |>
     pipe_if(!is.null(v_ids), \(d) d |> filter(tolower(.data$vocabulary_id) %in% tolower(v_ids)) ) |>
     pipe_if(!is.null(cc_ids), \(d) d |> filter(tolower(.data$concept_class_id) %in% tolower(cc_ids)) ) |>
-    pipe_if(!is.null(standard), \(d) d |> filter(tolower(.data$standard_concept) %in% tolower(standard)) )
+    pipe_if(!is.null(standard), \(d) d |> filter(tolower(.data$standard_concept) %in% tolower(standard)) ) #|>
+    #dplyr::collect()
 
   return(df1)
 
