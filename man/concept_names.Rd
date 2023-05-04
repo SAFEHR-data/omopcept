@@ -7,7 +7,6 @@
 concept_names(
   findstring,
   ignore_case = TRUE,
-  negate = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -16,9 +15,9 @@ concept_names(
 )
 }
 \arguments{
-\item{ignore_case}{ignore case in string comparison, default TRUE}
+\item{findstring}{to search for or regex}
 
-\item{negate}{If TRUE, return non-matching elements, default FALSE}
+\item{ignore_case}{ignore case in string comparison, default TRUE}
 
 \item{c_ids}{one or more concept_id to filter by, default NULL for all}
 
@@ -29,8 +28,6 @@ concept_names(
 \item{cc_ids}{one or more concept_class_id to filter by, default NULL for all}
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
-
-\item{string}{to search for or regex}
 }
 \description{
 string search of concept_name in omop concepts table

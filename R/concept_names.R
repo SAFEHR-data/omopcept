@@ -1,9 +1,9 @@
 #' string search of concept_name in omop concepts table
 #'
 # @param df1 dataframe containing concept_name field, if null uses concept
-#' @param  string to search for or regex
+#' @param findstring to search for or regex
 #' @param ignore_case ignore case in string comparison, default TRUE
-#' @param negate If TRUE, return non-matching elements, default FALSE
+# @param negate If TRUE, return non-matching elements, default FALSE
 #' @param c_ids one or more concept_id to filter by, default NULL for all
 #' @param d_ids one or more domain_id to filter by, default NULL for all
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
@@ -18,7 +18,7 @@
 concept_names <- function(#df1 = NULL,
   findstring,
   ignore_case = TRUE,
-  negate = FALSE,
+  #negate = FALSE,
   c_ids=NULL,
   d_ids=NULL,
   v_ids=NULL,
@@ -27,10 +27,10 @@ concept_names <- function(#df1 = NULL,
 
   df1 <- omopcepts::open_concept() |>
 
-    #TODO put negate back in
+    #TODO put negate back in if possible
     #but get Error: filter expressions must be either an expression or a list of expressions
 
-    filter(arrow_match_substring_regex(concept_name,
+    filter(arrow::arrow_match_substring_regex(concept_name,
                                        options=list(pattern=findstring,
                                                     ignore_case=ignore_case))) |>
 
@@ -62,7 +62,7 @@ concept_names <- function(#df1 = NULL,
 #'
 #' @param findstring string to search for or regex
 #' @param ignore_case ignore case in string comparison, default TRUE
-#' @param negate If TRUE, return non-matching elements, default FALSE
+# @param negate If TRUE, return non-matching elements, default FALSE
 #' @param c_ids one or more concept_id to filter by, default NULL for all
 #' @param d_ids one or more domain_id to filter by, default NULL for all
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
@@ -74,7 +74,7 @@ concept_names <- function(#df1 = NULL,
 
 concept_codes <- function( findstring,
                            ignore_case = TRUE,
-                           negate = FALSE,
+                           #negate = FALSE,
                            c_ids=NULL,
                            d_ids=NULL,
                            v_ids=NULL,
@@ -83,12 +83,15 @@ concept_codes <- function( findstring,
 
   df1 <- omopcepts::open_concept() |>
 
-    #TODO put negate and ignore_case back in
-    #TODO arrow str_detect() weirdly fails due to arg being called pattern
+    #TODO put negate back in if possible
 
-    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    filter(str_detect(concept_code, findstring)) |>
-    collect()
+    filter(arrow::arrow_match_substring_regex(concept_code,
+                                       options=list(pattern=findstring,
+                                                    ignore_case=ignore_case))) |>
+    collect() |>
+
+    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
+
 
     #filter(grepl(findstring,.data$concept_code, ignore.case=ignore_case))
     #Error: Filter expression not supported for Arrow Datasets: grepl(pattern, .data$concept_name, ignore_case = ignore_case)

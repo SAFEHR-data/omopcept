@@ -7,7 +7,6 @@
 concept_codes(
   findstring,
   ignore_case = TRUE,
-  negate = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -19,8 +18,6 @@ concept_codes(
 \item{findstring}{string to search for or regex}
 
 \item{ignore_case}{ignore case in string comparison, default TRUE}
-
-\item{negate}{If TRUE, return non-matching elements, default FALSE}
 
 \item{c_ids}{one or more concept_id to filter by, default NULL for all}
 
