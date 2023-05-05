@@ -24,7 +24,14 @@ download_concept <- function( location="https://omopes.blob.core.windows.net/new
   dest_path <- tools::R_user_dir("omopcepts", which = "cache")
   #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcepts"
 
-  if (!dir.exists(dest_path)) {dir.create(dest_path)}
+  #FAILED before on DataScienceDesktop
+  #In dir.create(dest_path) :
+  #  cannot create dir 'F:\UserProfiles\andsouth\AppData\Local\R\cache\R\omopcepts', reason 'No such file or directory'
+  #have to go up quite a few levels to find one that does work
+  #dir.exists("F:\\UserProfiles\\andsouth\\AppData\\Local/") [1] TRUE
+
+  #recursive means it creates all nested folders needed
+  if (!dir.exists(dest_path)) {dir.create(dest_path, recursive=TRUE )}
 
   download <- function(f, mode) {
     utils::download.file(paste0(location,f),
