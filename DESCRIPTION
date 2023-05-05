@@ -1,6 +1,6 @@
 Package: omopcepts
 Title: Tools to query OMOP concepts, for selected standard health vocabularies
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
     c(
     person("Andy", "South", email = "southandy@gmail.com", role = c("aut", "cre"),comment = c(ORCID = "0000-0003-4051-6135"))
