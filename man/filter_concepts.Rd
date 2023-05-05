@@ -36,6 +36,7 @@ used by other functions
 \examples{
 open_concept() |>
   filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
-  collect() |>
+  dplyr::collect() |>
   dplyr::count(domain_id,vocabulary_id)
+open_concept() |> filter_concepts(v_ids="Gender") |> dplyr::collect()
 }

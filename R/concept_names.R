@@ -30,9 +30,12 @@ concept_names <- function(#df1 = NULL,
     #TODO put negate back in if possible
     #but get Error: filter expressions must be either an expression or a list of expressions
 
-    filter(arrow::arrow_match_substring_regex(concept_name,
+    filter(arrow_match_substring_regex(concept_name,
                                        options=list(pattern=findstring,
                                                     ignore_case=ignore_case))) |>
+
+    #hmmmmm this was working then suddenly stopped
+    #now: Error: Filter expression not supported for Arrow Datasets
 
     collect() |>
     #cool this is pretty fast running these filters after collect
@@ -85,7 +88,7 @@ concept_codes <- function( findstring,
 
     #TODO put negate back in if possible
 
-    filter(arrow::arrow_match_substring_regex(concept_code,
+    filter(arrow_match_substring_regex(concept_code,
                                        options=list(pattern=findstring,
                                                     ignore_case=ignore_case))) |>
     collect() |>
@@ -110,6 +113,10 @@ concept_codes <- function( findstring,
 #https://arrow.apache.org/docs/r/articles/developers/writing_bindings.html
 
 #or may be able to call arrow C++ functions directly
+#apache arrow R cookbook is good on this with list of C++ functions
+#https://arrow.apache.org/cookbook/r/manipulating-data---tables.html#use-r-functions-in-dplyr-verbs-in-arrow
+#list_compute_functions() gives list of C++ functions
+#C++ func doc : https://arrow.apache.org/docs/cpp/compute.html#available-functions
 #looking at the output without collect() shows the C++ code
 #open_concept() |> filter(str_detect(str_to_lower(concept_name),str_to_lower(stringvar)))
 #* Filter: match_substring_regex(utf8_lower(concept_name), {pattern="chemo", ignore_case=false})

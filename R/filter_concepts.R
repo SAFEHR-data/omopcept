@@ -14,8 +14,9 @@
 #' @examples
 #' open_concept() |>
 #'   filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
-#'   collect() |>
+#'   dplyr::collect() |>
 #'   dplyr::count(domain_id,vocabulary_id)
+#' open_concept() |> filter_concepts(v_ids="Gender") |> dplyr::collect()
 
 filter_concepts <- function(df,
                             c_ids=NULL,
@@ -25,15 +26,35 @@ filter_concepts <- function(df,
                             cc_ids=NULL,
                             standard=NULL) {
 
-  df1 <- df |>
-    pipe_if(!is.null(c_ids), \(d) d |> filter(.data$concept_id %in% c_ids) ) |>
-    #pipe_if(!is.null(r_ids), \(d) d |> filter(relationship_id %in% r_ids) ) |>
-    #tolower() to make case insensitive
-    pipe_if(!is.null(d_ids), \(d) d |> filter(tolower(.data$domain_id) %in% tolower(d_ids)) ) |>
-    pipe_if(!is.null(v_ids), \(d) d |> filter(tolower(.data$vocabulary_id) %in% tolower(v_ids)) ) |>
-    pipe_if(!is.null(cc_ids), \(d) d |> filter(tolower(.data$concept_class_id) %in% tolower(cc_ids)) ) |>
-    pipe_if(!is.null(standard), \(d) d |> filter(tolower(.data$standard_concept) %in% tolower(standard)) ) #|>
-    #dplyr::collect()
+    #tolower to make case insensitive
+    #here because arrow can't cope with it in filter
+    if(!is.null(c_ids)) c_ids <- tolower(c_ids)
+    if(!is.null(d_ids)) d_ids <- tolower(d_ids)
+    if(!is.null(v_ids)) v_ids <- tolower(v_ids)
+    if(!is.null(cc_ids)) cc_ids <- tolower(cc_ids)
+    if(!is.null(standard)) standard <- tolower(standard)
+
+    df1 <- df
+
+    if(!is.null(c_ids)) df1 <- df1 |>  filter(concept_id %in% c_ids)
+
+    #tolower() to make case insensitive, but arrow fussy
+    if(!is.null(d_ids)) df1 <- df1 |> filter(tolower(domain_id) %in% d_ids)
+    if(!is.null(v_ids)) df1 <- df1 |> filter(tolower(vocabulary_id) %in% v_ids)
+    if(!is.null(cc_ids)) df1 <- df1 |> filter(tolower(concept_class_id) %in% cc_ids)
+    if(!is.null(standard)) df1 <- df1 |> filter(tolower(standard_concept) %in% standard)
+  #dplyr::collect()
+
+  # made this simpler above because arrow is fussy and somewhat unpredictable
+  # df1 <- df |>
+  #   pipe_if(!is.null(c_ids), \(d) d |> filter(.data$concept_id %in% c_ids) ) |>
+  #   #pipe_if(!is.null(r_ids), \(d) d |> filter(relationship_id %in% r_ids) ) |>
+  #   #tolower() to make case insensitive
+  #   pipe_if(!is.null(d_ids), \(d) d |> filter(tolower(.data$domain_id) %in% tolower(d_ids)) ) |>
+  #   pipe_if(!is.null(v_ids), \(d) d |> filter(tolower(.data$vocabulary_id) %in% tolower(v_ids)) ) |>
+  #   pipe_if(!is.null(cc_ids), \(d) d |> filter(tolower(.data$concept_class_id) %in% tolower(cc_ids)) ) |>
+  #   pipe_if(!is.null(standard), \(d) d |> filter(tolower(.data$standard_concept) %in% tolower(standard)) ) #|>
+  #   #dplyr::collect()
 
   return(df1)
 
