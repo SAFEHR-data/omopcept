@@ -1,6 +1,6 @@
 #' filter omop concepts by standard attributes
 #'
-#' one or more of : concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
+#' Works on a dataframe or an arrow object. Can filter by one or more of : concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
 #' used by other functions
 #'
 #' @param df dataframe with standard omop concept table columns

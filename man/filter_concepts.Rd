@@ -30,7 +30,7 @@ filter_concepts(
 a filtered dataframe of concepts and attributes
 }
 \description{
-one or more of : concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
+Works on a dataframe or an arrow object. Can filter by one or more of : concept_id, domain_id, vocabulary_id, concept_class_id, standard_concept
 used by other functions
 }
 \examples{
