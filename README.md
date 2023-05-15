@@ -131,33 +131,19 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 
 ## Vocabularies included
 
-Initially just a few vocabularies are included to keep the size of the
-data file down. Later we may offer option to add other vocabularies.
-
-``` r
-
-library(dplyr)
-
-## showing what vocabs are included
-open_concept() |>
-   count(vocabulary_id)
-#> FileSystemDataset (query)
-#> vocabulary_id: string
-#> n: int32
-#> 
-#> See $.data for the source Arrow object
-```
+The vocabularies are a default download from Athena with a few extra
+vocabs added. Later we may offer option to add other vocabularies.
 
 ### Numbers of concepts in the package by domain and vocabulary
 
 ``` r
+library(dplyr)
 library(ggplot2)
 library(forcats)
 
 concept_summary <- 
   open_concept() |>
   count(vocabulary_id, sort=TRUE) |> 
-  #count(domain_id,vocabulary_id, sort=TRUE) |> 
   collect()
 
 ggplot(concept_summary,aes(y=reorder(vocabulary_id,n),x=n,col=vocabulary_id)) +
