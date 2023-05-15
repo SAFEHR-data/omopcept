@@ -98,14 +98,14 @@ Helps to interpret OMOP data.
 
 
 data.frame(concept_id=(c(3571338L,4002075L))) |> 
-  join_omop_name()
+  omop_join_name()
 #>   concept_id      concept_name
 #> 1    3571338 Problem behaviour
 #> 2    4002075       BLUE LOTION
  
 
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> 
-  join_omop_name(namestart="drug")
+  omop_join_name(namestart="drug")
 #>   drug_concept_id       drug_concept_name
 #> 1         4000794                BUZZ OFF
 #> 2         4002592 DEXAMETHASONE INJECTION
