@@ -2,17 +2,23 @@
 % Please edit documentation in R/omop_id.R
 \name{omop_id}
 \alias{omop_id}
+\alias{oid}
 \title{query a concept record by concept_id from omop concepts table}
 \usage{
 omop_id(c_id)
+
+oid(c_id)
 }
 \arguments{
 \item{c_id}{one concept_id to filter by}
 }
 \description{
 query a concept record by concept_id from omop concepts table
+
+super short name func to get info about a concept_id
 }
 \examples{
 omop_id(3807321L)
 
+oid(43807321L)
 }

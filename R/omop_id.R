@@ -22,7 +22,7 @@ omop_id <- function(c_id) {
 }
 
 #' super short name func to get info about a concept_id
-#' @rdname first
+#' @rdname omop_id
 #' @export
 #' @examples
 #' oid(43807321L)
