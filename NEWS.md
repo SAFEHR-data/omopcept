@@ -1,7 +1,12 @@
-# omopcepts 0.0.0.9002 dev
 
-* renamed package functions to make clearer
+# omopcepts 0.0.0.9003 dev
 
+
+# omopcepts 0.0.0.9002 2023-05-15
+
+* renamed package functions to make clearer, most start omop_*()
+* added omop_id() to search ids
+* added supershort name copies of functions for interactive use oid() onames() ocodes()
 
 # omopcepts 0.0.0.9001 2023-05-05
 
