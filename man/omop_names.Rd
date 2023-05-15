@@ -2,9 +2,20 @@
 % Please edit documentation in R/omop_names.R
 \name{omop_names}
 \alias{omop_names}
+\alias{onames}
 \title{string search of concept_name in omop concepts table}
 \usage{
 omop_names(
+  findstring,
+  ignore_case = TRUE,
+  c_ids = NULL,
+  d_ids = NULL,
+  v_ids = NULL,
+  cc_ids = NULL,
+  standard = NULL
+)
+
+onames(
   findstring,
   ignore_case = TRUE,
   c_ids = NULL,
@@ -31,9 +42,12 @@ omop_names(
 }
 \description{
 string search of concept_name in omop concepts table
+
+super short name func to search concepts by concept_name
 }
 \examples{
 omop_names("AJCC/UICC Stage")
 omop_names("chemotherapy", v_ids="LOINC")
 omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+onames("chemotherapy", v_ids="LOINC")
 }
