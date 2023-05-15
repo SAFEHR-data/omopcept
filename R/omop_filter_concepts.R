@@ -13,12 +13,12 @@
 #' @export
 #' @examples
 #' open_concept() |>
-#'   filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
+#'   omop_filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
 #'   dplyr::collect() |>
 #'   dplyr::count(domain_id,vocabulary_id)
-#' open_concept() |> filter_concepts(v_ids="Gender") |> dplyr::collect()
+#' open_concept() |> omop_filter_concepts(v_ids="Gender") |> dplyr::collect()
 
-filter_concepts <- function(df,
+omop_filter_concepts <- function(df,
                             c_ids=NULL,
                             #r_ids=NULL, #only in relationships table
                             d_ids=NULL,

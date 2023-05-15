@@ -40,7 +40,7 @@ concept_names <- function(#df1 = NULL,
     collect() |>
     #cool this is pretty fast running these filters after collect
     #probably the case as long as above filter produces reasonably small table
-    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) #|>
+    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) #|>
     #filter(str_detect(concept_name, regex(findstring, ignore_case=ignore_case))) |>
 
     #filter(grepl(findstring,.data$concept_name, ignore.case=ignore_case))
@@ -56,7 +56,7 @@ concept_names <- function(#df1 = NULL,
   # {
   #   df1 <- df1 |>
   #     filter(str_detect(concept_name, findstring)) |>
-  #     filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
+  #     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
   # }
 
 }
@@ -93,7 +93,7 @@ concept_codes <- function( findstring,
                                                     ignore_case=ignore_case))) |>
     collect() |>
 
-    filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
+    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
 
 
     #filter(grepl(findstring,.data$concept_code, ignore.case=ignore_case))
