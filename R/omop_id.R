@@ -3,10 +3,10 @@
 #' @param c_id one concept_id to filter by
 #' @export
 #' @examples
-#' concept_id(3807321L)
-# concept_id("438073")
+#' omop_id(3807321L)
+# omop_id("438073")
 #'
-concept_id <- function(c_id) {
+omop_id <- function(c_id) {
 
   df1 <- omopcepts::open_concept() |>
 
@@ -25,6 +25,6 @@ concept_id <- function(c_id) {
 #' @rdname first
 #' @export
 #' @examples
-#' cid(43807321L)
-cid <- concept_id
+#' oid(43807321L)
+oid <- omop_id
 
