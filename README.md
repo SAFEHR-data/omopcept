@@ -36,10 +36,21 @@ Install the development version of omopcepts with:
 remotes::install_github("andysouth/omopcepts")
 ```
 
+## Main functions
+
+`omop_names() onames()` search concepts by parts of names
+
+`omop_id() oid()` search for a concept_id
+
+`omop_join_names()` join names onto a table with an id column
+
 ## Concept data
 
 OMOP vocab data downloaded from Athena includes a table called
-CONCEPT.csv, that is used in this package.
+CONCEPT.csv that is used in this package.
+
+omopcepts downloads a selection of vocabularies and stores locally the
+first time you use it.
 
 | fields           | about                               | query_arguments |
 |:-----------------|:------------------------------------|:----------------|
@@ -50,44 +61,51 @@ CONCEPT.csv, that is used in this package.
 | concept_class_id | e.g. Clinical Observation, Organism | cc_ids          |
 | standard_concept | standard or not                     | standard        |
 | concept_code     | source code                         |                 |
+| valid_start_date |                                     |                 |
+| valid_end_date   |                                     |                 |
+| invalid_reason   |                                     |                 |
 
 ## String search in concept_name field
 
 ``` r
 
 omop_names("chemotherapy", v_ids="LOINC")
-#> # A tibble: 71 × 7
-#>    concept_id concept_name               domai…¹ vocab…² conce…³ stand…⁴ conce…⁵
-#>         <int> <chr>                      <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1    3010410 Chemotherapy records       Observ… LOINC   Clinic… S       11486-8
-#>  2    3002377 Chemotherapy treatment at… Measur… LOINC   Clinic… S       21881-8
-#>  3    3011998 Date 1st chemotherapy tre… Observ… LOINC   Clinic… S       21927-9
-#>  4    3003037 Chemotherapy treatment Ca… Measur… LOINC   Clinic… S       21946-9
-#>  5    3000897 Reason for no chemotherap… Measur… LOINC   Clinic… S       21951-9
-#>  6    3014397 Chemotherapy Cancer        Measur… LOINC   Clinic… S       21967-5
-#>  7    3027104 Chemotherapy treatment Ca… Measur… LOINC   Clinic… S       22041-8
-#>  8    3037369 2nd course chemotherapy C… Measur… LOINC   Clinic… S       42045-5
-#>  9    3032293 3rd course chemotherapy C… Measur… LOINC   Clinic… S       42051-3
-#> 10    3028808 4th course chemotherapy C… Measur… LOINC   Clinic… S       42057-0
-#> # … with 61 more rows, and abbreviated variable names ¹​domain_id,
-#> #   ²​vocabulary_id, ³​concept_class_id, ⁴​standard_concept, ⁵​concept_code
+#> # A tibble: 71 × 10
+#>    conce…¹ conce…² domai…³ vocab…⁴ conce…⁵ stand…⁶ conce…⁷ valid_st…⁸ valid_en…⁹
+#>      <int> <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <date>     <date>    
+#>  1 3010410 Chemot… Observ… LOINC   Clinic… S       11486-8 1970-01-01 2099-12-31
+#>  2 3002377 Chemot… Measur… LOINC   Clinic… S       21881-8 1970-01-01 2099-12-31
+#>  3 3011998 Date 1… Observ… LOINC   Clinic… S       21927-9 1970-01-01 2099-12-31
+#>  4 3003037 Chemot… Measur… LOINC   Clinic… S       21946-9 1970-01-01 2099-12-31
+#>  5 3000897 Reason… Measur… LOINC   Clinic… S       21951-9 1970-01-01 2099-12-31
+#>  6 3014397 Chemot… Measur… LOINC   Clinic… S       21967-5 1970-01-01 2099-12-31
+#>  7 3027104 Chemot… Measur… LOINC   Clinic… S       22041-8 1970-01-01 2099-12-31
+#>  8 3037369 2nd co… Measur… LOINC   Clinic… S       42045-5 2005-08-05 2099-12-31
+#>  9 3032293 3rd co… Measur… LOINC   Clinic… S       42051-3 2005-08-05 2099-12-31
+#> 10 3028808 4th co… Measur… LOINC   Clinic… S       42057-0 2005-08-05 2099-12-31
+#> # … with 61 more rows, 1 more variable: invalid_reason <chr>, and abbreviated
+#> #   variable names ¹​concept_id, ²​concept_name, ³​domain_id, ⁴​vocabulary_id,
+#> #   ⁵​concept_class_id, ⁶​standard_concept, ⁷​concept_code, ⁸​valid_start_date,
+#> #   ⁹​valid_end_date
 
 omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
-#> # A tibble: 297 × 7
-#>    concept_id concept_name               domai…¹ vocab…² conce…³ stand…⁴ conce…⁵
-#>         <int> <chr>                      <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1    3010410 Chemotherapy records       Observ… LOINC   Clinic… S       11486-8
-#>  2    3011998 Date 1st chemotherapy tre… Observ… LOINC   Clinic… S       21927-9
-#>  3    3046488 Chemotherapy [Minimum Dat… Observ… LOINC   Survey  S       45841-4
-#>  4   40758122 Chemotherapy in last 14 d… Observ… LOINC   Survey  S       54992-3
-#>  5   40758123 Chemotherapy in last 14 d… Observ… LOINC   Survey  S       54993-1
-#>  6   40766658 Type of chemotherapy [Phe… Observ… LOINC   Clinic… S       63938-5
-#>  7   40768860 Cancer chemotherapy recei… Observ… LOINC   Clinic… S       66178-5
-#>  8   40770073 Have you been treated wit… Observ… LOINC   Clinic… S       67446-5
-#>  9   40770096 History of Chemotherapy o… Observ… LOINC   Clinic… S       67469-7
-#> 10   36305649 Chemotherapy infusion sta… Observ… LOINC   Clinic… S       88060-9
-#> # … with 287 more rows, and abbreviated variable names ¹​domain_id,
-#> #   ²​vocabulary_id, ³​concept_class_id, ⁴​standard_concept, ⁵​concept_code
+#> # A tibble: 297 × 10
+#>    conce…¹ conce…² domai…³ vocab…⁴ conce…⁵ stand…⁶ conce…⁷ valid_st…⁸ valid_en…⁹
+#>      <int> <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <date>     <date>    
+#>  1  3.01e6 Chemot… Observ… LOINC   Clinic… S       11486-8 1970-01-01 2099-12-31
+#>  2  3.01e6 Date 1… Observ… LOINC   Clinic… S       21927-9 1970-01-01 2099-12-31
+#>  3  3.05e6 Chemot… Observ… LOINC   Survey  S       45841-4 1970-01-01 2099-12-31
+#>  4  4.08e7 Chemot… Observ… LOINC   Survey  S       54992-3 2009-01-26 2099-12-31
+#>  5  4.08e7 Chemot… Observ… LOINC   Survey  S       54993-1 2009-01-26 2099-12-31
+#>  6  4.08e7 Type o… Observ… LOINC   Clinic… S       63938-5 2011-03-15 2099-12-31
+#>  7  4.08e7 Cancer… Observ… LOINC   Clinic… S       66178-5 2011-06-02 2099-12-31
+#>  8  4.08e7 Have y… Observ… LOINC   Clinic… S       67446-5 2011-07-11 2099-12-31
+#>  9  4.08e7 Histor… Observ… LOINC   Clinic… S       67469-7 2011-07-12 2099-12-31
+#> 10  3.63e7 Chemot… Observ… LOINC   Clinic… S       88060-9 2018-06-15 2099-12-31
+#> # … with 287 more rows, 1 more variable: invalid_reason <chr>, and abbreviated
+#> #   variable names ¹​concept_id, ²​concept_name, ³​domain_id, ⁴​vocabulary_id,
+#> #   ⁵​concept_class_id, ⁶​standard_concept, ⁷​concept_code, ⁸​valid_start_date,
+#> #   ⁹​valid_end_date
 ```
 
 ## Join OMOP names onto a dataframe containing concept ids in a column called \*concept_id
@@ -121,13 +139,13 @@ data file down. Later we may offer option to add other vocabularies.
 library(dplyr)
 
 ## showing what vocabs are included
-concept |> count(vocabulary_id)
-#> # A tibble: 3 × 2
-#>   vocabulary_id         n
-#>   <chr>             <int>
-#> 1 Cancer Modifier    6043
-#> 2 LOINC            265076
-#> 3 SNOMED          1054935
+open_concept() |>
+   count(vocabulary_id)
+#> FileSystemDataset (query)
+#> vocabulary_id: string
+#> n: int32
+#> 
+#> See $.data for the source Arrow object
 ```
 
 ### Numbers of concepts in the package by domain and vocabulary
@@ -136,10 +154,16 @@ concept |> count(vocabulary_id)
 library(ggplot2)
 library(forcats)
 
-ggplot(concept, aes(y=fct_rev(fct_infreq(domain_id)), 
-                    fill=vocabulary_id)) +
-  geom_bar() +
-  labs(y = "domain_id") +
+concept_summary <- 
+  open_concept() |>
+  count(vocabulary_id, sort=TRUE) |> 
+  #count(domain_id,vocabulary_id, sort=TRUE) |> 
+  collect()
+
+ggplot(concept_summary,aes(y=reorder(vocabulary_id,n),x=n,col=vocabulary_id)) +
+  geom_point() +
+  labs(y = "vocabulary_id") +
+  guides(col="none") +
   theme_minimal()
 ```
 

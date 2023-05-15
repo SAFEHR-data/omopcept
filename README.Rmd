@@ -42,18 +42,34 @@ remotes::install_github("andysouth/omopcepts")
 
 ```
 
+
+## Main functions
+
+```omop_names() onames()```     search concepts by parts of names     
+     
+```omop_id() oid()```           search for a concept_id     
+     
+```omop_join_names()```         join names onto a table with an id column         
+
+
 ## Concept data
 
-OMOP vocab data downloaded from Athena includes a table called CONCEPT.csv, that is used in this package.
+OMOP vocab data downloaded from Athena includes a table called CONCEPT.csv that is used in this package.     
+     
+omopcepts downloads a selection of vocabularies and stores locally the first time you use it.
+
 
 ```{r concept table, echo=FALSE}
 
 library(omopcepts)
-data(concept)
 
-df1 <- data.frame(fields=names(concept),
-                  about=c("unique id","descriptive name","e.g. drug, measurement","e.g. LOINC, SNOMED","e.g. Clinical Observation, Organism","standard or not","source code"),
-                  query_arguments=c("c_ids","pattern","d_ids","v_ids","cc_ids","standard","")
+fieldnames <- open_concept() |> 
+  head() |> 
+  names()
+
+df1 <- data.frame(fields=fieldnames,
+                  about=c("unique id","descriptive name","e.g. drug, measurement","e.g. LOINC, SNOMED","e.g. Clinical Observation, Organism","standard or not","source code","","",""),
+                  query_arguments=c("c_ids","pattern","d_ids","v_ids","cc_ids","standard","","","","")
                   )
 
 knitr::kable(df1)
@@ -96,20 +112,29 @@ Initially just a few vocabularies are included to keep the size of the data file
 library(dplyr)
 
 ## showing what vocabs are included
-concept |> count(vocabulary_id)
+open_concept() |>
+   count(vocabulary_id)
 
 ```
 
 ### Numbers of concepts in the package by domain and vocabulary
 
-```{r conceptplot, echo = TRUE}
+```{r conceptplot, echo = TRUE, fig.height=12}
 library(ggplot2)
 library(forcats)
 
-ggplot(concept, aes(y=fct_rev(fct_infreq(domain_id)), 
-                    fill=vocabulary_id)) +
-  geom_bar() +
-  labs(y = "domain_id") +
+concept_summary <- 
+  open_concept() |>
+  count(vocabulary_id, sort=TRUE) |> 
+  #count(domain_id,vocabulary_id, sort=TRUE) |> 
+  collect()
+
+ggplot(concept_summary,aes(y=reorder(vocabulary_id,n),x=n,col=vocabulary_id)) +
+  geom_point() +
+  labs(y = "vocabulary_id") +
+  guides(col="none") +
   theme_minimal()
+
+
 ```
 
