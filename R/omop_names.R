@@ -11,11 +11,11 @@
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
 #' @export
 #' @examples
-#' concept_names("AJCC/UICC Stage")
-#' concept_names("chemotherapy", v_ids="LOINC")
-#' concept_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+#' omop_names("AJCC/UICC Stage")
+#' omop_names("chemotherapy", v_ids="LOINC")
+#' omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 
-concept_names <- function(#df1 = NULL,
+omop_names <- function(#df1 = NULL,
   findstring,
   ignore_case = TRUE,
   #negate = FALSE,
@@ -49,7 +49,7 @@ concept_names <- function(#df1 = NULL,
   return(df1)
 
   # this allowed passing dataframe instead of concepts
-  # but caused confusing behaviour when concept_names("test")
+  # but caused confusing behaviour when omop_names("test")
   # if (is.null(df1)) df1 <- concept
   #
   # if (!is.null(findstring))

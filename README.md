@@ -55,7 +55,7 @@ CONCEPT.csv, that is used in this package.
 
 ``` r
 
-concept_names("chemotherapy", v_ids="LOINC")
+omop_names("chemotherapy", v_ids="LOINC")
 #> # A tibble: 71 × 7
 #>    concept_id concept_name               domai…¹ vocab…² conce…³ stand…⁴ conce…⁵
 #>         <int> <chr>                      <chr>   <chr>   <chr>   <chr>   <chr>  
@@ -72,7 +72,7 @@ concept_names("chemotherapy", v_ids="LOINC")
 #> # … with 61 more rows, and abbreviated variable names ¹​domain_id,
 #> #   ²​vocabulary_id, ³​concept_class_id, ⁴​standard_concept, ⁵​concept_code
 
-concept_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 #> # A tibble: 297 × 7
 #>    concept_id concept_name               domai…¹ vocab…² conce…³ stand…⁴ conce…⁵
 #>         <int> <chr>                      <chr>   <chr>   <chr>   <chr>   <chr>  

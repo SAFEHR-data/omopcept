@@ -61,11 +61,11 @@ knitr::kable(df1)
 
 ## String search in concept_name field
 
-```{r concept_names, echo=TRUE}
+```{r omop_names, echo=TRUE}
 
-concept_names("chemotherapy", v_ids="LOINC")
+omop_names("chemotherapy", v_ids="LOINC")
 
-concept_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 
 ```
 
