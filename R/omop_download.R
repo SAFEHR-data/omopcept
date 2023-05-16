@@ -4,7 +4,7 @@
 #'
 #' @param location url of file location, defaults to UCLH filestore
 #' @export
-download_concept <- function( location="https://omopes.blob.core.windows.net/newcontainer/") {
+omop_download <- function( location="https://omopes.blob.core.windows.net/newcontainer/") {
 
   options(timeout = 360)
 

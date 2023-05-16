@@ -13,7 +13,7 @@ omop_concept <- function(location = tools::R_user_dir("omopcepts", which = "cach
 
   filepath = file.path(location,"concept.parquet")
 
-  if(!file.exists(filepath)) download_concept()
+  if(!file.exists(filepath)) omop_download()
 
   #just creates reference to the data
   concept <- arrow::open_dataset(filepath)
