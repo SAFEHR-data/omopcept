@@ -4,10 +4,15 @@
 \alias{omop_download}
 \title{download omop concept file(s) from provided location}
 \usage{
-omop_download(location = "https://omopes.blob.core.windows.net/newcontainer/")
+omop_download(
+  from = "https://omopes.blob.core.windows.net/newcontainer/",
+  to = tools::R_user_dir("omopcepts", which = "cache")
+)
 }
 \arguments{
-\item{location}{url of file location, defaults to UCLH filestore}
+\item{from}{url of file source location, defaults to UCLH filestore}
+
+\item{to}{path to save file locally, defaults to package cache which is where omop_concept() looks for it}
 }
 \description{
 initially using UCLH temporary private filestore

@@ -2,9 +2,12 @@
 #'
 #' initially using UCLH temporary private filestore
 #'
-#' @param location url of file location, defaults to UCLH filestore
+#' @param from url of file source location, defaults to UCLH filestore
+#' @param to path to save file locally, defaults to package cache which is where omop_concept() looks for it
+#'
 #' @export
-omop_download <- function( location="https://omopes.blob.core.windows.net/newcontainer/") {
+omop_download <- function( from = "https://omopes.blob.core.windows.net/newcontainer/",
+                           to = tools::R_user_dir("omopcepts", which = "cache")) {
 
   options(timeout = 360)
 
@@ -21,7 +24,9 @@ omop_download <- function( location="https://omopes.blob.core.windows.net/newcon
   #dest_path <- tools::R_user_dir("omopcepts", which = "data")
   #[1] "C:\\Users\\andy.south\\AppData\\Roaming/R/data/R/omopcepts"
   #above didn't work, I thinbk because higher folder didn't exist
-  dest_path <- tools::R_user_dir("omopcepts", which = "cache")
+  #dest_path <- tools::R_user_dir("omopcepts", which = "cache")
+  dest_path <- to
+
   #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcepts"
 
   #FAILED before on DataScienceDesktop
@@ -34,7 +39,7 @@ omop_download <- function( location="https://omopes.blob.core.windows.net/newcon
   if (!dir.exists(dest_path)) {dir.create(dest_path, recursive=TRUE )}
 
   download <- function(f, mode) {
-    utils::download.file(paste0(location,f),
+    utils::download.file(paste0(from,f),
                   destfile = file.path(dest_path,f),
                   mode = mode)
   }
