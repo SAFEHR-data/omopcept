@@ -21,7 +21,7 @@ omop_codes <- function( findstring,
                            cc_ids=NULL,
                            standard=NULL) {
 
-  df1 <- omopcepts::open_concept() |>
+  df1 <- omopcepts::omop_concept() |>
 
     #TODO put negate back in if possible
 

@@ -1,14 +1,14 @@
 #' open a reference to omop concept file(s) from provided location
 #'
-#' initially using R user cache
+#' defaults to package cache used by omop_download()
 #'
 #' @param location url of file location, defaults to package cache
 #' @export
 #' @examples
-#' # open refernce, query and collect data to dataframe
-#' open_concept() |> head() |> dplyr::collect()
+#' # open reference, query and collect data to dataframe
+#' omop_concept() |> head() |> dplyr::collect()
 #'
-open_concept <- function(location = tools::R_user_dir("omopcepts", which = "cache")) {
+omop_concept <- function(location = tools::R_user_dir("omopcepts", which = "cache")) {
 
 
   filepath = file.path(location,"concept.parquet")

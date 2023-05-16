@@ -142,7 +142,7 @@ library(ggplot2)
 library(forcats)
 
 concept_summary <- 
-  open_concept() |>
+  omop_concept() |>
   count(vocabulary_id, sort=TRUE) |> 
   collect()
 

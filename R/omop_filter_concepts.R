@@ -12,11 +12,11 @@
 #' @return a filtered dataframe of concepts and attributes
 #' @export
 #' @examples
-#' open_concept() |>
+#' omop_concept() |>
 #'   omop_filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
 #'   dplyr::collect() |>
 #'   dplyr::count(domain_id,vocabulary_id)
-#' open_concept() |> omop_filter_concepts(v_ids="Gender") |> dplyr::collect()
+#' omop_concept() |> omop_filter_concepts(v_ids="Gender") |> dplyr::collect()
 
 omop_filter_concepts <- function(df,
                             c_ids=NULL,

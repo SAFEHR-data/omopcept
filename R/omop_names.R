@@ -25,7 +25,7 @@ omop_names <- function(#df1 = NULL,
   cc_ids=NULL,
   standard=NULL) {
 
-  df1 <- omopcepts::open_concept() |>
+  df1 <- omopcepts::omop_concept() |>
 
     #TODO put negate back in if possible
     #but get Error: filter expressions must be either an expression or a list of expressions
@@ -83,23 +83,23 @@ onames <- omop_names
 #list_compute_functions() gives list of C++ functions
 #C++ func doc : https://arrow.apache.org/docs/cpp/compute.html#available-functions
 #looking at the output without collect() shows the C++ code
-#open_concept() |> filter(str_detect(str_to_lower(concept_name),str_to_lower(stringvar)))
+#omop_concept() |> filter(str_detect(str_to_lower(concept_name),str_to_lower(stringvar)))
 #* Filter: match_substring_regex(utf8_lower(concept_name), {pattern="chemo", ignore_case=false})
 #For functions which don’t have a base R or tidyverse equivalent,
 #or you want to supply custom options, you can call them by prefixing their name with “arrow_”
 
 #but none of these work
-# open_concept() |> arrow_match_substring_regex(utf8_lower(concept_name), {pattern="chemo", ignore_case=false})
-# open_concept() |> filter(arrow_match_substring_regex(utf8_lower(concept_name), {pattern="chemo", ignore_case=false}))
-# open_concept() |> filter(arrow_match_substring_regex(utf8_lower(concept_name), {pattern=stringvar, ignore_case=false}))
-# open_concept() |> arrow_match_substring_regex(concept_name, {pattern="chemo"})
+# omop_concept() |> arrow_match_substring_regex(utf8_lower(concept_name), {pattern="chemo", ignore_case=false})
+# omop_concept() |> filter(arrow_match_substring_regex(utf8_lower(concept_name), {pattern="chemo", ignore_case=false}))
+# omop_concept() |> filter(arrow_match_substring_regex(utf8_lower(concept_name), {pattern=stringvar, ignore_case=false}))
+# omop_concept() |> arrow_match_substring_regex(concept_name, {pattern="chemo"})
 
 # #Hurrah! these do work
-# open_concept() |> filter(arrow_match_substring_regex(concept_name, options=list(pattern="chemo"))) |> collect()
-# open_concept() |> filter(arrow_match_substring_regex(concept_name, options=list(pattern=stringvar))) |> collect()
+# omop_concept() |> filter(arrow_match_substring_regex(concept_name, options=list(pattern="chemo"))) |> collect()
+# omop_concept() |> filter(arrow_match_substring_regex(concept_name, options=list(pattern=stringvar))) |> collect()
 # #can I get that to work in a function ?
 # #Hurrah2! Yes
-# concept_codes2 <- function(findstring){ open_concept() |> filter(arrow_match_substring_regex(concept_name, options=list(pattern=findstring))) |> collect() }
+# concept_codes2 <- function(findstring){ omop_concept() |> filter(arrow_match_substring_regex(concept_name, options=list(pattern=findstring))) |> collect() }
 # concept_codes2("chemo")
 
 # can register a scalar function within arrow

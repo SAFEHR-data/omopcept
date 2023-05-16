@@ -63,7 +63,7 @@ omopcepts downloads a selection of vocabularies and stores locally the first tim
 
 library(omopcepts)
 
-fieldnames <- open_concept() |> 
+fieldnames <- omop_concept() |> 
   head() |> 
   names()
 
@@ -117,7 +117,7 @@ library(ggplot2)
 library(forcats)
 
 concept_summary <- 
-  open_concept() |>
+  omop_concept() |>
   count(vocabulary_id, sort=TRUE) |> 
   collect()
 

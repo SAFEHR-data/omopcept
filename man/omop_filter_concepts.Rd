@@ -34,9 +34,9 @@ Works on a dataframe or an arrow object. Can filter by one or more of : concept_
 used by other functions
 }
 \examples{
-open_concept() |>
+omop_concept() |>
   omop_filter_concepts(d_ids=c("measurement","drug"),v_ids="SNOMED") |>
   dplyr::collect() |>
   dplyr::count(domain_id,vocabulary_id)
-open_concept() |> omop_filter_concepts(v_ids="Gender") |> dplyr::collect()
+omop_concept() |> omop_filter_concepts(v_ids="Gender") |> dplyr::collect()
 }
