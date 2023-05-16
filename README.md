@@ -7,8 +7,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopcept provides access to a subset of **OMOP** con**cepts** and
-flexible tidyverse compatible R functions for querying.
+omopcept provides access to a subset of **OMOP** con**CEPT**s (without
+the cons!) and flexible tidyverse compatible R functions for querying.
 
 On initial use it downloads a [parquet](https://parquet.apache.org/)
 file containing the concepts to a local package cache where it can be
