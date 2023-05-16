@@ -2,9 +2,12 @@
 % Please edit documentation in R/omop_concept.R
 \name{omop_concept}
 \alias{omop_concept}
+\alias{oc}
 \title{open a reference to omop concept file(s) from provided location}
 \usage{
 omop_concept(location = tools::R_user_dir("omopcept", which = "cache"))
+
+oc(location = tools::R_user_dir("omopcept", which = "cache"))
 }
 \arguments{
 \item{location}{url of file location, defaults to package cache}
@@ -16,4 +19,5 @@ defaults to package cache used by omop_download()
 # open reference, query and collect data to dataframe
 omop_concept() |> head() |> dplyr::collect()
 
+oc() |> head() |> dplyr::collect()
 }

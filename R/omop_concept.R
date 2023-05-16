@@ -19,3 +19,10 @@ omop_concept <- function(location = tools::R_user_dir("omopcept", which = "cache
   concept <- arrow::open_dataset(filepath)
 
 }
+
+#' super short name func to get reference to concept table
+#' @rdname omop_concept
+#' @export
+#' @examples
+#' oc() |> head() |> dplyr::collect()
+oc <- omop_concept

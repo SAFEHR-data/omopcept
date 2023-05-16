@@ -10,22 +10,6 @@
 omopcept provides access to a subset of **OMOP** con**CEPT**s (without
 the cons!) and flexible tidyverse compatible R functions for querying.
 
-On initial use it downloads a [parquet](https://parquet.apache.org/)
-file containing the concepts to a local package cache where it can be
-accessed in future sessions. On use it opens the file (with
-omop_concept()) but doesn’t read in all the data to save time. The
-[arrow R package](https://arrow.apache.org/docs/r/index.html) allows
-parquet files to be opened and queried in dplyr pipelines without having
-to read in all the data. e.g. the code below will return just the top
-rows of the concept table.
-
-``` r
-
-omop_concept() |> 
-  head() |> 
-  dplyr::collect()
-```
-
 ## Installation
 
 Install the development version of omopcept with:
@@ -36,16 +20,35 @@ Install the development version of omopcept with:
 remotes::install_github("andysouth/omopcept")
 ```
 
-## Main functions
+## Getting started with omopcept
 
-`omop_names() onames()` search concepts by parts of names
+On initial use omopcept downloads a
+[parquet](https://parquet.apache.org/) file containing the concepts to a
+local package cache where it can be accessed in future sessions. On use
+it opens the file (with omop_concept()) but doesn’t read in all the data
+to save time. The [arrow R
+package](https://arrow.apache.org/docs/r/index.html) allows parquet
+files to be opened and queried in dplyr pipelines without having to read
+in all the data. e.g. the code below will return just the top rows of
+the concept table.
 
-`omop_id() oid()` search for a concept_id
+``` r
 
-`omop_join_names()` join names onto a table with an id column
+library(omopcept)
 
-`omop_concept()` return reference to the concept table that can be used
-in dplyr pipelines
+omop_concept() |> 
+  head() |> 
+  dplyr::collect()
+```
+
+## Main omopcept functions
+
+| full name           | quick name | action                                                                    |
+|---------------------|------------|---------------------------------------------------------------------------|
+| `omop_names()`      | `onames()` | search concepts by parts of names                                         |
+| `omop_id()`         | `oid()`    | search for a concept_id                                                   |
+| `omop_join_names()` |            | join omop names onto a table with an id column                            |
+| `omop_concept()`    | `oc()`     | return reference to the concept table that can be used in dplyr pipelines |
 
 ## OMOP background
 
