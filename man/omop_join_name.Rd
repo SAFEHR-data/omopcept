@@ -2,14 +2,17 @@
 % Please edit documentation in R/omop_join_name.R
 \name{omop_join_name}
 \alias{omop_join_name}
+\alias{ojoin}
 \title{join omop concept name onto a dataframe with a *_concept_id column}
 \usage{
-omop_join_name(df, namestart = NULL)
+omop_join_name(df, namestart = "")
+
+ojoin(df, namestart = "")
 }
 \arguments{
 \item{df}{dataframe}
 
-\item{namestart}{start of *_concept_id column, if NULL will join on concept_name}
+\item{namestart}{start of *_concept_id column, if "" will join on concept_name}
 }
 \description{
 adds (namestart)_name based on (namestart)_concept_id
@@ -19,4 +22,5 @@ e.g. drug_concept_id to get drug_name
 data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
 #df2 <- drug_exposure \%>\% distinct(route_concept_id) \%>\% omop_join_name(route_concept_id)
+data.frame(drug_concept_id=(c(4000794L,4002592L))) |> ojoin(namestart="drug")
 }

@@ -55,7 +55,8 @@ omop_concept() |>
 | ------- | ------- | ---------------- |
 | `omop_names()` | `onames()` | search concepts by parts of names |
 | `omop_id()` | `oid()` | search for a concept_id |
-| `omop_join_names()` | | join omop names onto a table with an id column |
+| `omop_join_names()` | `ojoin()` | join an omop name column onto a table with an id column |
+| `omop_join_names_all()` | `ojoinall()` | join omop names columns onto all id columns in a table |
 | `omop_concept()` | `oc()` | return reference to the concept table that can be used in dplyr pipelines |
 
 

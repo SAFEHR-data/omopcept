@@ -4,16 +4,16 @@
 #' e.g. drug_concept_id to get drug_name
 #'
 #' @param df dataframe
-#' @param namestart start of *_concept_id column, if NULL will join on concept_name
+#' @param namestart start of *_concept_id column, if "" will join on concept_name
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 #' data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
 #' #df2 <- drug_exposure %>% distinct(route_concept_id) %>% omop_join_name(route_concept_id)
-omop_join_name <- function(df, namestart=NULL) {
+omop_join_name <- function(df, namestart="") {
 
   #"" is to cope with concept_id from omop_join_name_all()
-  if (is.null(namestart) | namestart == "") id_col_name <- "concept_id"
+  if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
   name_col_name <- sub("_id","_name",id_col_name)
@@ -30,6 +30,14 @@ omop_join_name <- function(df, namestart=NULL) {
     left_join(id_and_name, by = dynamic_by(id_col_name,"concept_id"), copy = TRUE)
 
 }
+
+
+#' super short name func to join concept_names on
+#' @rdname omop_join_name
+#' @export
+#' @examples
+#' data.frame(drug_concept_id=(c(4000794L,4002592L))) |> ojoin(namestart="drug")
+ojoin <- omop_join_name
 
 
 #' join omop concept names onto all *_concept_id columns in a dataframe
@@ -53,8 +61,8 @@ omop_join_name_all <- function(df) {
   colnames <- df |>
     select(ends_with("concept_id")) |>
     names() |>
-    str_remove("_concept_id") |>
-    str_remove("concept_id")    #to cope with 'concept_id' passes "" to omop_join_name()
+    stringr::str_remove("_concept_id") |>
+    stringr::str_remove("concept_id")    #to cope with 'concept_id' passes "" to omop_join_name()
 
   for(cname in colnames)
   {
@@ -64,3 +72,13 @@ omop_join_name_all <- function(df) {
 
   return(df)
 }
+
+#' super short name func to join all concept_names to a table
+#' @rdname omop_join_name_all
+#' @export
+#' @examples
+#' #TODO create an OMOP correct example where columns are consistent between rows
+#' data.frame(concept_id=(c(3571338L,4002075L)),
+#'            drug_concept_id=(c(4000794L,4002592L))) |>
+#'            ojoinall()
+ojoinall <- omop_join_name_all
