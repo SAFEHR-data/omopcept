@@ -25,7 +25,7 @@ omop_names <- function(#df1 = NULL,
   cc_ids=NULL,
   standard=NULL) {
 
-  df1 <- omopcepts::omop_concept() |>
+  df1 <- omopcept::omop_concept() |>
 
     #TODO put negate back in if possible
     #but get Error: filter expressions must be either an expression or a list of expressions

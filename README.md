@@ -2,12 +2,12 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- use devtools::build_readme() -->
 
-# omopcepts
+# omopcept
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopcepts provides access to a subset of **OMOP** con**cepts** and
+omopcept provides access to a subset of **OMOP** con**cepts** and
 flexible tidyverse compatible R functions for querying.
 
 On initial use it downloads a [parquet](https://parquet.apache.org/)
@@ -28,12 +28,12 @@ omop_concept() |>
 
 ## Installation
 
-Install the development version of omopcepts with:
+Install the development version of omopcept with:
 
 ``` r
 # install.packages("remotes")
 
-remotes::install_github("andysouth/omopcepts")
+remotes::install_github("andysouth/omopcept")
 ```
 
 ## Main functions
@@ -68,7 +68,7 @@ way.
 OMOP vocab data downloaded from Athena includes a table called
 CONCEPT.csv that we saved in parquet format for use in this package.
 
-omopcepts downloads a selection of vocabularies and stores locally the
+omopcept downloads a selection of vocabularies and stores locally the
 first time you use it.
 
 | fields           | about                               | query_arguments |

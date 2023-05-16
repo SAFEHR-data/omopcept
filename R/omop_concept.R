@@ -8,7 +8,7 @@
 #' # open reference, query and collect data to dataframe
 #' omop_concept() |> head() |> dplyr::collect()
 #'
-omop_concept <- function(location = tools::R_user_dir("omopcepts", which = "cache")) {
+omop_concept <- function(location = tools::R_user_dir("omopcept", which = "cache")) {
 
 
   filepath = file.path(location,"concept.parquet")

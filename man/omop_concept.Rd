@@ -4,7 +4,7 @@
 \alias{omop_concept}
 \title{open a reference to omop concept file(s) from provided location}
 \usage{
-omop_concept(location = tools::R_user_dir("omopcepts", which = "cache"))
+omop_concept(location = tools::R_user_dir("omopcept", which = "cache"))
 }
 \arguments{
 \item{location}{url of file location, defaults to package cache}

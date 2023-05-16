@@ -6,7 +6,7 @@
 \usage{
 omop_download(
   from = "https://omopes.blob.core.windows.net/newcontainer/",
-  to = tools::R_user_dir("omopcepts", which = "cache")
+  to = tools::R_user_dir("omopcept", which = "cache")
 )
 }
 \arguments{

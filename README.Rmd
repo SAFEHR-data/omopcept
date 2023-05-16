@@ -16,12 +16,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-# omopcepts
+# omopcept
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopcepts provides access to a subset of **OMOP** con**cepts** and flexible tidyverse compatible R functions for querying.    
+omopcept provides access to a subset of **OMOP** con**cepts** and flexible tidyverse compatible R functions for querying.    
      
 On initial use it downloads a [parquet](https://parquet.apache.org/) file containing the concepts to a local package cache where it can be accessed in future sessions. On use it opens the file (with omop_concept()) but doesn't read in all the data to save time. The [arrow R package](https://arrow.apache.org/docs/r/index.html) allows parquet files to be opened and queried in dplyr pipelines without having to read in all the data.  e.g. the code below will return just the top rows of the concept table.    
 
@@ -35,12 +35,12 @@ omop_concept() |>
 
 ## Installation
 
-Install the development version of omopcepts with:
+Install the development version of omopcept with:
 
 ``` r
 # install.packages("remotes")
 
-remotes::install_github("andysouth/omopcepts")
+remotes::install_github("andysouth/omopcept")
 
 ```
 
@@ -65,12 +65,12 @@ OMOP concepts can be searched and downloaded from [Athena – the  OHDSI vocabul
 
 OMOP vocab data downloaded from Athena includes a table called CONCEPT.csv that we saved in parquet format for use in this package.     
      
-omopcepts downloads a selection of vocabularies and stores locally the first time you use it.
+omopcept downloads a selection of vocabularies and stores locally the first time you use it.
 
 
 ```{r concept table, echo=FALSE}
 
-library(omopcepts)
+library(omopcept)
 
 fieldnames <- omop_concept() |> 
   head() |> 

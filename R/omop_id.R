@@ -8,7 +8,7 @@
 #'
 omop_id <- function(c_id) {
 
-  df1 <- omopcepts::omop_concept() |>
+  df1 <- omopcept::omop_concept() |>
 
     # using str_detect means user could supply substring
     #?? Error: Filter expression not supported for Arrow Datasets

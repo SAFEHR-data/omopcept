@@ -7,7 +7,7 @@
 #'
 #' @export
 omop_download <- function( from = "https://omopes.blob.core.windows.net/newcontainer/",
-                           to = tools::R_user_dir("omopcepts", which = "cache")) {
+                           to = tools::R_user_dir("omopcept", which = "cache")) {
 
   options(timeout = 360)
 
@@ -21,17 +21,17 @@ omop_download <- function( from = "https://omopes.blob.core.windows.net/newconta
   # form of storing package data.
   # The primary function you should use to derive acceptable locations for user data is tools::R_user_dir()
 
-  #dest_path <- tools::R_user_dir("omopcepts", which = "data")
-  #[1] "C:\\Users\\andy.south\\AppData\\Roaming/R/data/R/omopcepts"
+  #dest_path <- tools::R_user_dir("omopcept", which = "data")
+  #[1] "C:\\Users\\andy.south\\AppData\\Roaming/R/data/R/omopcept"
   #above didn't work, I thinbk because higher folder didn't exist
-  #dest_path <- tools::R_user_dir("omopcepts", which = "cache")
+  #dest_path <- tools::R_user_dir("omopcept", which = "cache")
   dest_path <- to
 
-  #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcepts"
+  #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcept"
 
   #FAILED before on DataScienceDesktop
   #In dir.create(dest_path) :
-  #  cannot create dir 'F:\UserProfiles\andsouth\AppData\Local\R\cache\R\omopcepts', reason 'No such file or directory'
+  #  cannot create dir 'F:\UserProfiles\andsouth\AppData\Local\R\cache\R\omopcept', reason 'No such file or directory'
   #have to go up quite a few levels to find one that does work
   #dir.exists("F:\\UserProfiles\\andsouth\\AppData\\Local/") [1] TRUE
 
