@@ -10,21 +10,21 @@
 omopcepts provides access to a subset of **OMOP** con**cepts** and
 flexible tidyverse compatible R functions for querying.
 
-The [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/)
-is an open standard for health data. “\[It is\] designed to standardize
-the structure and content of observational data and to enable efficient
-analyses that can produce reliable evidence”.
+On initial use it downloads a [parquet](https://parquet.apache.org/)
+file containing the concepts to a local package cache where it can be
+accessed in future sessions. On use it opens the file (with
+omop_concept()) but doesn’t read in all the data to save time. The
+[arrow R package](https://arrow.apache.org/docs/r/index.html) allows
+parquet files to be opened and queried in dplyr pipelines without having
+to read in all the data. e.g. the code below will return just the top
+rows of the concept table.
 
-OMOP is maintained by OHDSI (pronounced “Odyssey”). “The Observational
-Health Data Sciences and Informatics program is a multi-stakeholder,
-interdisciplinary collaborative that strives to improve medical decision
-making and bring better health outcomes to patients around the world.”
+``` r
 
-OMOP concepts can be searched and downloaded from [Athena – the OHDSI
-vocabularies repository](https://athena.ohdsi.org).
-
-This package provides R tools to interact with the concepts in a more
-reproducible way.
+omop_concept() |> 
+  head() |> 
+  dplyr::collect()
+```
 
 ## Installation
 
@@ -44,10 +44,29 @@ remotes::install_github("andysouth/omopcepts")
 
 `omop_join_names()` join names onto a table with an id column
 
+`omop_concept()` return reference to the concept table that can be used
+in dplyr pipelines
+
+## OMOP background
+
+The [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/)
+is an open standard for health data. “\[It is\] designed to standardize
+the structure and content of observational data and to enable efficient
+analyses that can produce reliable evidence”.
+
+OMOP is maintained by OHDSI (pronounced “Odyssey”). “The Observational
+Health Data Sciences and Informatics program is a multi-stakeholder,
+interdisciplinary collaborative that strives to improve medical decision
+making and bring better health outcomes to patients around the world.”  
+OMOP concepts can be searched and downloaded from [Athena – the OHDSI
+vocabularies repository](https://athena.ohdsi.org). This package
+provides R tools to interact with the concepts in a more reproducible
+way.
+
 ## Concept data
 
 OMOP vocab data downloaded from Athena includes a table called
-CONCEPT.csv that is used in this package.
+CONCEPT.csv that we saved in parquet format for use in this package.
 
 omopcepts downloads a selection of vocabularies and stores locally the
 first time you use it.
