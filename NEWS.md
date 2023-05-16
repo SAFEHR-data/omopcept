@@ -1,6 +1,7 @@
 
 # omopcept 0.0.0.9003 dev
 
+* added omop_join_name_all()
 
 # omopcept 0.0.0.9002 2023-05-15
 
