@@ -43,13 +43,13 @@ omop_concept() |>
 
 ## Main omopcept functions
 
-| full name               | quick name   | action                                                                    |
-|-------------------------|--------------|---------------------------------------------------------------------------|
-| `omop_names()`          | `onames()`   | search concepts by parts of names                                         |
-| `omop_id()`             | `oid()`      | search for a concept_id                                                   |
-| `omop_join_names()`     | `ojoin()`    | join an omop name column onto a table with an id column                   |
-| `omop_join_names_all()` | `ojoinall()` | join omop names columns onto all id columns in a table                    |
-| `omop_concept()`        | `oc()`       | return reference to the concept table that can be used in dplyr pipelines |
+| full name              | quick name   | action                                                                    |
+|------------------------|--------------|---------------------------------------------------------------------------|
+| `omop_names()`         | `onames()`   | search concepts by parts of names                                         |
+| `omop_id()`            | `oid()`      | search for a concept_id                                                   |
+| `omop_join_name()`     | `ojoin()`    | join an omop name column onto a table with an id column                   |
+| `omop_join_name_all()` | `ojoinall()` | join omop names columns onto all id columns in a table                    |
+| `omop_concept()`       | `oc()`       | return reference to the concept table that can be used in dplyr pipelines |
 
 ## OMOP background
 
