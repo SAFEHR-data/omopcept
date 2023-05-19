@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-omopcept provides access to a subset of **OMOP** con**CEPT**s (without the cons!) and flexible tidyverse compatible R functions for querying.    
+omopcept provides access to a subset of **OMOP** con**CEPT**s (without the cons!) and flexible tidyverse compatible R functions for querying. It includes concise named copies of functions designed for interactive use e.g. `oid()` and `onames()` to search concept ids and names respectively.     
   
 ## Installation
 
@@ -51,7 +51,7 @@ omop_concept() |>
 
 ## Main omopcept functions
 
-| full name | quick name | action  |
+| full name | quick interactive name | action  |
 | ------- | ------- | ---------------- |
 | `omop_names()` | `onames()` | search concepts by parts of names |
 | `omop_id()` | `oid()` | search for a concept_id |
