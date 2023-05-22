@@ -26,7 +26,7 @@ onames(
 )
 }
 \arguments{
-\item{findstring}{to search for or regex}
+\item{findstring}{to search for or regex, e.g. "^a" to find those starting with A}
 
 \item{ignore_case}{ignore case in string comparison, default TRUE}
 
@@ -50,4 +50,8 @@ omop_names("AJCC/UICC Stage")
 omop_names("chemotherapy", v_ids="LOINC")
 omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 onames("chemotherapy", v_ids="LOINC")
+# because of R argument matching, you can just use the first unique letters of
+# arguments e.g. v for v_ids, cc for cc_ids
+# to get all clinical drugs starting with A
+onames("^a",d="DRUG",v="SNOMED",cc="Clinical Drug")
 }

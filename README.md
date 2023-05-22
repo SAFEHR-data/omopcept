@@ -11,7 +11,10 @@ omopcept provides access to a subset of **OMOP** con**CEPT**s (without
 the cons!) and flexible tidyverse compatible R functions for querying.
 It includes concise named copies of functions designed for interactive
 use e.g. `oid()` and `onames()` to search concept ids and names
-respectively.
+respectively. For example the line below can be used to return all \~
+1000 OMOP ids for SNOMED codes for clinical drugs starting with A.
+
+    onames("^a",d="DRUG",v="SNOMED",cc="Clinical Drug")
 
 ## Installation
 

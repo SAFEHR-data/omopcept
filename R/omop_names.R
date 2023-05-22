@@ -1,7 +1,7 @@
 #' string search of concept_name in omop concepts table
 #'
 # @param df1 dataframe containing concept_name field, if null uses concept
-#' @param findstring to search for or regex
+#' @param findstring to search for or regex, e.g. "^a" to find those starting with A
 #' @param ignore_case ignore case in string comparison, default TRUE
 # @param negate If TRUE, return non-matching elements, default FALSE
 #' @param c_ids one or more concept_id to filter by, default NULL for all
@@ -67,6 +67,10 @@ omop_names <- function(#df1 = NULL,
 #' @export
 #' @examples
 #' onames("chemotherapy", v_ids="LOINC")
+#' # because of R argument matching, you can just use the first unique letters of
+#' # arguments e.g. v for v_ids, cc for cc_ids
+#' # to get all clinical drugs starting with A
+#' onames("^a",d="DRUG",v="SNOMED",cc="Clinical Drug")
 onames <- omop_names
 
 
