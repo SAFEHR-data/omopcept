@@ -14,6 +14,9 @@
 #' omop_names("AJCC/UICC Stage")
 #' omop_names("chemotherapy", v_ids="LOINC")
 #' omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+#' #set the findstring to "" to get all rows satisfying the other conditions
+#' omop_names("", v_ids="Gender")
+#' #omop_names("", d_ids="Type Concept", standard="S")
 
 omop_names <- function(#df1 = NULL,
   findstring,

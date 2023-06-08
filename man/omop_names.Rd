@@ -49,6 +49,9 @@ super short name func to search concepts by concept_name
 omop_names("AJCC/UICC Stage")
 omop_names("chemotherapy", v_ids="LOINC")
 omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+#set the findstring to "" to get all rows satisfying the other conditions
+omop_names("", v_ids="Gender")
+#omop_names("", d_ids="Type Concept", standard="S")
 onames("chemotherapy", v_ids="LOINC")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
