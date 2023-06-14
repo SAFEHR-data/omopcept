@@ -5,11 +5,14 @@
 \title{download omop concept file(s) from provided location}
 \usage{
 omop_download(
+  tablename = "concept",
   from = "https://omopes.blob.core.windows.net/newcontainer/",
   to = tools::R_user_dir("omopcept", which = "cache")
 )
 }
 \arguments{
+\item{tablename}{which omop table to download, defaults to 'concept'}
+
 \item{from}{url of file source location, defaults to UCLH filestore}
 
 \item{to}{path to save file locally, defaults to package cache which is where omop_concept() looks for it}
