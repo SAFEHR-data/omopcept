@@ -1,4 +1,4 @@
-#' open a reference to omop concept file(s) from provided location
+#' open a reference to omop concept ancestor file from provided location
 #'
 #' defaults to package cache used by omop_download()
 #'
@@ -6,23 +6,23 @@
 #' @export
 #' @examples
 #' # open reference, query and collect data to dataframe
-#' omop_concept() |> head() |> dplyr::collect()
+#' omop_concept_ancestor() |> head() |> dplyr::collect()
 #'
-omop_concept <- function(location = tools::R_user_dir("omopcept", which = "cache")) {
+omop_concept_ancestor <- function(location = tools::R_user_dir("omopcept", which = "cache")) {
 
 
-  filepath = file.path(location,"concept.parquet")
+  filepath = file.path(location,"concept_ancestor.parquet")
 
-  if(!file.exists(filepath)) omop_download()
+  if(!file.exists(filepath)) omop_download("concept_ancestor")
 
   #just creates reference to the data
-  concept <- arrow::open_dataset(filepath)
+  concept_ancestor <- arrow::open_dataset(filepath)
 
 }
 
 #' super short name func to get reference to concept table
-#' @rdname omop_concept
+#' @rdname omop_concept_ancestor
 #' @export
 #' @examples
-#' oc() |> head() |> dplyr::collect()
-oc <- omop_concept
+#' oca() |> head() |> dplyr::collect()
+oca <- omop_concept_ancestor
