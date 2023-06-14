@@ -42,7 +42,7 @@ a dataframe of concepts and attributes
 \description{
 find omop concept descendants of one passed
 
-super short name func to search concepts by concept_name
+super short name func to find descendants
 }
 \examples{
 omop_descendants(1633308)

@@ -9,6 +9,7 @@
 #' @return a dataframe of concepts and attributes
 #' @examples
 #' omop_ancestors(1633308)
+#' epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
 omop_ancestors <- function(c_id,
                               c_ids=NULL,
                               d_ids=NULL,
@@ -52,3 +53,12 @@ omop_ancestors <- function(c_id,
   return(df)
 
 }
+
+#' super short name func to find ancestors
+#' @rdname omop_ancestors
+#' @export
+#' @examples
+#' # because of R argument matching, you can just use the first unique letters of
+#' # arguments e.g. v for v_ids, cc for cc_ids
+#' chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
+oance <- omop_ancestors

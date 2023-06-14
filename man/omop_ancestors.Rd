@@ -2,9 +2,19 @@
 % Please edit documentation in R/omop_ancestors.R
 \name{omop_ancestors}
 \alias{omop_ancestors}
+\alias{oance}
 \title{find omop concept ancestors of one passed}
 \usage{
 omop_ancestors(
+  c_id,
+  c_ids = NULL,
+  d_ids = NULL,
+  v_ids = NULL,
+  cc_ids = NULL,
+  standard = NULL
+)
+
+oance(
   c_id,
   c_ids = NULL,
   d_ids = NULL,
@@ -31,7 +41,13 @@ a dataframe of concepts and attributes
 }
 \description{
 find omop concept ancestors of one passed
+
+super short name func to find ancestors
 }
 \examples{
 omop_ancestors(1633308)
+epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
+# because of R argument matching, you can just use the first unique letters of
+# arguments e.g. v for v_ids, cc for cc_ids
+chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
 }
