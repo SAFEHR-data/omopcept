@@ -43,7 +43,7 @@ omop_ancestors <- function(c_id,
   }
 
 
-  message("querying concept ancestors of: ",name1," - may take a few seconds")
+  if (messages) message("querying concept ancestors of: ",name1," - may take a few seconds")
 
   df1 <- omopcept::omop_concept_ancestor() |>
     filter(descendant_concept_id == c_id) |>
