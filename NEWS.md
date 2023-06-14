@@ -1,5 +1,9 @@
 
-# omopcept 0.0.0.9003 dev
+# omopcept 0.0.0.9004 dev
+
+* ...
+
+# omopcept 0.0.0.9003 2023-06-14
 
 * **omop_join_name_all()**
 * added shortname copies of functions for interactive use **ojoin() ojoinall()**
