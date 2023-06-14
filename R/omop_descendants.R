@@ -12,6 +12,7 @@
 #' @examples
 #' omop_descendants(1633308)
 #' omop_descendants("lenalidomide")
+#' omop_descendants("Non-invasive blood pressure")
 #' #chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 omop_descendants <- function(c_id,
                                 c_ids=NULL,

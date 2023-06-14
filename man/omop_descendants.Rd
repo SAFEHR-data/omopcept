@@ -51,6 +51,7 @@ super short name func to find descendants
 \examples{
 omop_descendants(1633308)
 omop_descendants("lenalidomide")
+omop_descendants("Non-invasive blood pressure")
 #chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids

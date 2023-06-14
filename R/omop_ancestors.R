@@ -11,6 +11,7 @@
 #' @export
 #' @examples
 #' omop_ancestors(1633308)
+#' omop_ancestors("Non-invasive blood pressure")
 #' epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
 omop_ancestors <- function(c_id,
                               c_ids=NULL,

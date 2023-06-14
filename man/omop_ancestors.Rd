@@ -50,6 +50,7 @@ super short name func to find ancestors
 }
 \examples{
 omop_ancestors(1633308)
+omop_ancestors("Non-invasive blood pressure")
 epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
