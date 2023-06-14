@@ -11,7 +11,8 @@ omop_descendants(
   d_ids = NULL,
   v_ids = NULL,
   cc_ids = NULL,
-  standard = NULL
+  standard = NULL,
+  messages = TRUE
 )
 
 odesc(
@@ -20,7 +21,8 @@ odesc(
   d_ids = NULL,
   v_ids = NULL,
   cc_ids = NULL,
-  standard = NULL
+  standard = NULL,
+  messages = TRUE
 )
 }
 \arguments{
@@ -35,6 +37,8 @@ odesc(
 \item{cc_ids}{one or more concept_class_id to filter by, default NULL for all}
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
+
+\item{messages}{whether to print info messages, default=TRUE}
 }
 \value{
 a dataframe of concepts and attributes

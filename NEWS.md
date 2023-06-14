@@ -7,6 +7,7 @@
 * **omop_descendants()** function to query omop hierarchy
 * **omop_ancestors()**
 * shortname function copies of above. **odesc()** and **oance()**
+* added optional **messages** argument to query functions
 
 # omopcept 0.0.0.9002 2023-05-15
 

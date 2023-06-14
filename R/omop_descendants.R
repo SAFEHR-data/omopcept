@@ -6,7 +6,9 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
+#' @export
 #' @examples
 #' omop_descendants(1633308)
 #' omop_descendants("lenalidomide")
@@ -16,7 +18,8 @@ omop_descendants <- function(c_id,
                                 d_ids=NULL,
                                 v_ids=NULL,
                                 cc_ids=NULL,
-                                standard=NULL) {
+                                standard=NULL,
+                                messages=TRUE) {
 
   #if arg is char assume it is exact name & lookup id
 
@@ -38,9 +41,9 @@ omop_descendants <- function(c_id,
       pull(concept_name, as_vector=TRUE)
   }
 
-  message("querying concept descendants of: ",name1," - may take a few seconds")
+  if (messages) message("querying concept descendants of: ",name1," - may take a few seconds")
 
-  df <- omopcept::omop_concept_ancestor() |>
+  df1 <- omopcept::omop_concept_ancestor() |>
     filter(ancestor_concept_id == c_id) |>
     #renaming allows further filter of concept_id, may not be necessary
     rename(concept_id = descendant_concept_id) |>
@@ -50,7 +53,9 @@ omop_descendants <- function(c_id,
     mutate(ancestor_name = name1) |>
     collect()
 
-  return(df)
+  if (messages) message("returning ",nrow(df1)," concepts")
+
+  return(df1)
 
 }
 

@@ -6,7 +6,9 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
+#' @export
 #' @examples
 #' omop_ancestors(1633308)
 #' epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
@@ -15,7 +17,9 @@ omop_ancestors <- function(c_id,
                               d_ids=NULL,
                               v_ids=NULL,
                               cc_ids=NULL,
-                              standard=NULL) {
+                              standard=NULL,
+                              messages=TRUE
+                           ) {
 
 
   #if arg is char assume it is exact name & lookup id
@@ -41,7 +45,7 @@ omop_ancestors <- function(c_id,
 
   message("querying concept ancestors of: ",name1," - may take a few seconds")
 
-  df <- omopcept::omop_concept_ancestor() |>
+  df1 <- omopcept::omop_concept_ancestor() |>
     filter(descendant_concept_id == c_id) |>
     #renaming allows further filter of concept_id, may not be necessary
     rename(concept_id = ancestor_concept_id) |>
@@ -50,7 +54,9 @@ omop_ancestors <- function(c_id,
     mutate(descendant_name = name1) |>
     collect()
 
-  return(df)
+  if (messages) message("returning ",nrow(df1)," concepts")
+
+  return(df1)
 
 }
 

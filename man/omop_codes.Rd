@@ -12,7 +12,8 @@ omop_codes(
   d_ids = NULL,
   v_ids = NULL,
   cc_ids = NULL,
-  standard = NULL
+  standard = NULL,
+  messages = TRUE
 )
 
 ocodes(
@@ -22,7 +23,8 @@ ocodes(
   d_ids = NULL,
   v_ids = NULL,
   cc_ids = NULL,
-  standard = NULL
+  standard = NULL,
+  messages = TRUE
 )
 }
 \arguments{
@@ -39,6 +41,8 @@ ocodes(
 \item{cc_ids}{one or more concept_class_id to filter by, default NULL for all}
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
+
+\item{messages}{whether to print info messages, default=TRUE}
 }
 \description{
 string search of concept_code in omop concepts table

@@ -8,6 +8,7 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @param messages whether to print info messages, default=TRUE
 #' @export
 #' @examples
 #' omop_codes("AJCC/UICC-Stage")
@@ -19,7 +20,8 @@ omop_codes <- function( findstring,
                            d_ids=NULL,
                            v_ids=NULL,
                            cc_ids=NULL,
-                           standard=NULL) {
+                           standard=NULL,
+                           messages=TRUE) {
 
   df1 <- omopcept::omop_concept() |>
 
@@ -38,6 +40,7 @@ omop_codes <- function( findstring,
     #Call collect() first to pull data into R.
     #filter(stringr::str_detect(.data$concept_code, stringr::regex(, ignore_case=ignore_case), negate=negate)) |>
 
+  if (messages) message("returning ",nrow(df1)," concepts")
 
   return(df1)
 

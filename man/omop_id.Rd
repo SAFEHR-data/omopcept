@@ -5,12 +5,14 @@
 \alias{oid}
 \title{query a concept record by concept_id from omop concepts table}
 \usage{
-omop_id(c_id)
+omop_id(c_id, messages = TRUE)
 
-oid(c_id)
+oid(c_id, messages = TRUE)
 }
 \arguments{
 \item{c_id}{one concept_id to filter by}
+
+\item{messages}{whether to print info messages, default=TRUE}
 }
 \description{
 query a concept record by concept_id from omop concepts table
