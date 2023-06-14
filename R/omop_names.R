@@ -39,13 +39,17 @@ omop_names <- function(#df1 = NULL,
                                        options=list(pattern=findstring,
                                                     ignore_case=ignore_case))) |>
 
-    #hmmmmm this was working then suddenly stopped
-    #now: Error: Filter expression not supported for Arrow Datasets
+    #hmmmmm collect() after omop_filter_concepts() was working then suddenly stopped
+    #gave: Error: Filter expression not supported for Arrow Datasets
+    #was much slower when collect() was earlier
+    #2023-6 mysterioulsy working again with collect() later
+    #e.g. this works omop_names("",v="gender")
 
-    collect() |>
     #cool this is pretty fast running these filters after collect
     #probably the case as long as above filter produces reasonably small table
-    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) #|>
+    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
+
+    collect()
     #filter(str_detect(concept_name, regex(findstring, ignore_case=ignore_case))) |>
 
     #filter(grepl(findstring,.data$concept_name, ignore.case=ignore_case))
