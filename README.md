@@ -31,12 +31,12 @@ remotes::install_github("andysouth/omopcept")
 On initial use omopcept downloads a
 [parquet](https://parquet.apache.org/) file containing the concepts to a
 local package cache where it can be accessed in future sessions. On use
-it opens the file (with omop_concept()) but doesn’t read in all the data
-to save time. The [arrow R
+it opens the file (with omop_concept()) but doesn’t read in the data to
+save time. The [arrow R
 package](https://arrow.apache.org/docs/r/index.html) allows parquet
 files to be opened and queried in dplyr pipelines without having to read
-in all the data. e.g. the code below will return just the top rows of
-the concept table.
+in the data. e.g. the code below will return just the top rows of the
+concept table.
 
 ``` r
 
@@ -49,13 +49,17 @@ omop_concept() |>
 
 ## Main omopcept functions
 
-| full name              | quick interactive name | action                                                                    |
-|------------------------|------------------------|---------------------------------------------------------------------------|
-| `omop_names()`         | `onames()`             | search concepts by parts of names                                         |
-| `omop_id()`            | `oid()`                | search for a concept_id                                                   |
-| `omop_join_name()`     | `ojoin()`              | join an omop name column onto a table with an id column                   |
-| `omop_join_name_all()` | `ojoinall()`           | join omop names columns onto all id columns in a table                    |
-| `omop_concept()`       | `oc()`                 | return reference to the concept table that can be used in dplyr pipelines |
+| full name                 | quick interactive name | action                                                         |
+|---------------------------|------------------------|----------------------------------------------------------------|
+| `omop_names()`            | `onames()`             | search concepts by parts of names                              |
+| `omop_id()`               | `oid()`                | search for a concept_id                                        |
+| `omop_join_name()`        | `ojoin()`              | join an omop name column onto a table with an id column        |
+| `omop_join_name_all()`    | `ojoinall()`           | join omop names columns onto all id columns in a table         |
+| `omop_ancestors()`        | `oance()`              | return ancestors of a concept                                  |
+| `omop_descendants()`      | `odesc()`              | return descendants of a concept                                |
+|                           |                        |                                                                |
+| `omop_concept()`          | `oc()`                 | return reference to concept table (for use in dplyr pipelines) |
+| `omop_concept_ancestor()` | `oca()`                | return reference to concept ancestor table                     |
 
 ## OMOP background
 
@@ -75,8 +79,9 @@ way.
 
 ## Concept data
 
-OMOP vocab data downloaded from Athena includes a table called
-CONCEPT.csv that we saved in parquet format for use in this package.
+OMOP vocab data downloaded from Athena includes a tables called
+CONCEPT.csv and CONCEPT_ANCESTOR.csv that we saved in parquet format for
+use in this package.
 
 omopcept downloads a selection of vocabularies and stores locally the
 first time you use it.
