@@ -55,6 +55,7 @@ omop_concept() |>
 | `omop_id()`               | `oid()`                | search for a concept_id                                        |
 | `omop_join_name()`        | `ojoin()`              | join an omop name column onto a table with an id column        |
 | `omop_join_name_all()`    | `ojoinall()`           | join omop names columns onto all id columns in a table         |
+|                           |                        |                                                                |
 | `omop_ancestors()`        | `oance()`              | return ancestors of a concept                                  |
 | `omop_descendants()`      | `odesc()`              | return descendants of a concept                                |
 |                           |                        |                                                                |
