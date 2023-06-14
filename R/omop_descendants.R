@@ -10,7 +10,7 @@
 #' @examples
 #' omop_descendants(1633308)
 #' omop_descendants("lenalidomide")
-#' #chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic")
+#' #chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 omop_descendants <- function(c_id,
                                 c_ids=NULL,
                                 d_ids=NULL,
@@ -53,3 +53,13 @@ omop_descendants <- function(c_id,
   return(df)
 
 }
+
+
+#' super short name func to find descendants
+#' @rdname omop_descendants
+#' @export
+#' @examples
+#' # because of R argument matching, you can just use the first unique letters of
+#' # arguments e.g. v for v_ids, cc for cc_ids
+#' chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
+odesc <- omop_descendants

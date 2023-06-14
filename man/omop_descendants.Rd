@@ -2,9 +2,19 @@
 % Please edit documentation in R/omop_descendants.R
 \name{omop_descendants}
 \alias{omop_descendants}
+\alias{odesc}
 \title{find omop concept descendants of one passed}
 \usage{
 omop_descendants(
+  c_id,
+  c_ids = NULL,
+  d_ids = NULL,
+  v_ids = NULL,
+  cc_ids = NULL,
+  standard = NULL
+)
+
+odesc(
   c_id,
   c_ids = NULL,
   d_ids = NULL,
@@ -31,9 +41,14 @@ a dataframe of concepts and attributes
 }
 \description{
 find omop concept descendants of one passed
+
+super short name func to search concepts by concept_name
 }
 \examples{
 omop_descendants(1633308)
 omop_descendants("lenalidomide")
-#chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic")
+#chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
+# because of R argument matching, you can just use the first unique letters of
+# arguments e.g. v for v_ids, cc for cc_ids
+chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
 }
