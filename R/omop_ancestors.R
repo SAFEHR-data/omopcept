@@ -25,14 +25,6 @@ omop_ancestors <- function(c_id,
 
   #if arg is char assume it is exact name & lookup id
 
-  #TODO protect against
-  # c_id giving 0 ancestors
-  # c_id giving >1 ancestor
-  # put next bit into a function shared bw omop_ancestors() & omop_descendants()
-
-  #e.g. this fails because omop_names("Cytotoxic agent") is not unique
-  #chemo_sno <- omop_descendants("Cytotoxic agent")
-
   if (class(c_id)=="character")
   {
     name1 <- c_id
@@ -43,6 +35,20 @@ omop_ancestors <- function(c_id,
       pull(concept_name, as_vector=TRUE)
   }
 
+  #TODO protect against
+  # c_id giving 0 ancestors
+  # c_id giving >1 ancestor
+  # put next bit into a function shared bw omop_ancestors() & omop_descendants()
+
+  #e.g. this fails because omop_names("Cytotoxic agent") is not unique
+  #chemo_sno <- omop_descendants("Cytotoxic agent")
+
+  if (length(c_id) != 1)
+  {
+    msg <- paste0("will only find descendants of a single concept, you have ",length(c_id),
+                  ". Please modify your query to get a single starting concept.")
+    stop(msg)
+  }
 
   if (messages) message("querying concept ancestors of: ",name1," - may take a few seconds")
 

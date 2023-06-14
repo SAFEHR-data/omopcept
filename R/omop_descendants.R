@@ -23,6 +23,15 @@ omop_descendants <- function(c_id,
                                 messages=TRUE) {
 
   #if arg is char assume it is exact name & lookup id
+  if (class(c_id)=="character")
+  {
+    name1 <- c_id
+    c_id <- filter(omopcept::omop_concept(), concept_name == c_id) |>
+      pull(concept_id, as_vector=TRUE)
+  } else {
+    name1 <- filter(omopcept::omop_concept(), concept_id == c_id) |>
+      pull(concept_name, as_vector=TRUE)
+  }
 
   #TODO protect against
   # c_id giving 0 ancestors
@@ -32,14 +41,11 @@ omop_descendants <- function(c_id,
   #e.g. this fails because omop_names("Cytotoxic agent") is not unique
   #chemo_sno <- omop_descendants("Cytotoxic agent")
 
-  if (class(c_id)=="character")
+  if (length(c_id) != 1)
   {
-    name1 <- c_id
-    c_id <- filter(omopcept::omop_concept(), concept_name == c_id) |>
-      pull(concept_id, as_vector=TRUE)
-  } else {
-    name1 <- filter(omopcept::omop_concept(), concept_id == c_id) |>
-      pull(concept_name, as_vector=TRUE)
+    msg <- paste0("will only find descendants of a single concept, you have ",length(c_id),
+                 ". Please modify your query to get a single starting concept.")
+    stop(msg)
   }
 
   if (messages) message("querying concept descendants of: ",name1," - may take a few seconds")
