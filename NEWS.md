@@ -4,7 +4,7 @@
 * added omop_join_name_all()
 * added shortname copies of functions for interactive use ojoin() ojoinall()
 * generalised omop_download() to get other omop tables
-
+* added omop_descendants() function to query omop hierarchy
 
 # omopcept 0.0.0.9002 2023-05-15
 
