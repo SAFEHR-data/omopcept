@@ -12,6 +12,7 @@ omop_descendants(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
+  itself = FALSE,
   messages = TRUE
 )
 
@@ -22,6 +23,7 @@ odesc(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
+  itself = FALSE,
   messages = TRUE
 )
 }
@@ -37,6 +39,8 @@ odesc(
 \item{cc_ids}{one or more concept_class_id to filter by, default NULL for all}
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
+
+\item{itself}{whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }

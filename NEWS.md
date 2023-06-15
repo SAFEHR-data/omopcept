@@ -1,7 +1,10 @@
 
 # omopcept 0.0.0.9004 dev
 
+* added optional `itself` argument (default FALSE) to `omop_descendants()` and `omop_ancestors()`
 * ...
+
+
 
 # omopcept 0.0.0.9003 2023-06-14
 

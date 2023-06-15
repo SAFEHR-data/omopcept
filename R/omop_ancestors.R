@@ -6,6 +6,7 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @param itself whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE
 #' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
@@ -19,6 +20,7 @@ omop_ancestors <- function(c_id,
                               v_ids=NULL,
                               cc_ids=NULL,
                               standard=NULL,
+                              itself=FALSE,
                               messages=TRUE
                            ) {
 
@@ -60,6 +62,8 @@ omop_ancestors <- function(c_id,
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
     mutate(descendant_name = name1) |>
     collect()
+
+  if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
 
   if (messages) message("returning ",nrow(df1)," concepts")
 
