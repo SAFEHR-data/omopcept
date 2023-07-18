@@ -49,9 +49,12 @@ ojoin <- omop_join_name
 #' @return dataframe based on input df with 1 extra column added for each concept_id column
 #' @export
 #' @examples
-#' data.frame(route_concept_id=(c(4132161L,	4171047L)),
-#'            drug_concept_id=(c(1550560L,	35780880L))) |>
+#' data.frame(concept_id=(c(3571338L,3655355L)),
+#'            drug_concept_id=(c(4000794L,35628998L))) |>
 #'            omop_join_name_all()
+#' #data.frame(route_concept_id=(c(4132161L,	4171047L)),
+#' #          drug_concept_id=(c(1550560L,	35780880L))) |>
+#' #          omop_join_name_all()
 #' #df2 <- drug_exposure %>%
 #' #       head(100)) %>%
 #' #       omop_join_name_all()
@@ -76,8 +79,7 @@ omop_join_name_all <- function(df) {
 #' @rdname omop_join_name_all
 #' @export
 #' @examples
-#' #TODO create an OMOP correct example where columns are consistent between rows
-#' data.frame(concept_id=(c(3571338L,4002075L)),
-#'            drug_concept_id=(c(4000794L,4002592L))) |>
+#' data.frame(concept_id=(c(3571338L,3655355L)),
+#'            drug_concept_id=(c(4000794L,35628998L))) |>
 #'            ojoinall()
 ojoinall <- omop_join_name_all

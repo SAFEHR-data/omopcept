@@ -143,7 +143,7 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 #> #   ⁹​valid_end_date
 ```
 
-## Join OMOP names onto a dataframe containing concept ids in a column called \*concept_id
+## Join OMOP names onto a dataframe containing concept ids in a column called \_\_\*concept_id\_\_
 
 Helps to interpret OMOP data.
 
@@ -162,6 +162,18 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 #>   drug_concept_id       drug_concept_name
 #> 1         4000794                BUZZ OFF
 #> 2         4002592 DEXAMETHASONE INJECTION
+```
+
+## Join omop concept names onto all \_\_\*\_concept_id\_\_ columns in a dataframe
+
+``` r
+
+data.frame(concept_id=(c(3571338L,3655355L)),
+            drug_concept_id=(c(4000794L,35628998L))) |>
+            omop_join_name_all()
+#>   concept_id drug_concept_id         concept_name drug_concept_name
+#> 1    3571338         4000794    Problem behaviour          BUZZ OFF
+#> 2    3655355        35628998 Erectile dysfunction            Viagra
 ```
 
 ## Vocabularies included
