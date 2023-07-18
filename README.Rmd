@@ -99,7 +99,7 @@ df1 <- data.frame(fields=fieldnames,
 knitr::kable(df1)
 ```
 
-## String search in concept_name field
+## String search in `concept_name` field
 
 ```{r omop_names, echo=TRUE}
 
@@ -109,7 +109,7 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 
 ```
 
-## Join OMOP names onto a dataframe containing concept ids in a column called `*concept_id`
+## Join OMOP names onto a `*concept_id` dataframe column 
 
 Helps to interpret OMOP data.
 

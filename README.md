@@ -100,7 +100,7 @@ first time you use it.
 | valid_end_date   |                                     |                 |
 | invalid_reason   |                                     |                 |
 
-## String search in concept_name field
+## String search in `concept_name` field
 
 ``` r
 
@@ -143,7 +143,7 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 #> #   ⁹​valid_end_date
 ```
 
-## Join OMOP names onto a dataframe containing concept ids in a column called `*concept_id`
+## Join OMOP names onto a `*concept_id` dataframe column
 
 Helps to interpret OMOP data.
 
