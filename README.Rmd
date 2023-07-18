@@ -109,7 +109,7 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 
 ```
 
-## Join OMOP names onto a dataframe containing concept ids in a column called __*concept_id__
+## Join OMOP names onto a dataframe containing concept ids in a column called `*concept_id`
 
 Helps to interpret OMOP data.
 
@@ -126,7 +126,7 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 
 ```
 
-## Join omop concept names onto all __*_concept_id__ columns in a dataframe
+## Join omop concept names onto all `*_concept_id` columns in a dataframe
 
 ```{r omop_join_name_all, echo=TRUE}
 
