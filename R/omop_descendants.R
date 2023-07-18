@@ -25,7 +25,7 @@ omop_descendants <- function(c_id,
                                 messages=TRUE) {
 
   #if arg is char assume it is exact name & lookup id
-  if (class(c_id)=="character")
+  if (is.character(c_id))
   {
     name1 <- c_id
     c_id <- filter(omopcept::omop_concept(), concept_name == c_id) |>
