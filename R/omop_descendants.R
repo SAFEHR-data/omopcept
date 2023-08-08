@@ -6,6 +6,7 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @param separation levels of separation to filter by, default NULL for all
 #' @param itself whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE
 #' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
@@ -14,6 +15,7 @@
 #' omop_descendants(1633308)
 #' #omop_descendants("lenalidomide")
 #' #omop_descendants("Non-invasive blood pressure")
+#' #omop_descendants("Non-invasive blood pressure",separation=c(1,2))
 #' #chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 omop_descendants <- function(c_id,
                                 c_ids=NULL,
@@ -21,6 +23,7 @@ omop_descendants <- function(c_id,
                                 v_ids=NULL,
                                 cc_ids=NULL,
                                 standard=NULL,
+                                separation=NULL,
                                 itself=FALSE,
                                 messages=TRUE) {
 
@@ -63,6 +66,8 @@ omop_descendants <- function(c_id,
     collect()
 
   if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
+
+  if(!is.null(separation)) df1 <- df1 |>  filter(min_levels_of_separation %in% separation)
 
   if (messages) message("returning ",nrow(df1)," concepts")
 

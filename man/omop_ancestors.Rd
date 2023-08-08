@@ -12,6 +12,7 @@ omop_ancestors(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
+  separation = NULL,
   itself = FALSE,
   messages = TRUE
 )
@@ -23,6 +24,7 @@ oance(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
+  separation = NULL,
   itself = FALSE,
   messages = TRUE
 )
@@ -40,6 +42,8 @@ oance(
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
 
+\item{separation}{levels of separation to filter by, default NULL for all}
+
 \item{itself}{whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE}
 
 \item{messages}{whether to print info messages, default=TRUE}
@@ -55,6 +59,7 @@ super short name func to find ancestors
 \examples{
 omop_ancestors(1633308)
 #omop_ancestors("Non-invasive blood pressure")
+#omop_ancestors("Non-invasive blood pressure",separation=c(1,2))
 #epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
