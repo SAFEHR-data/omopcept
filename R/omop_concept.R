@@ -7,6 +7,8 @@
 #' @examples
 #' # open reference, query and collect data to dataframe
 #' omop_concept() |> head() |> dplyr::collect()
+#' # count rows per vocab
+#' omop_concept() |> dplyr::count(vocabulary_id, sort=TRUE) |> dplyr::collect()
 #'
 omop_concept <- function(location = tools::R_user_dir("omopcept", which = "cache")) {
 
