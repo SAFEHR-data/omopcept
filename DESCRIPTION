@@ -20,4 +20,6 @@ Imports:
     dplyr,
     rlang,
     arrow,
-    stringr
+    stringr,
+    ggraph,
+    tidygraph

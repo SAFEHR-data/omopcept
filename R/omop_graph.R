@@ -12,11 +12,12 @@
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
-#' omop_ancestors(1633308)
-#' #omop_ancestors("Non-invasive blood pressure")
-#' #omop_ancestors("Non-invasive blood pressure",separation=c(1,2))
-#' #epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
-omop_ancestors <- function(c_id,
+#' #TODO enable example when working
+#' #omop_graph(1633308)
+#' #omop_graph("Non-invasive blood pressure")
+#' #omop_graph("Non-invasive blood pressure",separation=c(1,2))
+#' #epoch_ance <- omop_graph("EPOCH, dose-escalated")
+omop_graph <- function(c_id,
                               c_ids=NULL,
                               d_ids=NULL,
                               v_ids=NULL,
@@ -27,56 +28,50 @@ omop_ancestors <- function(c_id,
                               messages=TRUE
                            ) {
 
+  # TODO maybe omop_graph() doesn't mostly want to filter ancestors & descendants
+  # and instead it will work on all concepts filtered in other ways
+  # e.g. by vocabs etc.
 
-  #if arg is char assume it is exact name & lookup id
-  if (is.character(c_id))
-  {
-    name1 <- c_id
-    c_id <- filter(omopcept::omop_concept(), concept_name == c_id) |>
-      pull(concept_id, as_vector=TRUE)
-  } else {
-    name1 <- filter(omopcept::omop_concept(), concept_id == c_id) |>
-      pull(concept_name, as_vector=TRUE)
-  }
+  # TODO add omop_ancestors & option to do both
 
-  #TODO
-  # 1 add separation arg, vector of ints e.g. c(1,2), filter on %in%
-  # initially use min
-  # maybe later add arg whether to use min, max. or both
 
-  # 2 protect against
-  # c_id giving 0 ancestors
-  # c_id giving >1 ancestor
-  # put next bit into a function shared bw omop_ancestors() & omop_descendants()
 
-  #e.g. this fails because omop_names("Cytotoxic agent") is not unique
-  #chemo_sno <- omop_descendants("Cytotoxic agent")
+  df1 <- omopcept::omop_descendants(c_ids=c_ids,
+                                    d_ids=d_ids,
+                                    v_ids=v_ids,
+                                    cc_ids=cc_ids,
+                                    standard=standard,
+                                    separation=separation)
 
-  if (length(c_id) != 1)
-  {
-    msg <- paste0("will only find descendants of a single concept, you have ",length(c_id),
-                  ". Please modify your query to get a single starting concept.")
-    stop(msg)
-  }
+  #ancestor_name, concept_name, min_levels_of_separation
 
-  if (messages) message("querying concept ancestors of: ",name1," - may take a few seconds")
+  # ggraph requires two data frames, one for nodes and one for edges.
 
-  df1 <- omopcept::omop_concept_ancestor() |>
-    filter(descendant_concept_id == c_id) |>
-    #renaming allows further filter of concept_id, may not be necessary
-    rename(concept_id = ancestor_concept_id) |>
-    left_join(omopcept::omop_concept(), by = "concept_id") |>
-    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    mutate(descendant_name = name1) |>
-    collect()
+  nodes <- c(df1$ancestor_name, df1$concept_name) %>%
+    unique() %>%
+    tibble(label = .) %>%
+    rowid_to_column("id")
 
-  if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
+  # character names need to be node IDs.
+  # done by 2 joins to node dataframe.
 
-  if(!is.null(separation)) df1 <- df1 |>  filter(min_levels_of_separation %in% separation)
+  edges <- df1 %>%
+    left_join(nodes, by = c("ancestor_name"="label")) %>%
+    rename(from = "id") %>%
+    left_join(nodes, by = c("concept_name"="label")) %>%
+    rename(to = "id") %>%
+    select(from, to, min_levels_of_separation)
 
-  if (messages) message("returning ",nrow(df1)," concepts")
+  grapho <- tbl_graph(nodes = nodes, edges = edges, directed = FALSE)
 
-  return(df1)
+  ggr <- ggraph(grapho) +
+    geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
+    geom_node_point()
+
+
+  #if (messages) message("returning ",nrow(df1)," concepts")
+
+  return(ggr)
 
 }
 

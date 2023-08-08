@@ -6,7 +6,7 @@
 \title{find omop concept descendants of one passed}
 \usage{
 omop_descendants(
-  c_id,
+  c_id = NULL,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -18,7 +18,7 @@ omop_descendants(
 )
 
 odesc(
-  c_id,
+  c_id = NULL,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -30,7 +30,7 @@ odesc(
 )
 }
 \arguments{
-\item{c_id}{single omop concept_id or exact concept_name to get descendants of}
+\item{c_id}{single omop concept_id or exact concept_name to get descendants of, default NULL returns all}
 
 \item{c_ids}{one or more concept_id to filter by, default NULL for all}
 
@@ -62,6 +62,10 @@ omop_descendants(1633308)
 #omop_descendants("Non-invasive blood pressure")
 #omop_descendants("Non-invasive blood pressure",separation=c(1,2))
 #chemodrugs <- omop_descendants("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
+#no filtering by descendants
+#(expect to be same as omop_ancestors())
+#v slight difference 19409 v 19411 concepts, not sure why, prob not important
+#cmde <- omop_descendants(v_ids="Cancer Modifier")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
 chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")

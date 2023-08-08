@@ -1,6 +1,6 @@
 #' find omop concept ancestors of one passed
 #'
-#' @param c_id single omop concept_id or exact concept_name to get ancestors of
+#' @param c_id single omop concept_id or exact concept_name to get ancestors of, default NULL returns all
 #' @param c_ids one or more concept_id to filter by, default NULL for all
 #' @param d_ids one or more domain_id to filter by, default NULL for all
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
@@ -16,7 +16,9 @@
 #' #omop_ancestors("Non-invasive blood pressure")
 #' #omop_ancestors("Non-invasive blood pressure",separation=c(1,2))
 #' #epoch_ance <- omop_ancestors("EPOCH, dose-escalated")
-omop_ancestors <- function(c_id,
+#' #no filtering by ancestors
+#' #cman <- omop_ancestors(v_ids="Cancer Modifier")
+omop_ancestors <- function(c_id=NULL,
                               c_ids=NULL,
                               d_ids=NULL,
                               v_ids=NULL,
@@ -27,42 +29,30 @@ omop_ancestors <- function(c_id,
                               messages=TRUE
                            ) {
 
+  #checks c_id and gets name (ALL if c_id==NULL)
+  res <- check_c_id(c_id,"ancestors")
+  #TODO tidy this up & check, done in a rush !!
+  c_id <- res$c_id
+  name1 <- res$name1
 
-  #if arg is char assume it is exact name & lookup id
-  if (is.character(c_id))
-  {
-    name1 <- c_id
-    c_id <- filter(omopcept::omop_concept(), concept_name == c_id) |>
-      pull(concept_id, as_vector=TRUE)
-  } else {
-    name1 <- filter(omopcept::omop_concept(), concept_id == c_id) |>
-      pull(concept_name, as_vector=TRUE)
-  }
+  # TODO 1 add option for NULL c_id, returns all concepts within other filters
+  # TODO 2 add arg about separation whether to use min, max. or both
 
-  #TODO
-  # 1 add separation arg, vector of ints e.g. c(1,2), filter on %in%
-  # initially use min
-  # maybe later add arg whether to use min, max. or both
-
-  # 2 protect against
+  # TODO 3 protect against
   # c_id giving 0 ancestors
   # c_id giving >1 ancestor
   # put next bit into a function shared bw omop_ancestors() & omop_descendants()
-
   #e.g. this fails because omop_names("Cytotoxic agent") is not unique
   #chemo_sno <- omop_descendants("Cytotoxic agent")
 
-  if (length(c_id) != 1)
-  {
-    msg <- paste0("will only find descendants of a single concept, you have ",length(c_id),
-                  ". Please modify your query to get a single starting concept.")
-    stop(msg)
-  }
-
   if (messages) message("querying concept ancestors of: ",name1," - may take a few seconds")
 
-  df1 <- omopcept::omop_concept_ancestor() |>
-    filter(descendant_concept_id == c_id) |>
+  df1 <- omopcept::omop_concept_ancestor()
+
+  if (!is.null(c_id)) df1 <- df1 |>
+    filter(descendant_concept_id == c_id)
+
+  df1 <- df1 |>
     #renaming allows further filter of concept_id, may not be necessary
     rename(concept_id = ancestor_concept_id) |>
     left_join(omopcept::omop_concept(), by = "concept_id") |>
