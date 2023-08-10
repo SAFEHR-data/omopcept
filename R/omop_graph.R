@@ -17,7 +17,7 @@
 #' #omop_graph("Non-invasive blood pressure")
 #' #omop_graph("Non-invasive blood pressure",separation=c(1,2))
 #' #epoch_ance <- omop_graph("EPOCH, dose-escalated")
-omop_graph <- function(c_id,
+omop_graph <- function(c_id=NULL,
                               c_ids=NULL,
                               d_ids=NULL,
                               v_ids=NULL,
@@ -28,20 +28,21 @@ omop_graph <- function(c_id,
                               messages=TRUE
                            ) {
 
-  # TODO maybe omop_graph() doesn't mostly want to filter ancestors & descendants
-  # and instead it will work on all concepts filtered in other ways
-  # e.g. by vocabs etc.
+  #TODO fix these errors
+  #! Failed to load R/omop_graph.R
+  #Caused by error in `check_c_id()`: ! could not find function "check_c_id"
 
   # TODO add omop_ancestors & option to do both
 
 
-
-  df1 <- omopcept::omop_descendants(c_ids=c_ids,
-                                    d_ids=d_ids,
-                                    v_ids=v_ids,
-                                    cc_ids=cc_ids,
-                                    standard=standard,
-                                    separation=separation)
+  df1 <- omop_descendants( c_id=c_id,
+                           c_ids=c_ids,
+                           d_ids=d_ids,
+                           v_ids=v_ids,
+                           cc_ids=cc_ids,
+                           standard=standard,
+                           separation=separation,
+                           itself=itself)
 
   #ancestor_name, concept_name, min_levels_of_separation
 
@@ -76,10 +77,9 @@ omop_graph <- function(c_id,
 }
 
 #' super short name func to find ancestors
-#' @rdname omop_ancestors
+#' @rdname omop_graph
 #' @export
 #' @examples
 #' # because of R argument matching, you can just use the first unique letters of
 #' # arguments e.g. v for v_ids, cc for cc_ids
-#' chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
-oance <- omop_ancestors
+omgr <- omop_graph()

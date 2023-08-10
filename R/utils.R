@@ -28,11 +28,11 @@ dynamic_by <- function(lhs,rhs) {
 }
 
 #' check c_id arg to omop_ancestors() and omop_descendants()
-#' NOT EXPORTED
+#' TODO want to not export but couldn't get to work when not exported
 #'
 #' @param c_id arg to check : single omop concept_id or exact concept_name to get ancestors of
 #' @param anc_or_des "ancestors" or "descendants"
-# @export not exported
+#' @export
 check_c_id <- function(c_id,
                        anc_or_des) {
 
