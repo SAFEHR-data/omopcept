@@ -82,4 +82,5 @@ omop_graph <- function(c_id=NULL,
 #' @examples
 #' # because of R argument matching, you can just use the first unique letters of
 #' # arguments e.g. v for v_ids, cc for cc_ids
-omgr <- omop_graph()
+#' disabled to try to fix error : 'omop_concept_ancestor' is not an exported object from 'namespace:omopcept'
+#omgr <- omop_graph

@@ -5,7 +5,7 @@
 \title{ggraph omop hierarchy}
 \usage{
 omop_graph(
-  c_id,
+  c_id = NULL,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,

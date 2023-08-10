@@ -4,21 +4,29 @@
 #' @param c_id arg to check : single omop concept_id or exact concept_name to get ancestors of
 #' @param anc_or_des "ancestors" or "descendants"
 #' @export
+#' @examples
+#' # example code
+#' c_id <- 1633308
+#' check_c_id(c_id,"descendants")
+#'
 check_c_id <- function(c_id,
                        anc_or_des) {
 
   #defaults
-  toreturn <- data.frame(c_id=c_id,name1="ALL")
+  #toreturn <- data.frame(c_id=c_id,name1="ALL")
+  #BEWARE the above created pernicious fault when c_id NULL,
+  #error in `data.frame()`: ! arguments imply differing number of rows: 0, 1
+  toreturn <- data.frame(c_id="none",name1="ALL")
 
   #if arg is char assume it is exact name & lookup id
   if (is.character(c_id))
   {
     toreturn$name1 <- c_id
-    toreturn$c_id <- filter(omopcept::omop_concept(), concept_name == c_id) |>
-      pull(concept_id, as_vector=TRUE)
+    toreturn$c_id <- dplyr::filter(omop_concept(), concept_name == c_id) |>
+      dplyr::pull(concept_id, as_vector=TRUE)
   } else if (!is.null(c_id)) {
-    toreturn$name1 <- filter(omopcept::omop_concept(), concept_id == c_id) |>
-      pull(concept_name, as_vector=TRUE)
+    toreturn$name1 <- dplyr::filter(omop_concept(), concept_id == c_id) |>
+      dplyr::pull(concept_name, as_vector=TRUE)
   } else {
     toreturn$name1 <- "ALL"
   }
