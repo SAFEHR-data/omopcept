@@ -1,12 +1,13 @@
 
 # omopcept 0.0.0.90051 dev
 
-
+* added `omop_graph()` for visualising omop hierarchy with `ggraph`
+* add option for NULL `c_id` to `omop_descendants()` and `omop_ancestors()`, returns all concepts within other filters
 
 # omopcept 0.0.0.9005 2023-08-08
 
 * added optional `itself` argument (default FALSE) to `omop_descendants()` and `omop_ancestors()`
-* added optional `separation` argument (default) to `omop_descendants()` and `omop_ancestors()` filters on `min_levels_of_separation` e.g. c(1,2)
+* added optional `separation` argument (default NULL) to `omop_descendants()` and `omop_ancestors()` filters on `min_levels_of_separation` e.g. c(1,2)
 
 
 # omopcept 0.0.0.9003 2023-06-14
