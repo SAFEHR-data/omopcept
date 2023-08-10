@@ -124,9 +124,9 @@ onames <- omop_names
 # BUT maybe my func is vector rather than scalar ?
 # detect_str_arrow <- function(context, string) {
 #   replace <- c(`'` = "", `"` = "", `-` = "", `\\.` = "_", ` ` = "_")
-#   string %>%
-#     stringr::str_replace_all(replace) %>%
-#     stringr::str_to_lower() %>%
+#   string |>
+#     stringr::str_replace_all(replace) |>
+#     stringr::str_to_lower() |>
 #     stringi::stri_trans_general(id = "Latin-ASCII")
 # }
 # #To call this within an arrow/dplyr pipeline, it needs to be registered:
@@ -138,6 +138,6 @@ onames <- omop_names
 #     auto_convert = TRUE
 #   )
 # #Once registered, the following works:
-#   sw %>%
-#     mutate(name, snake_name = to_snake_name(name), .keep = "none") %>%
+#   sw |>
+#     mutate(name, snake_name = to_snake_name(name), .keep = "none") |>
 #     collect()

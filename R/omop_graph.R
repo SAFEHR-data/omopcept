@@ -13,6 +13,7 @@
 #' @export
 #' @examples
 #' #TODO enable example when working
+#' ggr1 <- omop_graph(v_ids="Cancer Modifier", separation=1)
 #' #omop_graph(1633308)
 #' #omop_graph("Non-invasive blood pressure")
 #' #omop_graph("Non-invasive blood pressure",separation=c(1,2))
@@ -48,19 +49,19 @@ omop_graph <- function(c_id=NULL,
 
   # ggraph requires two data frames, one for nodes and one for edges.
 
-  nodes <- c(df1$ancestor_name, df1$concept_name) %>%
-    unique() %>%
-    tibble(label = .) %>%
+  nodes <- c(df1$ancestor_name, df1$concept_name) |>
+    unique() |>
+    tibble(label = .) |>
     rowid_to_column("id")
 
   # character names need to be node IDs.
   # done by 2 joins to node dataframe.
 
-  edges <- df1 %>%
-    left_join(nodes, by = c("ancestor_name"="label")) %>%
-    rename(from = "id") %>%
-    left_join(nodes, by = c("concept_name"="label")) %>%
-    rename(to = "id") %>%
+  edges <- df1 |>
+    left_join(nodes, by = c("ancestor_name"="label")) |>
+    rename(from = "id") |>
+    left_join(nodes, by = c("concept_name"="label")) |>
+    rename(to = "id") |>
     select(from, to, min_levels_of_separation)
 
   grapho <- tbl_graph(nodes = nodes, edges = edges, directed = FALSE)

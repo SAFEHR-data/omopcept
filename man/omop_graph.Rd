@@ -43,6 +43,7 @@ ggraph omop hierarchy
 }
 \examples{
 #TODO enable example when working
+ggr1 <- omop_graph(v_ids="Cancer Modifier", separation=1)
 #omop_graph(1633308)
 #omop_graph("Non-invasive blood pressure")
 #omop_graph("Non-invasive blood pressure",separation=c(1,2))

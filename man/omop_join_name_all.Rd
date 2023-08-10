@@ -26,8 +26,8 @@ data.frame(concept_id=(c(3571338L,3655355L)),
 #data.frame(route_concept_id=(c(4132161L,	4171047L)),
 #          drug_concept_id=(c(1550560L,	35780880L))) |>
 #          omop_join_name_all()
-#df2 <- drug_exposure \%>\%
-#       head(100)) \%>\%
+#df2 <- drug_exposure |>
+#       head(100)) |>
 #       omop_join_name_all()
 data.frame(concept_id=(c(3571338L,3655355L)),
            drug_concept_id=(c(4000794L,35628998L))) |>

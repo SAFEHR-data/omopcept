@@ -21,6 +21,6 @@ e.g. drug_concept_id to get drug_name
 \examples{
 data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
-#df2 <- drug_exposure \%>\% distinct(route_concept_id) \%>\% omop_join_name(route_concept_id)
+#df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(route_concept_id)
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> ojoin(namestart="drug")
 }

@@ -9,7 +9,7 @@
 #' @examples
 #' data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 #' data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
-#' #df2 <- drug_exposure %>% distinct(route_concept_id) %>% omop_join_name(route_concept_id)
+#' #df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(route_concept_id)
 omop_join_name <- function(df, namestart="") {
 
   #"" is to cope with concept_id from omop_join_name_all()
@@ -55,8 +55,8 @@ ojoin <- omop_join_name
 #' #data.frame(route_concept_id=(c(4132161L,	4171047L)),
 #' #          drug_concept_id=(c(1550560L,	35780880L))) |>
 #' #          omop_join_name_all()
-#' #df2 <- drug_exposure %>%
-#' #       head(100)) %>%
+#' #df2 <- drug_exposure |>
+#' #       head(100)) |>
 #' #       omop_join_name_all()
 omop_join_name_all <- function(df) {
 
