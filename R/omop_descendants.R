@@ -41,7 +41,7 @@ omop_descendants <- function(c_id=NULL,
 
   df1 <- omopcept::omop_concept_ancestor()
 
-  if (!is.null(c_id)) df1 <- df1 |>
+  if (c_id != "none") df1 <- df1 |>
     filter(ancestor_concept_id == c_id)
 
   df1 <- df1 |>
