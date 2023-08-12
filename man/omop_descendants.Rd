@@ -66,6 +66,7 @@ omop_descendants(1633308)
 #(expect to be same as omop_ancestors())
 #v slight difference 19409 v 19411 concepts, not sure why, prob not important
 #cmde <- omop_descendants(v_ids="Cancer Modifier")
+#cmde1 <- omop_descendants(v_ids="Cancer Modifier", separation=1)
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
 chemodrugs <- odesc("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")

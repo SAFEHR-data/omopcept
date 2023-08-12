@@ -21,6 +21,7 @@
 #' #(expect to be same as omop_ancestors())
 #' #v slight difference 19409 v 19411 concepts, not sure why, prob not important
 #' #cmde <- omop_descendants(v_ids="Cancer Modifier")
+#' #cmde1 <- omop_descendants(v_ids="Cancer Modifier", separation=1)
 omop_descendants <- function(c_id=NULL,
                                 c_ids=NULL,
                                 d_ids=NULL,
@@ -30,6 +31,7 @@ omop_descendants <- function(c_id=NULL,
                                 separation=NULL,
                                 itself=FALSE,
                                 messages=TRUE) {
+
 
   #checks c_id and gets name (ALL if c_id==NULL)
   #TODO tidy this up & check, done in a rush !!
@@ -50,7 +52,13 @@ omop_descendants <- function(c_id=NULL,
     left_join(omopcept::omop_concept(), by = "concept_id") |>
     #left_join(omopcept::omop_concept(), by = c("descendant_concept_id" = "concept_id")) |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    mutate(ancestor_name = name1) |>
+    #don't need next because ancestor_name already in concept table
+    #actually it isn't, but there is ancestor_concept_id
+    #and don't want to set to ALL
+    #mutate(ancestor_name = name1) |>
+    omop_join_name(namestart="ancestor") |>
+    #TODO this shouldn't be necessary after option to omop_join_names added
+    rename(ancestor_name = ancestor_concept_name) |>
     collect()
 
   if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
