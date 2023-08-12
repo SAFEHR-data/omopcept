@@ -16,7 +16,12 @@ omop_join_name <- function(df, namestart="") {
   if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
+  #TODO sometimes i think want to miss off 'concept'
+  #e.g. ancestor_concept_id to ancestor_name
   name_col_name <- sub("_id","_name",id_col_name)
+  #maybe off an option of
+  #name_col_name <- sub("_concept_id","_name",id_col_name)
+
 
   #beware rename concept_name column before joining in case
   #there is already a concept_name column in df
