@@ -1,0 +1,204 @@
+---
+title: "preparation of images for uclh art competition"
+output:
+  html_document:
+    keep_md: yes
+author: "Andy South"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+---
+
+
+
+```{r setup, include=FALSE}
+
+library(here)
+library(knitr)
+library(tidyverse)
+library(dbplyr)
+#library(odbc)
+library(glue)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE,
+                      dev = "png",
+                      dpi = 300,
+                      cache = TRUE)
+```
+
+
+```{r install github packages, include=FALSE, eval=TRUE}
+
+# library(remotes) #for install_github
+# remotes::install_github("andysouth/omopcept")
+# library(omopcept)
+
+```
+
+
+```{r extract data, include=FALSE, eval=TRUE}
+
+dfsnomed <- omop_descendants(v_ids="SNOMED",separation=1)
+#returning 910497 concepts
+dfsnomed |>  count(domain_id,sort=TRUE)
+#  1 Device              382492
+#  2 Condition           218064
+#  3 Observation         125732
+#  4 Procedure           100106
+#  5 Spec Anatomic Site   54239
+#  6 Measurement          24028
+#  7 Specimen              3061
+#  8 Meas Value            1403
+#  9 Language               888
+# 10 Relationship           282
+# 11 Route                  192
+# 12 Meas Value Operator      5
+# 13 Spec Disease Status      5
+
+dfcancermod <- omop_descendants(v_ids="Cancer Modifier",separation=1)
+#returning 6759 concepts
+dfcancermod |>  count(domain_id,sort=TRUE)
+#just one domain
+#1 Measurement  6759
+
+#to get a smaller test dataset
+dffigo <- dfcancermod |> filter(str_detect(concept_name,"FIGO"))
+
+names_lymph <- omop_names("lymphoma",v="SNOMED")
+
+#returning 17 concepts
+names_dlbcl <- omop_names("Diffuse large B-cell lymphoma",v="SNOMED")
+#Diffuse large B-cell lymphoma : 44808122
+dfme <- omop_descendants(c_id=44808122, v_ids="SNOMED")
+#!! wow 7 million concepts descending from DLBCL returning 7277526 concepts
+freq_domain_id <- dfme |>  count(domain_id,sort=TRUE)
+#  1 Condition           2424403
+#  2 Spec Anatomic Site  1372365
+#  3 Device              1233671
+#  4 Procedure           1118391
+#  5 Observation          941751
+#  6 Measurement          164036
+#  7 Specimen              13910
+#  8 Meas Value             3725
+#  9 Language               3321
+# 10 Relationship           1369
+# 11 Route                   555
+# 12 Meas Value Operator      15
+# 13 Spec Disease Status      14
+
+freqsep <- dfme |>  count(min_levels_of_separation,sort=FALSE)
+#I could limit level of separation
+#still 5.6 million !
+dfme5 <- omop_descendants(c_id=44808122, v_ids="SNOMED",separation=c(1:5))
+#4.6 million
+dfme4 <- dfme5 |> filter(min_levels_of_separation<=4) 
+#3.3 million
+dfme3 <- dfme5 |> filter(min_levels_of_separation<=3)
+#2 million
+dfme2 <- dfme5 |> filter(min_levels_of_separation<=2)
+#0.9 million
+dfme1 <- dfme5 |> filter(min_levels_of_separation<=1)
+```
+
+```{r first test plot, include=FALSE, eval=TRUE}
+
+# If you want to go beyond ~20k nodes, then you may want to switch to layout_with_pmds() or layout_with_sparse_stress() which are optimized to work with large graphs.
+
+
+#selecting data to plot
+#challenge to get down to a small enough number
+dfin <- dffigo
+dfin <- dfme3
+dfin <- dfme3 |> head(2000)
+
+#dfin <- dfme1
+
+#try filtering an equal number of domains
+dfin <- dfme3 |> 
+  filter(domain_id %in% freq_domain_id$domain_id[1:7]) |> 
+  group_by(domain_id) |> 
+  #top x rows for each group
+  slice_head(n=200) |> 
+  ungroup()
+
+#TODO I'd like to get dlbcl at centre ??
+
+#works to get domain_id in
+
+dfin2 <- dfin |> 
+  dplyr::rename(from = ancestor_name,
+                to = concept_name)  
+
+#challenge to make sure get all nodes from from & to
+#to avoid Invalid (negative) vertex id
+nodesfrom <- dfin2 |> 
+  dplyr::select(from,vocabulary_id,domain_id) |>
+  group_by(from) |> 
+  slice_head(n=1) |> 
+  rename(name=from)
+
+nodesto <- dfin2 |> 
+  dplyr::select(to,vocabulary_id,domain_id) |>
+  group_by(to) |> 
+  slice_head(n=1) |> 
+  rename(name=to)
+
+nodes1 <- bind_rows(nodesfrom,nodesto) |> 
+  group_by(name) |> 
+  slice_head(n=1)
+
+edges1 <- dfin2 |> 
+  dplyr::select(from, to)
+  
+
+#try to plot a biggish network initially with no labels
+  # graphbig <- dfme2 |>
+  #   dplyr::select(ancestor_name,
+  #          concept_name,
+  #          vocabulary_id,
+  #          domain_id) |>
+  #   dplyr::rename(from = ancestor_name,
+  #                 to = concept_name) |>
+  #   as_tbl_graph()
+
+## alternatives
+#graphin <- graphbig
+#graphin <- grapho
+#graphin <- graphne
+graphin <- tbl_graph(nodes=nodes1, edges=edges1)
+
+#sets node attribute of num_edges
+# compute degree as node size
+V(graphin)$connections <- degree(graphin)
+#Warning message:
+#In vattrs[[name]][index] <- value :
+#  number of items to replace is not a multiple of replacement length
+#V(graphin)$domain <- dfme2$domain_id
+
+  ggr <- ggraph(graphin, layout='graphopt') +
+  #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
+    geom_edge_link(colour="grey71", edge_alpha=0.3, edge_width=0.1 ) +
+    #couldn't get colouring edges to work
+    #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +    
+    #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
+    #geom_node_point(aes(size=connections)) + #colour=domain_id,
+    geom_node_point(aes(size=connections, colour=domain_id)) +
+    #geom_node_point(aes(size=connections,colour=connections)) +
+    #scale_fill_brewer(palette = "Dark2") +
+    #this sets bg to white & other elements for good graphs
+    #theme_graph() + gives font error
+    theme(panel.background=element_blank(),
+          plot.background=element_blank(),
+          legend.position = "bottom") +
+    geom_node_text(aes(label=name, colour=domain_id), repel=TRUE, alpha=1)
+
+  #plot(ggr)
+
+#saving plots
+#naming convention
+#s  separation
+#m  plot metres
+#ggsave(ggr,filename="dlbcl2000-s3-1m-2.pdf",width=100,height=100,units="cm")  
+ggsave(ggr,filename="dlbcl-s3-d7-200-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)   
+
+```
+

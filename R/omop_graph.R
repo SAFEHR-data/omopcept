@@ -43,21 +43,24 @@ omop_graph <- function(c_id=NULL,
 
   #ancestor_name, concept_name, min_levels_of_separation
 
-  df2 <- df1 |> filter(str_detect(concept_name,"FIGO"))
+  dffigo <- df1 |> filter(str_detect(concept_name,"FIGO"))
 
-  grapho <- df2 |>
+  grapho <- dffigo |>
     dplyr::select(ancestor_name,
            concept_name,
            vocabulary_id,
            domain_id) |>
     dplyr::rename(from = ancestor_name,
                   to = concept_name) |>
-    as_tbl_graph()
+    as_tbl_graph(nodes=dffigo)
 
-  ggr <- ggraph(grapho) +
+  ggr <- ggraph(grapho, layout='graphopt') +
+  ggr <- ggraph(grapho,  layout = "centrality", cent = graph.strength(grapho)) +
     geom_edge_link() +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
-    geom_node_point()
+    geom_node_point() +
+    #label = name works & concept_name doesn't - not sure why !!
+    geom_node_text(aes(label=name), repel=TRUE)
 
   plot(ggr)
 
