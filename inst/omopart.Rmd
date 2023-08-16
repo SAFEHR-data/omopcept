@@ -14,9 +14,13 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 library(here)
 library(knitr)
 library(tidyverse)
-library(dbplyr)
+library(dplyr)
+#library(dbplyr)
+library(igraph)
+library(tidygraph)
+library(ggraph)
 #library(odbc)
-library(glue)
+#library(glue)
 
 knitr::opts_chunk$set(echo = FALSE, 
                       warning = FALSE,
@@ -54,6 +58,11 @@ dfsnomed |>  count(domain_id,sort=TRUE)
 # 12 Meas Value Operator      5
 # 13 Spec Disease Status      5
 
+#7.2 million concepts
+dfsnomedall <- omop_descendants(v_ids="SNOMED")
+#1 million concepts
+dfloinc <- omop_descendants(v_ids="LOINC")
+
 dfcancermod <- omop_descendants(v_ids="Cancer Modifier",separation=1)
 #returning 6759 concepts
 dfcancermod |>  count(domain_id,sort=TRUE)
@@ -85,6 +94,9 @@ freq_domain_id <- dfme |>  count(domain_id,sort=TRUE)
 # 12 Meas Value Operator      15
 # 13 Spec Disease Status      14
 
+# they are all standard
+# freq_standard_concept <- dfme |>  count(standard_concept,sort=TRUE)
+
 freqsep <- dfme |>  count(min_levels_of_separation,sort=FALSE)
 #I could limit level of separation
 #still 5.6 million !
@@ -97,6 +109,25 @@ dfme3 <- dfme5 |> filter(min_levels_of_separation<=3)
 dfme2 <- dfme5 |> filter(min_levels_of_separation<=2)
 #0.9 million
 dfme1 <- dfme5 |> filter(min_levels_of_separation<=1)
+
+freq_domain_id <- dfme5 |>  count(domain_id,sort=TRUE)
+
+#filter all snomed for just those that contain blood
+#but note that dfsnomed was just separation=1
+dfsnoblood <- dfsnomed |>  filter(grepl("blood", concept_name, ignore.case=TRUE)) 
+#dfsnomedall has all separations
+dfsnobloodgroup <- dfsnomedall |>  
+  #filter(min_levels_of_separation<=3) |> 
+  filter(grepl("blood group", concept_name, ignore.case=TRUE)) 
+
+#96k
+dfloincblood <- dfloinc |>  filter(grepl("blood", concept_name, ignore.case=TRUE)) 
+
+#300
+dfloincbloodgroup <- dfloinc |>  
+  #filter(min_levels_of_separation<=3) |> 
+  filter(grepl("blood group", concept_name, ignore.case=TRUE)) 
+
 ```
 
 ```{r first test plot, include=FALSE, eval=TRUE}
@@ -112,18 +143,30 @@ dfin <- dfme3 |> head(2000)
 
 #dfin <- dfme1
 
+#TODO PUT THIS INTO A FUNCTION THAT ACCEPTS ARGS
+#AND USES ARGS TO AUTO-GENERATE OUTPUT FILENAME
+#MAYBE SAVE ONE OF OMOP DATA OBJECTS IN PACKAGE TO SPEED PLOT PRODUCTION
+
 #try filtering an equal number of domains
 dfin <- dfme3 |> 
+#post submission perhaps I want to start from just direct connections, separation1
+#but the plot didn't look as good! not sure which is best
+#dfin <- dfme1 |>   
   filter(domain_id %in% freq_domain_id$domain_id[1:7]) |> 
   group_by(domain_id) |> 
   #top x rows for each group
-  slice_head(n=200) |> 
+  slice_head(n=500) |> 
   ungroup()
 
-#TODO I'd like to get dlbcl at centre ??
+#TODO I'd like to get dlbcl or another concept at centre ??
+
+# dfin <- dfsnoblood
+# dfin <- dfsnobloodgroup
+# dfin <- dfloincblood
+# dfin <- dfloincbloodgroup
+
 
 #works to get domain_id in
-
 dfin2 <- dfin |> 
   dplyr::rename(from = ancestor_name,
                 to = concept_name)  
@@ -167,12 +210,7 @@ edges1 <- dfin2 |>
 graphin <- tbl_graph(nodes=nodes1, edges=edges1)
 
 #sets node attribute of num_edges
-# compute degree as node size
 V(graphin)$connections <- degree(graphin)
-#Warning message:
-#In vattrs[[name]][index] <- value :
-#  number of items to replace is not a multiple of replacement length
-#V(graphin)$domain <- dfme2$domain_id
 
   ggr <- ggraph(graphin, layout='graphopt') +
   #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
@@ -184,21 +222,40 @@ V(graphin)$connections <- degree(graphin)
     geom_node_point(aes(size=connections, colour=domain_id)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     #scale_fill_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Set1") +
     #this sets bg to white & other elements for good graphs
     #theme_graph() + gives font error
     theme(panel.background=element_blank(),
           plot.background=element_blank(),
-          legend.position = "bottom") +
-    geom_node_text(aes(label=name, colour=domain_id), repel=TRUE, alpha=1)
+          legend.position = "bottom",
+          legend.key.size = unit(3, 'cm'), 
+          #legend.key.height = unit(1, 'cm'), 
+          #legend.key.width = unit(1, 'cm'),  
+          #legend.title = element_text(size=14), 
+          legend.text = element_text(size=30) ) +
+    geom_node_text(aes(label=name, 
+                       colour=domain_id, 
+                       size=connections), repel=TRUE, check_overlap=FALSE, alpha=0.9)
 
   #plot(ggr)
 
 #saving plots
 #naming convention
-#s  separation
+#s  separation min
 #m  plot metres
-#ggsave(ggr,filename="dlbcl2000-s3-1m-2.pdf",width=100,height=100,units="cm")  
-ggsave(ggr,filename="dlbcl-s3-d7-200-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)   
+#ea edge alpha
+#ta text alpha  
+#pdark2 palette color brewer
+#ns node sized
+  
+ggsave(ggr,filename="dlbcl-s3-d7-500-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
+# ggsave(ggr,filename="dlbcl-s1-d7-500-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
+
+# ggsave(ggr,filename="snoblood-s1-d7-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)
+
+# ggsave(ggr,filename="snobloodgroup-s3-d7-pdark2-m3-ea03.pdf",width=300,height=300,units="cm",limitsize = FALSE)
+
+# ggsave(ggr,filename="loinc-bloodgroup-pset1-m03-ea03-ta09.pdf",width=30,height=30,units="cm",limitsize = FALSE)
 
 ```
 
