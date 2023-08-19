@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # library(remotes) #for install_github
 # remotes::install_github("andysouth/omopcept")
-# library(omopcept)
+library(omopcept)
 
 ```
 
@@ -193,20 +193,6 @@ edges1 <- dfin2 |>
   dplyr::select(from, to)
   
 
-#try to plot a biggish network initially with no labels
-  # graphbig <- dfme2 |>
-  #   dplyr::select(ancestor_name,
-  #          concept_name,
-  #          vocabulary_id,
-  #          domain_id) |>
-  #   dplyr::rename(from = ancestor_name,
-  #                 to = concept_name) |>
-  #   as_tbl_graph()
-
-## alternatives
-#graphin <- graphbig
-#graphin <- grapho
-#graphin <- graphne
 graphin <- tbl_graph(nodes=nodes1, edges=edges1)
 
 #sets node attribute of num_edges
@@ -219,7 +205,9 @@ V(graphin)$connections <- degree(graphin)
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +    
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    geom_node_point(aes(size=connections, colour=domain_id)) +
+    geom_node_point(aes(size=connections, colour=domain_id)
+                    ,alpha=0.9,
+                    show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     #scale_fill_brewer(palette = "Dark2") +
     scale_fill_brewer(palette = "Set1") +
@@ -230,12 +218,20 @@ V(graphin)$connections <- degree(graphin)
           legend.position = "bottom",
           legend.key.size = unit(3, 'cm'), 
           #legend.key.height = unit(1, 'cm'), 
-          #legend.key.width = unit(1, 'cm'),  
-          #legend.title = element_text(size=14), 
+          #legend.key.width = unit(1, 'cm'),
+          legend.key = element_rect(fill = "white"),
+          #legend.title = element_text(size=30), 
+          legend.title = element_blank(),           
           legend.text = element_text(size=30) ) +
+    guides(colour = guide_legend(override.aes = list(size=30))) +
     geom_node_text(aes(label=name, 
                        colour=domain_id, 
-                       size=connections), repel=TRUE, check_overlap=FALSE, alpha=0.9)
+                       size=connections),
+                   show.legend=FALSE,
+                   repel=TRUE, 
+                   check_overlap=FALSE,
+                   nudge_y=0.3, #move labels above points
+                   alpha=0.9)
 
   #plot(ggr)
 
@@ -255,6 +251,8 @@ ggsave(ggr,filename="dlbcl-s3-d7-500-pset1-15m-ns.pdf",width=150,height=150,unit
 
 # ggsave(ggr,filename="snobloodgroup-s3-d7-pdark2-m3-ea03.pdf",width=300,height=300,units="cm",limitsize = FALSE)
 
+#ggsave(ggr,filename="snobloodgroup-pset1-m2-ea03.pdf",width=200,height=200,units="cm",limitsize = FALSE)  
+  
 # ggsave(ggr,filename="loinc-bloodgroup-pset1-m03-ea03-ta09.pdf",width=30,height=30,units="cm",limitsize = FALSE)
 
 ```
