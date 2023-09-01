@@ -57,7 +57,7 @@ omop_ancestors <- function(c_id=NULL,
     rename(concept_id = ancestor_concept_id) |>
     left_join(omopcept::omop_concept(), by = "concept_id") |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    mutate(descendant_name = name1) |>
+    omop_join_name(namestart="descendant") |>
     collect()
 
   if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
