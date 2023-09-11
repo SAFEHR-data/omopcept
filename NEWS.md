@@ -1,6 +1,7 @@
 
 # omopcept 0.0.0.90051 dev
 
+* added `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
 * added `omop_graph()` for visualising omop hierarchy with `ggraph`
 * add option for NULL `c_id` to `omop_descendants()` and `omop_ancestors()`, returns all concepts within other filters
 
