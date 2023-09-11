@@ -24,5 +24,5 @@ omop_concept_relationship <- function(location = tools::R_user_dir("omopcept", w
 #' @rdname omop_concept_relationship
 #' @export
 #' @examples
-#' oca() |> head() |> dplyr::collect()
-oca <- omop_concept_relationship
+#' ocr() |> head() |> dplyr::collect()
+ocr <- omop_concept_relationship
