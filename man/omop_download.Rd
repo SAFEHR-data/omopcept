@@ -7,7 +7,8 @@
 omop_download(
   tablename = "concept",
   from = "https://omopes.blob.core.windows.net/newcontainer/",
-  to = tools::R_user_dir("omopcept", which = "cache")
+  to = tools::R_user_dir("omopcept", which = "cache"),
+  download_max_secs = 720
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ omop_download(
 \item{from}{url of file source location, defaults to UCLH filestore}
 
 \item{to}{path to save file locally, defaults to package cache which is where omop_concept() looks for it}
+
+\item{download_max_secs}{max download secounds, default 720 = 12 mins}
 }
 \description{
 initially using UCLH temporary private filestore

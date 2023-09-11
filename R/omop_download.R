@@ -5,17 +5,27 @@
 #' @param tablename which omop table to download, defaults to 'concept'
 #' @param from url of file source location, defaults to UCLH filestore
 #' @param to path to save file locally, defaults to package cache which is where omop_concept() looks for it
+#' @param download_max_secs max download secounds, default 720 = 12 mins
 #'
 #' @export
 omop_download <- function( tablename = "concept",
                            from = "https://omopes.blob.core.windows.net/newcontainer/",
-                           to = tools::R_user_dir("omopcept", which = "cache")) {
+                           to = tools::R_user_dir("omopcept", which = "cache"),
+                           download_max_secs = 720) {
 
-  options(timeout = 360)
+  #increase timeout, allow that user may have set timeout
+  #to be higher via environment variable R_DEFAULT_INTERNET_TIMEOUT
+  options(timeout = max(download_max_secs, getOption("timeout")))
+  #options(timeout = download_max_secs)
 
-  message("downloading ",tablename, " file, may take a minute or so")
+  message("downloading ",tablename, " file, may take a few minutes",
+          ", this only needs to be repeated if the package is re-installed")
 
   #concept_ancestor took just over a minute on local PC
+  #concept_relationship took ~5 minutes on local PC
+
+  #concept_relationship
+  #Error ... In utils::download.file ... Timeout of 360 seconds was reached
 
   #where to save concept file ? to allow user to update.
   # https://r-pkgs.org/data.html#sec-data-persistent
