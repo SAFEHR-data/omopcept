@@ -25,6 +25,7 @@ check_c_id <- function(c_id,
     toreturn$c_id <- dplyr::filter(omop_concept(), concept_name == c_id) |>
       dplyr::pull(concept_id, as_vector=TRUE)
   } else if (!is.null(c_id)) {
+    toreturn$c_id <- c_id #bugfix this line missing 2023-09-12
     toreturn$name1 <- dplyr::filter(omop_concept(), concept_id == c_id) |>
       dplyr::pull(concept_name, as_vector=TRUE)
   } else {
