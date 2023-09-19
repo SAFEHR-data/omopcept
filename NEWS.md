@@ -1,5 +1,5 @@
 
-# omopcept 0.0.0.90051 dev
+# omopcept 0.0.0.90052 dev
 
 * `namefull` optional arg added to omop_join_name() to cope with e.g. concept_id_2 in omop_join_name()
 * `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
