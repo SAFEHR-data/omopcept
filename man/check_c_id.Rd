@@ -3,18 +3,18 @@
 \name{check_c_id}
 \alias{check_c_id}
 \title{check c_id arg to omop_ancestors() and omop_descendants()
-TODO want to not export but couldn't get to work when not exported}
+TODO want to not export but couldn't get to work when not exported
+TODO add an option for omop_relations}
 \usage{
-check_c_id(c_id, anc_or_des)
+check_c_id(c_id)
 }
 \arguments{
 \item{c_id}{arg to check : single omop concept_id or exact concept_name to get ancestors of}
-
-\item{anc_or_des}{"ancestors" or "descendants"}
 }
 \description{
 check c_id arg to omop_ancestors() and omop_descendants()
 TODO want to not export but couldn't get to work when not exported
+TODO add an option for omop_relations
 }
 \examples{
 # example code

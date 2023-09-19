@@ -1,17 +1,15 @@
 #' check c_id arg to omop_ancestors() and omop_descendants()
 #' TODO want to not export but couldn't get to work when not exported
-#' TODO add an option for omop_relations
 #'
 #' @param c_id arg to check : single omop concept_id or exact concept_name to get ancestors of
-#' @param anc_or_des "ancestors" or "descendants"
+# @param anc_or_des "ancestors" or "descendants"
 #' @export
 #' @examples
 #' # example code
 #' c_id <- 1633308
-#' check_c_id(c_id,"descendants")
+#' check_c_id(c_id)
 #'
-check_c_id <- function(c_id,
-                       anc_or_des) {
+check_c_id <- function(c_id) {
 
   #defaults
   #toreturn <- data.frame(c_id=c_id,name1="ALL")
@@ -35,7 +33,7 @@ check_c_id <- function(c_id,
 
   if (length(c_id) > 1)
   {
-    msg <- paste0("can only filter ",anc_or_des," of a single concept, you have ",length(c_id),
+    msg <- paste0("can only filter ancestors, descendants or relations of a single concept, you have ",length(c_id),
                   ". Please modify your query to get a single starting concept or none.")
     #TODO, does this stop also stop the func that called ?
     stop(msg)
