@@ -5,14 +5,16 @@
 \alias{ojoin}
 \title{join omop concept name onto a dataframe with a *_concept_id column}
 \usage{
-omop_join_name(df, namestart = "")
+omop_join_name(df, namefull = "", namestart = "")
 
-ojoin(df, namestart = "")
+ojoin(df, namefull = "", namestart = "")
 }
 \arguments{
 \item{df}{dataframe}
 
-\item{namestart}{start of *_concept_id column, if "" will join on concept_name}
+\item{namefull}{optional full name of concept_id column, if default "" namestart used}
+
+\item{namestart}{start of *_concept_id column, if "" will join on concept_name, ignored if namefull used}
 }
 \description{
 adds (namestart)_name based on (namestart)_concept_id
@@ -22,5 +24,6 @@ e.g. drug_concept_id to get drug_name
 data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
 #df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(route_concept_id)
+#df3 <- omop_concept_relationship() |> head() |> dplyr::collect() |> omop_join_name(namefull="concept_id_1")
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> ojoin(namestart="drug")
 }

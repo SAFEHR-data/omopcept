@@ -4,16 +4,21 @@
 #' e.g. drug_concept_id to get drug_name
 #'
 #' @param df dataframe
-#' @param namestart start of *_concept_id column, if "" will join on concept_name
+#' @param namefull optional full name of concept_id column, if default "" namestart used
+#' @param namestart start of *_concept_id column, if "" will join on concept_name, ignored if namefull used
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 #' data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
 #' #df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(route_concept_id)
-omop_join_name <- function(df, namestart="") {
+#' #df3 <- omop_concept_relationship() |> head() |> dplyr::collect() |> omop_join_name(namefull="concept_id_1")
+omop_join_name <- function(df,
+                           namefull = "",
+                           namestart = "") {
 
   #"" is to cope with concept_id from omop_join_name_all()
-  if (namestart == "") id_col_name <- "concept_id"
+  if (namefull != "") id_col_name <- namefull
+  else if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
   #TODO how to get this to cope with concept_id_1 & concept_id_2 from omop relationship table
