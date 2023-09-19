@@ -83,11 +83,17 @@ way.
 ## Concept data
 
 OMOP vocab data downloaded from Athena includes a tables called
-CONCEPT.csv and CONCEPT_ANCESTOR.csv that we saved in parquet format for
-use in this package.
+CONCEPT.csv, CONCEPT_ANCESTOR.csv and CONCEPT_RELATIONSHIP.csv that we
+saved in parquet format for use in this package.
 
-omopcept downloads a selection of vocabularies and stores locally the
-first time you use it.
+omopcept downloads a selection of vocabularies and stores them locally
+the first time you use it (in the recommended data location for R
+packages). The download does not need to be repeated until you update
+the package.
+
+We plan to allow the location of the concept files to be specified so
+that in a future version users could point it to their own downloaded
+files.
 
 | fields           | about                               | query_arguments |
 |:-----------------|:------------------------------------|:----------------|

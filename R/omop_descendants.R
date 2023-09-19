@@ -35,7 +35,7 @@ omop_descendants <- function(c_id=NULL,
 
   #checks c_id and gets name (ALL if c_id==NULL)
   #TODO tidy this up & check, done in a rush !!
-  res <- check_c_id(c_id,"descendants")
+  res <- check_c_id(c_id)
   c_id <- res$c_id[1]
   name1 <- res$name1[1]
 

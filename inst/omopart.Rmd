@@ -128,6 +128,44 @@ dfloincbloodgroup <- dfloinc |>
   #filter(min_levels_of_separation<=3) |> 
   filter(grepl("blood group", concept_name, ignore.case=TRUE)) 
 
+#news2 scores
+#can get the snomed codes from omopcept, 10 rows, one seems to be ancestor
+dfnews2 <- omop_names("news2", v_ids="SNOMED", d_ids="measurement" )
+#WHY does this return 7 million concepts, suggests a BUG
+#is this just all decsendants with a separation of 1 ??
+dfnews2ds1 <- omop_descendants(37208354, separation=1)
+dfnews2ds2 <- omop_descendants(37208354, separation=c(1,2))
+
+
+
+#for oxford meeting
+
+#139 concepts
+dfoxford <-  omop_names("oxford") 
+
+#try single descendants of oxford
+#could do via concept relationship
+
+#could go through all 139 concepts in a loop
+dfoxdes <- dfoxanc <- NULL
+for(i in 1:nrow(dfoxford))
+{
+  dfdtmp <- omop_descendants(dfoxford$concept_id[i]) #, separation=1) 
+  dfatmp <- omop_ancestors(dfoxford$concept_id[i]) #, separation=1) 
+    
+  #if(i==1) dfoxdes <- dftmp
+  dfoxdes <- bind_rows(dfoxdes, dfdtmp)
+  dfoxanc <- bind_rows(dfoxanc, dfatmp)
+}
+
+dfox <- bind_rows(dfoxanc, dfoxdes)
+
+dfox2 <- dfox |> filter(min_levels_of_separation <= 2)
+dfox1 <- dfox |> filter(min_levels_of_separation <= 1)
+
+#98
+dfoxa1 <- dfoxanc |> filter(min_levels_of_separation <= 1)
+
 ```
 
 ```{r first test plot, include=FALSE, eval=TRUE}
@@ -141,7 +179,7 @@ dfin <- dffigo
 dfin <- dfme3
 dfin <- dfme3 |> head(2000)
 
-#dfin <- dfme1
+dfin <- dfme1
 
 #TODO PUT THIS INTO A FUNCTION THAT ACCEPTS ARGS
 #AND USES ARGS TO AUTO-GENERATE OUTPUT FILENAME
@@ -165,11 +203,21 @@ dfin <- dfme3 |>
 # dfin <- dfloincblood
 # dfin <- dfloincbloodgroup
 
+dfin <- dfnews2d
+dfin <- dfoxa1
 
-#works to get domain_id in
+#TODO beware diff between ancestor_name & descendant_concept_name
+
+#ANCESTOR
 dfin2 <- dfin |> 
   dplyr::rename(from = ancestor_name,
                 to = concept_name)  
+
+#DESCENDANT
+dfin2 <- dfin |> 
+  dplyr::rename(from = descendant_concept_name,
+                to = concept_name)  
+
 
 #challenge to make sure get all nodes from from & to
 #to avoid Invalid (negative) vertex id
@@ -222,11 +270,14 @@ V(graphin)$connections <- degree(graphin)
           legend.key = element_rect(fill = "white"),
           #legend.title = element_text(size=30), 
           legend.title = element_blank(),           
-          legend.text = element_text(size=30) ) +
-    guides(colour = guide_legend(override.aes = list(size=30))) +
+          legend.text = element_text(size=20) ) +
+    guides(colour = guide_legend(override.aes = list(size=20))) +
     geom_node_text(aes(label=name, 
-                       colour=domain_id, 
-                       size=connections),
+                       # colour=domain_id, 
+                       # size=connections*3),
+                       # disabling node text size
+                       size=7,
+                       colour=domain_id),
                    show.legend=FALSE,
                    repel=TRUE, 
                    check_overlap=FALSE,
@@ -243,7 +294,15 @@ V(graphin)$connections <- degree(graphin)
 #ta text alpha  
 #pdark2 palette color brewer
 #ns node sized
+#nts node text size
+#d? domains
   
+ggsave(ggr,filename="oxa-s1-pset1-06x03m-ns-nts7.pdf",width=60,height=30,units="cm",limitsize = FALSE)
+  
+ggsave(ggr,filename="ox-s2-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
+   
+ggsave(ggr,filename="dlbcl-s1-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)    
+   
 ggsave(ggr,filename="dlbcl-s3-d7-500-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
 # ggsave(ggr,filename="dlbcl-s1-d7-500-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
 

@@ -4,17 +4,18 @@
 #' e.g. drug_concept_id to get drug_name
 #'
 #' @param df dataframe
-#' @param namefull optional full name of concept_id column, if default "" namestart used
 #' @param namestart start of *_concept_id column, if "" will join on concept_name, ignored if namefull used
+#' @param namefull optional full name of concept_id column, if default "" namestart used
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
 #' data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="drug")
 #' #df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(route_concept_id)
-#' #df3 <- omop_concept_relationship() |> head() |> dplyr::collect() |> omop_join_name(namefull="concept_id_1")
+#' #df3 <- omop_concept_relationship() |> head() |>
+#' #       dplyr::collect() |> omop_join_name(namefull="concept_id_1")
 omop_join_name <- function(df,
-                           namefull = "",
-                           namestart = "") {
+                           namestart = "",
+                           namefull = "") {
 
   #"" is to cope with concept_id from omop_join_name_all()
   if (namefull != "") id_col_name <- namefull
@@ -81,7 +82,7 @@ omop_join_name_all <- function(df) {
   for(cname in colnames)
   {
     df <- df |>
-      omop_join_name(cname)
+      omop_join_name(namestart = cname)
   }
 
   return(df)

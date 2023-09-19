@@ -12,8 +12,6 @@ omop_relations(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
-  separation = NULL,
-  itself = FALSE,
   messages = TRUE
 )
 
@@ -24,8 +22,6 @@ orels(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
-  separation = NULL,
-  itself = FALSE,
   messages = TRUE
 )
 }
@@ -42,10 +38,6 @@ orels(
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
 
-\item{separation}{levels of separation to filter by, default NULL for all}
-
-\item{itself}{whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE}
-
 \item{messages}{whether to print info messages, default=TRUE}
 }
 \value{
@@ -60,13 +52,8 @@ super short name func to find relations
 omop_relations(1633308)
 #omop_relations("lenalidomide")
 #omop_relations("Non-invasive blood pressure")
-#omop_relations("Non-invasive blood pressure",separation=c(1,2))
 #chemodrugs <- omop_relations("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
-#no filtering by relations
-#(expect to be same as omop_ancestors())
-#v slight difference 19409 v 19411 concepts, not sure why, prob not important
 #cmde <- omop_relations(v_ids="Cancer Modifier")
-#cmde1 <- omop_relations(v_ids="Cancer Modifier", separation=1)
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
 chemodrugs <- orels("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")

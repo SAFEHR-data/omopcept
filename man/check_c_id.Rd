@@ -3,8 +3,7 @@
 \name{check_c_id}
 \alias{check_c_id}
 \title{check c_id arg to omop_ancestors() and omop_descendants()
-TODO want to not export but couldn't get to work when not exported
-TODO add an option for omop_relations}
+TODO want to not export but couldn't get to work when not exported}
 \usage{
 check_c_id(c_id)
 }
@@ -14,11 +13,10 @@ check_c_id(c_id)
 \description{
 check c_id arg to omop_ancestors() and omop_descendants()
 TODO want to not export but couldn't get to work when not exported
-TODO add an option for omop_relations
 }
 \examples{
 # example code
 c_id <- 1633308
-check_c_id(c_id,"descendants")
+check_c_id(c_id)
 
 }
