@@ -51,18 +51,20 @@ omop_concept() |>
 
 ## Main omopcept functions
 
-| full name                 | quick interactive name | action                                                         |
-|---------------------------|------------------------|----------------------------------------------------------------|
-| `omop_names()`            | `onames()`             | search concepts by parts of names                              |
-| `omop_id()`               | `oid()`                | search for a concept_id                                        |
-| `omop_join_name()`        | `ojoin()`              | join an omop name column onto a table with an id column        |
-| `omop_join_name_all()`    | `ojoinall()`           | join omop names columns onto all id columns in a table         |
-|                           |                        |                                                                |
-| `omop_ancestors()`        | `oance()`              | return ancestors of a concept                                  |
-| `omop_descendants()`      | `odesc()`              | return descendants of a concept                                |
-|                           |                        |                                                                |
-| `omop_concept()`          | `oc()`                 | return reference to concept table (for use in dplyr pipelines) |
-| `omop_concept_ancestor()` | `oca()`                | return reference to concept ancestor table                     |
+| full name                     | quick interactive name | action                                                                                         |
+|-------------------------------|------------------------|------------------------------------------------------------------------------------------------|
+| `omop_names()`                | `onames()`             | search concepts by parts of names                                                              |
+| `omop_id()`                   | `oid()`                | search for a concept_id                                                                        |
+| `omop_join_name()`            | `ojoin()`              | join an omop name column onto a table with an id column                                        |
+| `omop_join_name_all()`        | `ojoinall()`           | join omop names columns onto all id columns in a table                                         |
+|                               |                        |                                                                                                |
+| `omop_ancestors()`            | `oance()`              | return ancestors of a concept                                                                  |
+| `omop_descendants()`          | `odesc()`              | return descendants of a concept                                                                |
+| `omop_relations()`            | `orels()`              | return (immediate) relations of a concept including the nature of the relationship e.g. ‘Is a’ |
+|                               |                        |                                                                                                |
+| `omop_concept()`              | `oc()`                 | return reference to concept table (for use in dplyr pipelines)                                 |
+| `omop_concept_ancestor()`     | `oca()`                | return reference to concept ancestor table                                                     |
+| `omop_concept_relationship()` | `ocr()`                | return reference to concept relationship table                                                 |
 
 ## OMOP background
 
