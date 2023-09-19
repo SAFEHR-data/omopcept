@@ -7,6 +7,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+**Warning: under active development 2023-09, breaking changes possible**
+
 omopcept provides access to a subset of **OMOP** con**CEPT**s (without
 the cons!) and flexible tidyverse compatible R functions for querying.
 It includes concise named copies of functions designed for interactive
