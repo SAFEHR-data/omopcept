@@ -1,5 +1,6 @@
 #' check c_id arg to omop_ancestors() and omop_descendants()
 #' TODO want to not export but couldn't get to work when not exported
+#' TODO add an option for omop_relations
 #'
 #' @param c_id arg to check : single omop concept_id or exact concept_name to get ancestors of
 #' @param anc_or_des "ancestors" or "descendants"

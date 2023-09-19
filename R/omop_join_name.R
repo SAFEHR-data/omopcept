@@ -16,10 +16,12 @@ omop_join_name <- function(df, namestart="") {
   if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
+  #TODO how to get this to cope with concept_id_1 & concept_id_2 from omop relationship table
+
   #TODO sometimes i think want to miss off 'concept'
   #e.g. ancestor_concept_id to ancestor_name
   name_col_name <- sub("_id","_name",id_col_name)
-  #maybe off an option of
+  #maybe offer an option of
   #name_col_name <- sub("_concept_id","_name",id_col_name)
 
 
