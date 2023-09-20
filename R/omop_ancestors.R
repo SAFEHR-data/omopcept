@@ -35,7 +35,6 @@ omop_ancestors <- function(c_id=NULL,
   c_id <- res$c_id
   name1 <- res$name1
 
-  # TODO 1 add option for NULL c_id, returns all concepts within other filters
   # TODO 2 add arg about separation whether to use min, max. or both
 
   # TODO 3 protect against
@@ -65,6 +64,9 @@ omop_ancestors <- function(c_id=NULL,
   if(!is.null(separation)) df1 <- df1 |>  filter(min_levels_of_separation %in% separation)
 
   if (messages) message("returning ",nrow(df1)," concepts")
+
+  #TODO add option to join names on here (add to descendants & relations)
+  #probbably using omop_join_name_all()
 
   return(df1)
 
