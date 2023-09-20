@@ -40,7 +40,7 @@ omop_join_name <- function(df,
   df |>
     left_join(id_and_name, by = dynamic_by(id_col_name,"concept_id"), copy = TRUE) |>
     #move name column next to id to make output more readable
-    relocate(name_col_name, .after=id_col_name)
+    dplyr::relocate(name_col_name, .after=id_col_name)
 
 #TODO maybe add option to deselect some table columns to make more readable
 
