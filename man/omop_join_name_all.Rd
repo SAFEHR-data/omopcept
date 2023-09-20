@@ -23,12 +23,15 @@ e.g. drug_concept_id to get drug_name etc.
 data.frame(concept_id=(c(3571338L,3655355L)),
            drug_concept_id=(c(4000794L,35628998L))) |>
            omop_join_name_all()
+#examples commented for now mostly to speed package build
 #data.frame(route_concept_id=(c(4132161L,	4171047L)),
 #          drug_concept_id=(c(1550560L,	35780880L))) |>
 #          omop_join_name_all()
 #df2 <- drug_exposure |>
 #       head(100)) |>
 #       omop_join_name_all()
+#df3 <- omop_concept_relationship() |> head() |>
+#          dplyr::collect() |> omop_join_name_all()
 data.frame(concept_id=(c(3571338L,3655355L)),
            drug_concept_id=(c(4000794L,35628998L))) |>
            ojoinall()

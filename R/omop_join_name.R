@@ -42,6 +42,8 @@ omop_join_name <- function(df,
     #move name column next to id to make output more readable
     relocate(name_col_name, .after=id_col_name)
 
+#TODO maybe add option to deselect some table columns to make more readable
+
 }
 
 
@@ -65,24 +67,33 @@ ojoin <- omop_join_name
 #' data.frame(concept_id=(c(3571338L,3655355L)),
 #'            drug_concept_id=(c(4000794L,35628998L))) |>
 #'            omop_join_name_all()
+#' #examples commented for now mostly to speed package build
 #' #data.frame(route_concept_id=(c(4132161L,	4171047L)),
 #' #          drug_concept_id=(c(1550560L,	35780880L))) |>
 #' #          omop_join_name_all()
 #' #df2 <- drug_exposure |>
 #' #       head(100)) |>
 #' #       omop_join_name_all()
+#' #df3 <- omop_concept_relationship() |> head() |>
+#' #          dplyr::collect() |> omop_join_name_all()
 omop_join_name_all <- function(df) {
 
+  #logic
+  #if colname contains *_concept_id do omop_join_name(namestart=*)
+  #else if colname contains concept_id do omop_join_name(namefull=colname)
+
   colnames <- df |>
-    select(ends_with("concept_id")) |>
+    select(contains("concept_id")) |>
     names() |>
-    stringr::str_remove("_concept_id") |>
-    stringr::str_remove("concept_id")    #to cope with 'concept_id' passes "" to omop_join_name()
+    stringr::str_remove("_concept_id")
+
 
   for(cname in colnames)
   {
-    df <- df |>
-      omop_join_name(namestart = cname)
+    if (str_detect(cname,"concept_id")) {
+          df <- df |> omop_join_name(namefull = cname)
+    } else
+          df <- df |> omop_join_name(namestart = cname)
   }
 
   return(df)
