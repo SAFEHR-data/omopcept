@@ -22,14 +22,10 @@ omop_join_name <- function(df,
   else if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
-  #TODO how to get this to cope with concept_id_1 & concept_id_2 from omop relationship table
-
-  #TODO sometimes i think want to miss off 'concept'
   #e.g. ancestor_concept_id to ancestor_name
   name_col_name <- sub("_id","_name",id_col_name)
   #maybe offer an option of
   #name_col_name <- sub("_concept_id","_name",id_col_name)
-
 
   #beware rename concept_name column before joining in case
   #there is already a concept_name column in df
@@ -37,10 +33,13 @@ omop_join_name <- function(df,
     select(.data$concept_id,.data$concept_name) |>
     rename_with(~name_col_name, .data$concept_name)
 
-  #TODO can I make this faster by replacing the copy=TRUE with some filter & collect ?
+  #TODO can I make this faster by replacing the copy=TRUE
+  #with some filter & collect ?
 
   df |>
-    left_join(id_and_name, by = dynamic_by(id_col_name,"concept_id"), copy = TRUE)
+    left_join(id_and_name, by = dynamic_by(id_col_name,"concept_id"), copy = TRUE) |>
+    #move name column next to id to make output more readable
+    relocate(name_col_name, .after=id_col_name)
 
 }
 
