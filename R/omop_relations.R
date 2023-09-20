@@ -39,12 +39,22 @@ omop_relations <- function(c_id=NULL,
   if (c_id != "none") df1 <- df1 |>
     filter(concept_id_1 == c_id) #TODO check whether I want to add concept_id_2 to this filter
 
+  #get most attributes from omop_concept() to join
+  #not all e.g.valid_start_date, end & invalid_reason already in relations
+  concept_attributes <- omopcept::omop_concept() |>
+    select(!c(concept_name,valid_start_date, valid_end_date, invalid_reason))
+
   df1 <- df1 |>
     #renaming allows further filter of concept_id, may not be necessary
-    rename(concept_id = concept_id_2) |>
-    left_join(omopcept::omop_concept(), by = "concept_id") |>
+    #TODO do I want this next line ???
+    #rename(concept_id = concept_id_2) |>
+    #left_join(concept_attributes, by = "concept_id") |>
+    left_join(concept_attributes, by = dplyr::join_by(concept_id_2 == concept_id)) |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    omop_join_name() |>
+    #don't need because joined above with attributes
+    omop_join_name_all() |>
+    #move name column next to id to make output more readable
+    #dplyr::relocate(concept_name_2, .after=concept_id_1) |>
     collect()
 
   #TODO do I want an itself arg, doing something with c1 & 2
