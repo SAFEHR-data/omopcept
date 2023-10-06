@@ -5,12 +5,23 @@
 \alias{ojoinall}
 \title{join omop concept names onto all *_concept_id columns in a dataframe}
 \usage{
-omop_join_name_all(df)
+omop_join_name_all(
+  df,
+  domain = FALSE,
+  vocabulary = FALSE,
+  concept_class = FALSE
+)
 
-ojoinall(df)
+ojoinall(df, domain = FALSE, vocabulary = FALSE, concept_class = FALSE)
 }
 \arguments{
 \item{df}{dataframe}
+
+\item{domain}{whether to add domain_id column, default FALSE}
+
+\item{vocabulary}{whether to add vocabulary_id column, default FALSE}
+
+\item{concept_class}{whether to add concept_class_id column, default FALSE}
 }
 \value{
 dataframe based on input df with 1 extra column added for each concept_id column

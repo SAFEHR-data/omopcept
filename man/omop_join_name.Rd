@@ -5,9 +5,23 @@
 \alias{ojoin}
 \title{join omop concept name onto a dataframe with a *_concept_id column}
 \usage{
-omop_join_name(df, namestart = "", namefull = "")
+omop_join_name(
+  df,
+  namestart = "",
+  namefull = "",
+  domain = FALSE,
+  vocabulary = FALSE,
+  concept_class = FALSE
+)
 
-ojoin(df, namestart = "", namefull = "")
+ojoin(
+  df,
+  namestart = "",
+  namefull = "",
+  domain = FALSE,
+  vocabulary = FALSE,
+  concept_class = FALSE
+)
 }
 \arguments{
 \item{df}{dataframe}
@@ -15,6 +29,12 @@ ojoin(df, namestart = "", namefull = "")
 \item{namestart}{start of *_concept_id column, if "" will join on concept_name, ignored if namefull used}
 
 \item{namefull}{optional full name of concept_id column, if default "" namestart used}
+
+\item{domain}{whether to add domain_id column, default FALSE}
+
+\item{vocabulary}{whether to add vocabulary_id column, default FALSE}
+
+\item{concept_class}{whether to add concept_class_id column, default FALSE}
 }
 \description{
 adds (namestart)_name based on (namestart)_concept_id

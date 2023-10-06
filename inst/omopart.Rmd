@@ -166,6 +166,14 @@ dfox1 <- dfox |> filter(min_levels_of_separation <= 1)
 #98
 dfoxa1 <- dfoxanc |> filter(min_levels_of_separation <= 1)
 
+
+#for NHS-R talk
+vehicle_accident_descendants <- omop_descendants(4168046)
+
+#for Steve
+critical1 <- omop_concept_relationship() |> omop_join_name_all(domain=TRUE,vocabulary=TRUE) |> filter(grepl("ritical care",concept_name_1)) |>  collect()
+
+
 ```
 
 ```{r first test plot, include=FALSE, eval=TRUE}
@@ -205,22 +213,31 @@ dfin <- dfme3 |>
 
 dfin <- dfnews2d
 dfin <- dfoxa1
+dfin <- vehicle_accident_descendants
+dfin <- critical1
 
 #TODO beware diff between ancestor_name & descendant_concept_name
 
-#ANCESTOR
+
+#DESCENDANT
 dfin2 <- dfin |> 
   dplyr::rename(from = ancestor_name,
                 to = concept_name)  
 
-#DESCENDANT
-dfin2 <- dfin |> 
-  dplyr::rename(from = descendant_concept_name,
-                to = concept_name)  
+#ANCESTOR
+dfin2 <- dfin |>
+ dplyr::rename(from = descendant_concept_name,
+               to = concept_name)
 
+#RELATION
+dfin2 <- dfin |>
+ dplyr::rename(from = concept_name_1,
+               to = concept_name_2)
 
 #challenge to make sure get all nodes from from & to
 #to avoid Invalid (negative) vertex id
+#TODO get this to cope with relationship tables that have no vocab or domain
+#maybe I just need to allow join_name_all() to also join on vocab & domain
 nodesfrom <- dfin2 |> 
   dplyr::select(from,vocabulary_id,domain_id) |>
   group_by(from) |> 
@@ -297,6 +314,10 @@ V(graphin)$connections <- degree(graphin)
 #nts node text size
 #d? domains
   
+ggsave(ggr,filename="critical1-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
+    
+ggsave(ggr,filename="accident-vehicle-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
+    
 ggsave(ggr,filename="oxa-s1-pset1-06x03m-ns-nts7.pdf",width=60,height=30,units="cm",limitsize = FALSE)
   
 ggsave(ggr,filename="ox-s2-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)

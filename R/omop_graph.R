@@ -68,16 +68,16 @@ omop_graph <- function(c_id=NULL,
   #trying to get node labels
 
   #simple example from help
-  simple <- create_notable('bull') %>%
-    mutate(name = c('Thomas', 'Bob', 'Hadley', 'Winston', 'Baptiste')) %>%
-    activate(edges) %>%
-    mutate(type = sample(c('friend', 'foe'), 5, TRUE))
-
-  ggraph(simple, layout = 'graphopt') +
-         geom_edge_link(aes(start_cap = label_rect(node1.name),
-                            end_cap = label_rect(node2.name)),
-                            arrow = arrow(length = unit(4, 'mm'))) +
-         geom_node_text(aes(label = name))
+  # simple <- create_notable('bull') %>%
+  #   mutate(name = c('Thomas', 'Bob', 'Hadley', 'Winston', 'Baptiste')) %>%
+  #   activate(edges) %>%
+  #   mutate(type = sample(c('friend', 'foe'), 5, TRUE))
+  #
+  # ggraph(simple, layout = 'graphopt') +
+  #        geom_edge_link(aes(start_cap = label_rect(node1.name),
+  #                           end_cap = label_rect(node2.name)),
+  #                           arrow = arrow(length = unit(4, 'mm'))) +
+  #        geom_node_text(aes(label = name))
 
   plot(ggr)
 
