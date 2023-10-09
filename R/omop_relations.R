@@ -45,10 +45,6 @@ omop_relations <- function(c_id=NULL,
     select(!c(concept_name,valid_start_date, valid_end_date, invalid_reason))
 
   df1 <- df1 |>
-    #renaming allows further filter of concept_id, may not be necessary
-    #TODO do I want this next line ???
-    #rename(concept_id = concept_id_2) |>
-    #left_join(concept_attributes, by = "concept_id") |>
     left_join(concept_attributes, by = dplyr::join_by(concept_id_2 == concept_id)) |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
     #don't need because joined above with attributes

@@ -52,7 +52,6 @@ omop_ancestors <- function(c_id=NULL,
     filter(descendant_concept_id == c_id)
 
   df1 <- df1 |>
-    #renaming allows further filter of concept_id, may not be necessary
     rename(concept_id = ancestor_concept_id) |>
     left_join(omopcept::omop_concept(), by = "concept_id") |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
@@ -64,9 +63,6 @@ omop_ancestors <- function(c_id=NULL,
   if(!is.null(separation)) df1 <- df1 |>  filter(min_levels_of_separation %in% separation)
 
   if (messages) message("returning ",nrow(df1)," concepts")
-
-  #TODO add option to join names on here (add to descendants & relations)
-  #probbably using omop_join_name_all()
 
   return(df1)
 

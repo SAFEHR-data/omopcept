@@ -47,15 +47,9 @@ omop_descendants <- function(c_id=NULL,
     filter(ancestor_concept_id == c_id)
 
   df1 <- df1 |>
-    #renaming allows further filter of concept_id, may not be necessary
     rename(concept_id = descendant_concept_id) |>
     left_join(omopcept::omop_concept(), by = "concept_id") |>
-    #left_join(omopcept::omop_concept(), by = c("descendant_concept_id" = "concept_id")) |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    #don't need next because ancestor_name already in concept table
-    #actually it isn't, but there is ancestor_concept_id
-    #and don't want to set to ALL
-    #mutate(ancestor_name = name1) |>
     omop_join_name(namestart="ancestor") |>
     #TODO this shouldn't be necessary after option to omop_join_names added
     rename(ancestor_name = ancestor_concept_name) |>
