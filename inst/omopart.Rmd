@@ -147,6 +147,9 @@ dfoxford <-  omop_names("oxford")
 #could do via concept relationship
 
 #could go through all 139 concepts in a loop
+#TODO generalise this into a function
+#omop_ancestors_multi()
+#or maybe even put it into omop_ancestors
 dfoxdes <- dfoxanc <- NULL
 for(i in 1:nrow(dfoxford))
 {
@@ -172,6 +175,23 @@ vehicle_accident_descendants <- omop_descendants(4168046)
 
 #for Steve
 critical1 <- omop_concept_relationship() |> omop_join_name_all(domain=TRUE,vocabulary=TRUE) |> filter(grepl("ritical care",concept_name_1)) |>  collect()
+
+#holidays for away day
+holidays <- omop_names("holiday")
+holsanc <- NULL
+holsrel <- NULL
+for(i in 1:nrow(holidays))
+{
+  #dfdtmp <- omop_descendants(dfoxford$concept_id[i]) #, separation=1) 
+  #dfatmp <- omop_ancestors(holidays$concept_id[i],itself=TRUE)
+  dfatmp <- omop_relations(holidays$concept_id[i])
+    
+  #if(i==1) dfoxdes <- dftmp
+  #dfoxdes <- bind_rows(dfoxdes, dfdtmp)
+  #holsanc <- bind_rows(holsanc, dfatmp)
+  holsrel <-  bind_rows(holsrel, dfatmp)
+}
+
 
 
 ```
@@ -215,24 +235,35 @@ dfin <- dfnews2d
 dfin <- dfoxa1
 dfin <- vehicle_accident_descendants
 dfin <- critical1
+dfin <- holsanc
+dfin <- holsrel
+
 
 #TODO beware diff between ancestor_name & descendant_concept_name
 
+if ("ancestor_name" %in% names(dfin)){
+  
+  #DESCENDANT
+  dfin2 <- dfin |> 
+    dplyr::rename(from = ancestor_name,
+                  to = concept_name)    
+  
+} else if ("descendant_concept_name" %in% names(dfin)){
+  
+  #ANCESTOR
+  dfin2 <- dfin |>
+   dplyr::rename(from = descendant_concept_name,
+                 to = concept_name)
+  
+} else if ("concept_name_1" %in% names(dfin)){
+  
+  #RELATION
+  dfin2 <- dfin |>
+   dplyr::rename(from = concept_name_1,
+                 to = concept_name_2)
+  
+}
 
-#DESCENDANT
-dfin2 <- dfin |> 
-  dplyr::rename(from = ancestor_name,
-                to = concept_name)  
-
-#ANCESTOR
-dfin2 <- dfin |>
- dplyr::rename(from = descendant_concept_name,
-               to = concept_name)
-
-#RELATION
-dfin2 <- dfin |>
- dplyr::rename(from = concept_name_1,
-               to = concept_name_2)
 
 #challenge to make sure get all nodes from from & to
 #to avoid Invalid (negative) vertex id
@@ -303,6 +334,8 @@ V(graphin)$connections <- degree(graphin)
 
   #plot(ggr)
 
+ggr <- ggr + ggtitle("guerilla OMOP holidays")  
+  
 #saving plots
 #naming convention
 #s  separation min
@@ -314,6 +347,8 @@ V(graphin)$connections <- degree(graphin)
 #nts node text size
 #d? domains
   
+ggsave(ggr,filename="holidaysrel-pset1-05m-ns.pdf",width=50,height=30,units="cm",limitsize = FALSE)
+
 ggsave(ggr,filename="critical1-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
     
 ggsave(ggr,filename="accident-vehicle-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
