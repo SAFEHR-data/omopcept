@@ -125,9 +125,9 @@ omop_join_name_all <- function(df,
   for(cname in colnames)
   {
     if (str_detect(cname,"concept_id")) {
-          df <- df |> omop_join_name(namefull=cname, domain=domain, vocabulary=vocabulary, concept_class=concept_class )
+          df <- df |> omop_join_name(namefull=cname, domain=domain, vocabulary=vocabulary, concept_class=concept_class, concept_code=concept_code )
     } else
-          df <- df |> omop_join_name(namestart=cname, domain=domain, vocabulary=vocabulary, concept_class=concept_class )
+          df <- df |> omop_join_name(namestart=cname, domain=domain, vocabulary=vocabulary, concept_class=concept_class, concept_code=concept_code )
   }
 
   return(df)
