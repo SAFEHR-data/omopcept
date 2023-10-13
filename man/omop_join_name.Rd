@@ -11,7 +11,8 @@ omop_join_name(
   namefull = "",
   domain = FALSE,
   vocabulary = FALSE,
-  concept_class = FALSE
+  concept_class = FALSE,
+  concept_code = FALSE
 )
 
 ojoin(
@@ -20,7 +21,8 @@ ojoin(
   namefull = "",
   domain = FALSE,
   vocabulary = FALSE,
-  concept_class = FALSE
+  concept_class = FALSE,
+  concept_code = FALSE
 )
 }
 \arguments{
@@ -35,6 +37,8 @@ ojoin(
 \item{vocabulary}{whether to add vocabulary_id column, default FALSE}
 
 \item{concept_class}{whether to add concept_class_id column, default FALSE}
+
+\item{concept_code}{whether to add concept_code column, default FALSE}
 }
 \description{
 adds (namestart)_name based on (namestart)_concept_id

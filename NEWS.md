@@ -1,7 +1,7 @@
 
 # omopcept 0.0.0.90052 dev
 
-* `domain`, `vocabulary` & `concept_class` optional args added to `omop_join_name()` & `omop_join_name_all()` to be able to also join these columns
+* `domain`, `vocabulary`, `concept_code` & `concept_class` optional args added to `omop_join_name()` & `omop_join_name_all()` to be able to also join these columns
 * `namefull` optional arg added to `omop_join_name()` to cope with e.g. `concept_id_2` in `omop_join_name_all()`
 * `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
 * bugfix, `omop_ancestors()` & `omop_decsendants()` were not filtering domin, separation etc., when `concept_id` not specified

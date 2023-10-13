@@ -9,10 +9,17 @@ omop_join_name_all(
   df,
   domain = FALSE,
   vocabulary = FALSE,
-  concept_class = FALSE
+  concept_class = FALSE,
+  concept_code = FALSE
 )
 
-ojoinall(df, domain = FALSE, vocabulary = FALSE, concept_class = FALSE)
+ojoinall(
+  df,
+  domain = FALSE,
+  vocabulary = FALSE,
+  concept_class = FALSE,
+  concept_code = FALSE
+)
 }
 \arguments{
 \item{df}{dataframe}
@@ -22,6 +29,8 @@ ojoinall(df, domain = FALSE, vocabulary = FALSE, concept_class = FALSE)
 \item{vocabulary}{whether to add vocabulary_id column, default FALSE}
 
 \item{concept_class}{whether to add concept_class_id column, default FALSE}
+
+\item{concept_code}{whether to add concept_code column, default FALSE}
 }
 \value{
 dataframe based on input df with 1 extra column added for each concept_id column
