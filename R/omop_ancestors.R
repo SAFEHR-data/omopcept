@@ -26,6 +26,7 @@ omop_ancestors <- function(c_id=NULL,
                               standard=NULL,
                               separation=NULL,
                               itself=FALSE,
+                              #TODO implement a vocab_same arg
                               messages=TRUE
                            ) {
 
