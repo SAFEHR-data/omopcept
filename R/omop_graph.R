@@ -6,7 +6,7 @@
 #' @param ggrlayout ggraph layout, default = 'graphopt'
 #' @param palettebrewer colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
 #'
-#' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
+#' @param filetype output image file, default='pdf'
 #' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
 #' @param filenamecustom optional filename for plot, otherwise default name is created
 #'
@@ -14,50 +14,56 @@
 #' @param height plot height, default=30
 #' @param units plot size units default='cm'
 #'
+#' @param graphtitle optional title for graph, default NULL for none
+#' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
 #' @param messages whether to print info messages, default=TRUE
 #'
 #' @return ggraph object
 #' @export
 #' @examples
-
+#' #pressure <- omop_names("^Blood pressure$",standard='S')
+#' #press_descend <- omop_descendants(pressure$concept_id[1])
+#' #omop_graph(press_descend)
 omop_graph <- function(dfin,
                        ggrlayout='graphopt',
                        palettebrewer = 'Set1',
-                       filenameroot = 'omop_graph',
+
                        filetype = 'pdf',
+                       filenameroot = 'omop_graph',
                        filenamecustom = NULL,
 
                        width=50,
                        height=30,
                        units='cm',
-                       plot=TRUE,
 
+                       graphtitle=NULL,
+                       plot=TRUE,
                        messages=TRUE
                        ) {
 
   # to detect input type from presence of specific column names
   # then create a table containing 2 columns named 'from' and 'to'
   # from,to table required by ggraph
-  if ("ancestor_name" %in% names(dfin)){
+  if ("ancestor_name" %in% names(dfin)) {
 
     #DESCENDANT
     dfin2 <- dfin |>
-      dplyr::rename(from = ancestor_name,
-                    to = concept_name)
+      rename(from = ancestor_name,
+               to = concept_name)
 
-  } else if ("descendant_concept_name" %in% names(dfin)){
+  } else if ("descendant_concept_name" %in% names(dfin)) {
 
     #ANCESTOR
     dfin2 <- dfin |>
-      dplyr::rename(from = descendant_concept_name,
-                    to = concept_name)
+      rename(from = descendant_concept_name,
+               to = concept_name)
 
-  } else if ("concept_name_1" %in% names(dfin)){
+  } else if ("concept_name_1" %in% names(dfin)) {
 
     #RELATION
     dfin2 <- dfin |>
-      dplyr::rename(from = concept_name_1,
-                    to = concept_name_2)
+      rename(from = concept_name_1,
+               to = concept_name_2)
   }
 
   #challenge to make sure get all nodes from columns from & to
@@ -65,13 +71,13 @@ omop_graph <- function(dfin,
   #TODO get this to cope with relationship tables that have no vocab or domain
   #maybe I just need to allow join_name_all() to also join on vocab & domain
   nodesfrom <- dfin2 |>
-    dplyr::select(from,vocabulary_id,domain_id) |>
+    select(from,vocabulary_id,domain_id) |>
     group_by(from) |>
     slice_head(n=1) |>
     rename(name=from)
 
   nodesto <- dfin2 |>
-    dplyr::select(to,vocabulary_id,domain_id) |>
+    select(to,vocabulary_id,domain_id) |>
     group_by(to) |>
     slice_head(n=1) |>
     rename(name=to)
@@ -81,7 +87,7 @@ omop_graph <- function(dfin,
     slice_head(n=1)
 
   edges1 <- dfin2 |>
-    dplyr::select(from, to)
+    select(from, to)
 
 
   graphin <- tbl_graph(nodes=nodes1, edges=edges1)
@@ -126,7 +132,7 @@ omop_graph <- function(dfin,
                    nudge_y=0.3, #move labels above points
                    alpha=0.9)
 
-  ggr <- ggr + ggtitle(title)
+  if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
 
   if (plot) plot(ggr)
 
@@ -143,14 +149,14 @@ omop_graph <- function(dfin,
 
   if (!is.null(filenamecustom)) filename <- filenamecustom
   else
-    filename <- paste0(filenameroot,".pdf")
+    filename <- paste0(filenameroot,".",filetype)
 
   ggsave(ggr,filename=filename,width=width,height=height,units=units,limitsize = FALSE)
 
 
   #if (messages) message("saved graph file as ", outfilename)
 
-  invisible(ggr)
+  return(ggr)
 
 }
 

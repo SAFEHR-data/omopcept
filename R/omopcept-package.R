@@ -12,10 +12,15 @@
 #' @importFrom dplyr rename
 #' @importFrom dplyr relocate
 #' @importFrom dplyr join_by
+#' @importFrom dplyr slice_head
 #' @importFrom rlang .data
 #' @importFrom stringr regex
 #' @importFrom stringr str_detect
 #' @importFrom arrow open_dataset
+#' @importFrom tidygraph tbl_graph
+#' @importFrom igraph degree
+#' @importFrom ggraph ggraph
+#'
 # @importFrom arrow arrow_match_substring_regex
 ## usethis namespace: end
 NULL

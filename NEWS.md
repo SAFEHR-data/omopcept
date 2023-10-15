@@ -1,11 +1,14 @@
 
-# omopcept 0.0.0.90052 dev
+# omopcept 0.0.1.1 dev
 
+
+# omopcept 0.0.1.0
+
+* `omop_graph()` working for visualising omop hierarchy with `ggraph`
 * `domain`, `vocabulary`, `concept_code` & `concept_class` optional args added to `omop_join_name()` & `omop_join_name_all()` to be able to also join these columns
 * `namefull` optional arg added to `omop_join_name()` to cope with e.g. `concept_id_2` in `omop_join_name_all()`
 * `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
 * bugfix, `omop_ancestors()` & `omop_decsendants()` were not filtering domin, separation etc., when `concept_id` not specified
-* `omop_graph()` for visualising omop hierarchy with `ggraph`
 * option for NULL `c_id` to `omop_descendants()` and `omop_ancestors()`, returns all concepts within other filters
 
 # omopcept 0.0.0.9005 2023-08-08

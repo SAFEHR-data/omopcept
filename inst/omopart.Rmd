@@ -239,7 +239,6 @@ dfin <- holsanc
 dfin <- holsrel
 
 
-#TODO beware diff between ancestor_name & descendant_concept_name
 
 if ("ancestor_name" %in% names(dfin)){
   

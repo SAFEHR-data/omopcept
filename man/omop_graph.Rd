@@ -9,12 +9,13 @@ omop_graph(
   dfin,
   ggrlayout = "graphopt",
   palettebrewer = "Set1",
-  filenameroot = "omop_graph",
   filetype = "pdf",
+  filenameroot = "omop_graph",
   filenamecustom = NULL,
   width = 50,
   height = 30,
   units = "cm",
+  graphtitle = NULL,
   plot = TRUE,
   messages = TRUE
 )
@@ -26,6 +27,8 @@ omop_graph(
 
 \item{palettebrewer}{colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
 
+\item{filetype}{output image file, default='pdf'}
+
 \item{filenameroot}{optional root for an auto filename for plot (not used if filenamecustom is supplied)}
 
 \item{filenamecustom}{optional filename for plot, otherwise default name is created}
@@ -35,6 +38,8 @@ omop_graph(
 \item{height}{plot height, default=30}
 
 \item{units}{plot size units default='cm'}
+
+\item{graphtitle}{optional title for graph, default NULL for none}
 
 \item{plot}{whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf}
 
@@ -46,4 +51,9 @@ ggraph object
 \description{
 graph omop hierarchy
 accepts output from either omop_ancestors(), omop_descendants() or omop_relations
+}
+\examples{
+#pressure <- omop_names("^Blood pressure$",standard='S')
+#press_descend <- omop_descendants(pressure$concept_id[1])
+#omop_graph(press_descend)
 }
