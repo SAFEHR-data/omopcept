@@ -2,50 +2,48 @@
 % Please edit documentation in R/omop_graph.R
 \name{omop_graph}
 \alias{omop_graph}
-\title{ggraph omop hierarchy}
+\title{graph omop hierarchy
+accepts output from either omop_ancestors(), omop_descendants() or omop_relations}
 \usage{
 omop_graph(
-  c_id = NULL,
-  c_ids = NULL,
-  d_ids = NULL,
-  v_ids = NULL,
-  cc_ids = NULL,
-  standard = NULL,
-  separation = NULL,
-  itself = FALSE,
+  dfin,
+  ggrlayout = "graphopt",
+  palettebrewer = "Set1",
+  filenameroot = "omop_graph",
+  filetype = "pdf",
+  filenamecustom = NULL,
+  width = 50,
+  height = 30,
+  units = "cm",
+  plot = TRUE,
   messages = TRUE
 )
 }
 \arguments{
-\item{c_id}{single omop concept_id or exact concept_name to get ancestors of}
+\item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
 
-\item{c_ids}{one or more concept_id to filter by, default NULL for all}
+\item{ggrlayout}{ggraph layout, default = 'graphopt'}
 
-\item{d_ids}{one or more domain_id to filter by, default NULL for all}
+\item{palettebrewer}{colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
 
-\item{v_ids}{one or more vocabulary_id to filter by, default NULL for all}
+\item{filenameroot}{optional root for an auto filename for plot (not used if filenamecustom is supplied)}
 
-\item{cc_ids}{one or more concept_class_id to filter by, default NULL for all}
+\item{filenamecustom}{optional filename for plot, otherwise default name is created}
 
-\item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
+\item{width}{plot width, default=50}
 
-\item{separation}{levels of separation to filter by, default NULL for all}
+\item{height}{plot height, default=30}
 
-\item{itself}{whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE}
+\item{units}{plot size units default='cm'}
+
+\item{plot}{whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }
 \value{
-a dataframe of concepts and attributes
+ggraph object
 }
 \description{
-ggraph omop hierarchy
-}
-\examples{
-#TODO enable example when working
-#ggr1 <- omop_graph(v_ids="Cancer Modifier", separation=1)
-#omop_graph(1633308)
-#omop_graph("Non-invasive blood pressure")
-#omop_graph("Non-invasive blood pressure",separation=c(1,2))
-#epoch_ance <- omop_graph("EPOCH, dose-escalated")
+graph omop hierarchy
+accepts output from either omop_ancestors(), omop_descendants() or omop_relations
 }

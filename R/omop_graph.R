@@ -1,93 +1,156 @@
-#' ggraph omop hierarchy
+#' graph omop hierarchy
+#' accepts output from either omop_ancestors(), omop_descendants() or omop_relations
 #'
-#' @param c_id single omop concept_id or exact concept_name to get ancestors of
-#' @param c_ids one or more concept_id to filter by, default NULL for all
-#' @param d_ids one or more domain_id to filter by, default NULL for all
-#' @param v_ids one or more vocabulary_id to filter by, default NULL for all
-#' @param cc_ids one or more concept_class_id to filter by, default NULL for all
-#' @param standard one or more standard_concept to filter by, default NULL for all, S,C
-#' @param separation levels of separation to filter by, default NULL for all
-#' @param itself whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE
+#' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
+#'
+#' @param ggrlayout ggraph layout, default = 'graphopt'
+#' @param palettebrewer colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
+#'
+#' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
+#' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
+#' @param filenamecustom optional filename for plot, otherwise default name is created
+#'
+#' @param width plot width, default=50
+#' @param height plot height, default=30
+#' @param units plot size units default='cm'
+#'
 #' @param messages whether to print info messages, default=TRUE
-#' @return a dataframe of concepts and attributes
+#'
+#' @return ggraph object
 #' @export
 #' @examples
-#' #TODO enable example when working
-#' #ggr1 <- omop_graph(v_ids="Cancer Modifier", separation=1)
-#' #omop_graph(1633308)
-#' #omop_graph("Non-invasive blood pressure")
-#' #omop_graph("Non-invasive blood pressure",separation=c(1,2))
-#' #epoch_ance <- omop_graph("EPOCH, dose-escalated")
-omop_graph <- function(c_id=NULL,
-                              c_ids=NULL,
-                              d_ids=NULL,
-                              v_ids=NULL,
-                              cc_ids=NULL,
-                              standard=NULL,
-                              separation=NULL,
-                              itself=FALSE,
-                              messages=TRUE
-                           ) {
 
-  # TODO add omop_ancestors & option to do both
+omop_graph <- function(dfin,
+                       ggrlayout='graphopt',
+                       palettebrewer = 'Set1',
+                       filenameroot = 'omop_graph',
+                       filetype = 'pdf',
+                       filenamecustom = NULL,
+
+                       width=50,
+                       height=30,
+                       units='cm',
+                       plot=TRUE,
+
+                       messages=TRUE
+                       ) {
+
+  # to detect input type from presence of specific column names
+  # then create a table containing 2 columns named 'from' and 'to'
+  # from,to table required by ggraph
+  if ("ancestor_name" %in% names(dfin)){
+
+    #DESCENDANT
+    dfin2 <- dfin |>
+      dplyr::rename(from = ancestor_name,
+                    to = concept_name)
+
+  } else if ("descendant_concept_name" %in% names(dfin)){
+
+    #ANCESTOR
+    dfin2 <- dfin |>
+      dplyr::rename(from = descendant_concept_name,
+                    to = concept_name)
+
+  } else if ("concept_name_1" %in% names(dfin)){
+
+    #RELATION
+    dfin2 <- dfin |>
+      dplyr::rename(from = concept_name_1,
+                    to = concept_name_2)
+  }
+
+  #challenge to make sure get all nodes from columns from & to
+  #to avoid Invalid (negative) vertex id
+  #TODO get this to cope with relationship tables that have no vocab or domain
+  #maybe I just need to allow join_name_all() to also join on vocab & domain
+  nodesfrom <- dfin2 |>
+    dplyr::select(from,vocabulary_id,domain_id) |>
+    group_by(from) |>
+    slice_head(n=1) |>
+    rename(name=from)
+
+  nodesto <- dfin2 |>
+    dplyr::select(to,vocabulary_id,domain_id) |>
+    group_by(to) |>
+    slice_head(n=1) |>
+    rename(name=to)
+
+  nodes1 <- bind_rows(nodesfrom,nodesto) |>
+    group_by(name) |>
+    slice_head(n=1)
+
+  edges1 <- dfin2 |>
+    dplyr::select(from, to)
 
 
-  df1 <- omop_descendants( c_id=c_id,
-                           c_ids=c_ids,
-                           d_ids=d_ids,
-                           v_ids=v_ids,
-                           cc_ids=cc_ids,
-                           standard=standard,
-                           separation=separation,
-                           itself=itself)
+  graphin <- tbl_graph(nodes=nodes1, edges=edges1)
 
-  #ancestor_name, concept_name, min_levels_of_separation
+  #sets node attribute of num_edges
+  V(graphin)$connections <- degree(graphin)
 
-  dffigo <- df1 |> filter(str_detect(concept_name,"FIGO"))
-
-  grapho <- dffigo |>
-    dplyr::select(ancestor_name,
-           concept_name,
-           vocabulary_id,
-           domain_id) |>
-    dplyr::rename(from = ancestor_name,
-                  to = concept_name) |>
-    as_tbl_graph(nodes=dffigo)
-
-  ggr <- ggraph(grapho, layout='graphopt') +
-  ggr <- ggraph(grapho,  layout = "centrality", cent = graph.strength(grapho)) +
-    geom_edge_link() +
+  ggr <- ggraph(graphin, layout=ggrlayout) +
+    #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
+    geom_edge_link(colour="grey71", edge_alpha=0.3, edge_width=0.1 ) +
+    #couldn't get colouring edges to work
+    #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
-    geom_node_point() +
-    #label = name works & concept_name doesn't - not sure why !!
-    geom_node_text(aes(label=name), repel=TRUE)
+    #geom_node_point(aes(size=connections)) + #colour=domain_id,
+    geom_node_point(aes(size=connections, colour=domain_id)
+                    ,alpha=0.9,
+                    show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
+    #geom_node_point(aes(size=connections,colour=connections)) +
+    scale_fill_brewer(palette = palettebrewer) +
+    #this sets bg to white & other elements for good graphs
+    #theme_graph() + gives font error
+    theme(panel.background=element_blank(),
+          plot.background=element_blank(),
+          legend.position = "bottom",
+          legend.key.size = unit(3, 'cm'),
+          #legend.key.height = unit(1, 'cm'),
+          #legend.key.width = unit(1, 'cm'),
+          legend.key = element_rect(fill = "white"),
+          #legend.title = element_text(size=30),
+          legend.title = element_blank(),
+          legend.text = element_text(size=20) ) +
+    guides(colour = guide_legend(override.aes = list(size=20))) +
+    geom_node_text(aes(label=name,
+                       # colour=domain_id,
+                       # size=connections*3),
+                       # disabling node text size
+                       size=7,
+                       colour=domain_id),
+                   show.legend=FALSE,
+                   repel=TRUE,
+                   check_overlap=FALSE,
+                   nudge_y=0.3, #move labels above points
+                   alpha=0.9)
 
-  plot(ggr)
+  ggr <- ggr + ggtitle(title)
 
-  ##########################
-  #trying to get node labels
+  if (plot) plot(ggr)
 
-  #simple example from help
-  # simple <- create_notable('bull') %>%
-  #   mutate(name = c('Thomas', 'Bob', 'Hadley', 'Winston', 'Baptiste')) %>%
-  #   activate(edges) %>%
-  #   mutate(type = sample(c('friend', 'foe'), 5, TRUE))
-  #
-  # ggraph(simple, layout = 'graphopt') +
-  #        geom_edge_link(aes(start_cap = label_rect(node1.name),
-  #                           end_cap = label_rect(node2.name)),
-  #                           arrow = arrow(length = unit(4, 'mm'))) +
-  #        geom_node_text(aes(label = name))
+  #saving plots
+  #naming convention
+  #s  separation min
+  #m  plot metres
+  #ea edge alpha
+  #ta text alpha
+  #pdark2 palette color brewer
+  #ns node sized
+  #nts node text size
+  #d? domains
 
-  plot(ggr)
+  if (!is.null(filenamecustom)) filename <- filenamecustom
+  else
+    filename <- paste0(filenameroot,".pdf")
+
+  ggsave(ggr,filename=filename,width=width,height=height,units=units,limitsize = FALSE)
 
 
+  #if (messages) message("saved graph file as ", outfilename)
 
-
-
-  #if (messages) message("returning ",nrow(df1)," concepts")
-
-  return(ggr)
+  invisible(ggr)
 
 }
 
@@ -97,42 +160,5 @@ omop_graph <- function(c_id=NULL,
 #' @examples
 #' # because of R argument matching, you can just use the first unique letters of
 #' # arguments e.g. v for v_ids, cc for cc_ids
-#' disabled to try to fix error : 'omop_concept_ancestor' is not an exported object from 'namespace:omopcept'
 #omgr <- omop_graph
 
-
-# ggraph requires two data frames, one for nodes and one for edges.
-#I think that was the old version
-# nodes <- df1 |>
-#   select(ancestor_name,concept_name,vocabulary_id,domain_id) |>
-#   mutate(id=row_number())
-
-# old way
-# nodes <- c(df1$ancestor_name, df1$concept_name) |>
-#   unique() |>
-#   tibble::tibble(label = .) |>
-#   tibble::rowid_to_column("id")
-
-# character names need to be node IDs.
-# done by 2 joins to node dataframe.
-
-# edges <- df1 |>
-#   left_join(nodes, by = c("ancestor_name"="ancestor_name")) |>
-#   rename(from = "id") |>
-#   left_join(nodes, by = c("concept_name"="concept_name")) |>
-#   rename(to = "id") |>
-#   select(from, to, min_levels_of_separation,vocabulary_id,domain_id)
-
-# old way
-# edges <- df1 |>
-#   left_join(nodes, by = c("ancestor_name"="label")) |>
-#   rename(from = "id") |>
-#   left_join(nodes, by = c("concept_name"="label")) |>
-#   rename(to = "id") |>
-#   select(from, to, min_levels_of_separation)
-
-# grapho <- tbl_graph(nodes = nodes, edges = edges, directed = FALSE)
-#
-# nodes <- df1 |>
-#   select(ancestor_name,concept_name,vocabulary_id,domain_id) |>
-#   mutate(id=row_number())
