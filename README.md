@@ -61,6 +61,7 @@ omop_concept() |>
 | `omop_ancestors()`            | `oance()`              | return ancestors of a concept                                                                  |
 | `omop_descendants()`          | `odesc()`              | return descendants of a concept                                                                |
 | `omop_relations()`            | `orels()`              | return (immediate) relations of a concept including the nature of the relationship e.g. ‘Is a’ |
+| `omop_relations_recursive()`  | \-                     | return (immediate) relations of a concept and the relations of those up to `num_recurse`       |
 |                               |                        |                                                                                                |
 | `omop_concept()`              | `oc()`                 | return reference to concept table (for use in dplyr pipelines)                                 |
 | `omop_concept_ancestor()`     | `oca()`                | return reference to concept ancestor table                                                     |
@@ -116,41 +117,39 @@ files.
 
 omop_names("chemotherapy", v_ids="LOINC")
 #> # A tibble: 71 × 10
-#>    conce…¹ conce…² domai…³ vocab…⁴ conce…⁵ stand…⁶ conce…⁷ valid_st…⁸ valid_en…⁹
-#>      <int> <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <date>     <date>    
-#>  1 3010410 Chemot… Observ… LOINC   Clinic… S       11486-8 1970-01-01 2099-12-31
-#>  2 3002377 Chemot… Measur… LOINC   Clinic… S       21881-8 1970-01-01 2099-12-31
-#>  3 3011998 Date 1… Observ… LOINC   Clinic… S       21927-9 1970-01-01 2099-12-31
-#>  4 3003037 Chemot… Measur… LOINC   Clinic… S       21946-9 1970-01-01 2099-12-31
-#>  5 3000897 Reason… Measur… LOINC   Clinic… S       21951-9 1970-01-01 2099-12-31
-#>  6 3014397 Chemot… Measur… LOINC   Clinic… S       21967-5 1970-01-01 2099-12-31
-#>  7 3027104 Chemot… Measur… LOINC   Clinic… S       22041-8 1970-01-01 2099-12-31
-#>  8 3037369 2nd co… Measur… LOINC   Clinic… S       42045-5 2005-08-05 2099-12-31
-#>  9 3032293 3rd co… Measur… LOINC   Clinic… S       42051-3 2005-08-05 2099-12-31
-#> 10 3028808 4th co… Measur… LOINC   Clinic… S       42057-0 2005-08-05 2099-12-31
-#> # … with 61 more rows, 1 more variable: invalid_reason <chr>, and abbreviated
-#> #   variable names ¹​concept_id, ²​concept_name, ³​domain_id, ⁴​vocabulary_id,
-#> #   ⁵​concept_class_id, ⁶​standard_concept, ⁷​concept_code, ⁸​valid_start_date,
-#> #   ⁹​valid_end_date
+#>    concept_id concept_name              domain_id vocabulary_id concept_class_id
+#>         <int> <chr>                     <chr>     <chr>         <chr>           
+#>  1    3010410 Chemotherapy records      Observat… LOINC         Clinical Observ…
+#>  2    3002377 Chemotherapy treatment a… Measurem… LOINC         Clinical Observ…
+#>  3    3011998 Date 1st chemotherapy tr… Observat… LOINC         Clinical Observ…
+#>  4    3003037 Chemotherapy treatment C… Measurem… LOINC         Clinical Observ…
+#>  5    3000897 Reason for no chemothera… Measurem… LOINC         Clinical Observ…
+#>  6    3014397 Chemotherapy Cancer       Measurem… LOINC         Clinical Observ…
+#>  7    3027104 Chemotherapy treatment C… Measurem… LOINC         Clinical Observ…
+#>  8    3037369 2nd course chemotherapy … Measurem… LOINC         Clinical Observ…
+#>  9    3032293 3rd course chemotherapy … Measurem… LOINC         Clinical Observ…
+#> 10    3028808 4th course chemotherapy … Measurem… LOINC         Clinical Observ…
+#> # ℹ 61 more rows
+#> # ℹ 5 more variables: standard_concept <chr>, concept_code <chr>,
+#> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
 
 omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 #> # A tibble: 297 × 10
-#>    conce…¹ conce…² domai…³ vocab…⁴ conce…⁵ stand…⁶ conce…⁷ valid_st…⁸ valid_en…⁹
-#>      <int> <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <date>     <date>    
-#>  1  3.01e6 Chemot… Observ… LOINC   Clinic… S       11486-8 1970-01-01 2099-12-31
-#>  2  3.01e6 Date 1… Observ… LOINC   Clinic… S       21927-9 1970-01-01 2099-12-31
-#>  3  3.05e6 Chemot… Observ… LOINC   Survey  S       45841-4 1970-01-01 2099-12-31
-#>  4  4.08e7 Chemot… Observ… LOINC   Survey  S       54992-3 2009-01-26 2099-12-31
-#>  5  4.08e7 Chemot… Observ… LOINC   Survey  S       54993-1 2009-01-26 2099-12-31
-#>  6  4.08e7 Type o… Observ… LOINC   Clinic… S       63938-5 2011-03-15 2099-12-31
-#>  7  4.08e7 Cancer… Observ… LOINC   Clinic… S       66178-5 2011-06-02 2099-12-31
-#>  8  4.08e7 Have y… Observ… LOINC   Clinic… S       67446-5 2011-07-11 2099-12-31
-#>  9  4.08e7 Histor… Observ… LOINC   Clinic… S       67469-7 2011-07-12 2099-12-31
-#> 10  3.63e7 Chemot… Observ… LOINC   Clinic… S       88060-9 2018-06-15 2099-12-31
-#> # … with 287 more rows, 1 more variable: invalid_reason <chr>, and abbreviated
-#> #   variable names ¹​concept_id, ²​concept_name, ³​domain_id, ⁴​vocabulary_id,
-#> #   ⁵​concept_class_id, ⁶​standard_concept, ⁷​concept_code, ⁸​valid_start_date,
-#> #   ⁹​valid_end_date
+#>    concept_id concept_name              domain_id vocabulary_id concept_class_id
+#>         <int> <chr>                     <chr>     <chr>         <chr>           
+#>  1    3010410 Chemotherapy records      Observat… LOINC         Clinical Observ…
+#>  2    3011998 Date 1st chemotherapy tr… Observat… LOINC         Clinical Observ…
+#>  3    3046488 Chemotherapy [Minimum Da… Observat… LOINC         Survey          
+#>  4   40758122 Chemotherapy in last 14 … Observat… LOINC         Survey          
+#>  5   40758123 Chemotherapy in last 14 … Observat… LOINC         Survey          
+#>  6   40766658 Type of chemotherapy [Ph… Observat… LOINC         Clinical Observ…
+#>  7   40768860 Cancer chemotherapy rece… Observat… LOINC         Clinical Observ…
+#>  8   40770073 Have you been treated wi… Observat… LOINC         Clinical Observ…
+#>  9   40770096 History of Chemotherapy … Observat… LOINC         Clinical Observ…
+#> 10   36305649 Chemotherapy infusion st… Observat… LOINC         Clinical Observ…
+#> # ℹ 287 more rows
+#> # ℹ 5 more variables: standard_concept <chr>, concept_code <chr>,
+#> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
 ```
 
 ## Join OMOP names onto a `*concept_id` dataframe column
@@ -181,9 +180,9 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 data.frame(concept_id=(c(3571338L,3655355L)),
             drug_concept_id=(c(4000794L,35628998L))) |>
             omop_join_name_all()
-#>   concept_id drug_concept_id         concept_name drug_concept_name
-#> 1    3571338         4000794    Problem behaviour          BUZZ OFF
-#> 2    3655355        35628998 Erectile dysfunction            Viagra
+#>   concept_id         concept_name drug_concept_id drug_concept_name
+#> 1    3571338    Problem behaviour         4000794          BUZZ OFF
+#> 2    3655355 Erectile dysfunction        35628998            Viagra
 ```
 
 ## Vocabularies included
