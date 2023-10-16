@@ -1,6 +1,7 @@
 
 # omopcept 0.0.1.1 dev
 
+* `omop_graph()` auto file naming
 
 # omopcept 0.0.1.0
 

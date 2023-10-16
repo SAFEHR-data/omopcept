@@ -9,6 +9,9 @@ omop_graph(
   dfin,
   ggrlayout = "graphopt",
   palettebrewer = "Set1",
+  edge_colour = "grey71",
+  legendpos = "bottom",
+  legendcm = 3,
   filetype = "pdf",
   filenameroot = "omop_graph",
   filenamecustom = NULL,
@@ -26,6 +29,12 @@ omop_graph(
 \item{ggrlayout}{ggraph layout, default = 'graphopt'}
 
 \item{palettebrewer}{colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
+
+\item{edge_colour}{colour for lines joining nodes}
+
+\item{legendpos}{legend position, default 'bottom'}
+
+\item{legendcm}{legend size cm, default=3}
 
 \item{filetype}{output image file, default='pdf'}
 
@@ -55,5 +64,5 @@ accepts output from either omop_ancestors(), omop_descendants() or omop_relation
 \examples{
 #pressure <- omop_names("^Blood pressure$",standard='S')
 #press_descend <- omop_descendants(pressure$concept_id[1])
-#omop_graph(press_descend)
+#omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
 }

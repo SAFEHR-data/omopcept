@@ -6,6 +6,11 @@
 #' @param ggrlayout ggraph layout, default = 'graphopt'
 #' @param palettebrewer colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
 #'
+#' @param edge_colour colour for lines joining nodes
+#'
+#' @param legendpos legend position, default 'bottom'
+#' @param legendcm legend size cm, default=3
+#'
 #' @param filetype output image file, default='pdf'
 #' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
 #' @param filenamecustom optional filename for plot, otherwise default name is created
@@ -23,10 +28,15 @@
 #' @examples
 #' #pressure <- omop_names("^Blood pressure$",standard='S')
 #' #press_descend <- omop_descendants(pressure$concept_id[1])
-#' #omop_graph(press_descend)
+#' #omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
 omop_graph <- function(dfin,
                        ggrlayout='graphopt',
-                       palettebrewer = 'Set1',
+                       palettebrewer='Set1',
+
+                       edge_colour='grey71',
+
+                       legendpos = 'bottom',
+                       legendcm = 3,
 
                        filetype = 'pdf',
                        filenameroot = 'omop_graph',
@@ -68,8 +78,6 @@ omop_graph <- function(dfin,
 
   #challenge to make sure get all nodes from columns from & to
   #to avoid Invalid (negative) vertex id
-  #TODO get this to cope with relationship tables that have no vocab or domain
-  #maybe I just need to allow join_name_all() to also join on vocab & domain
   nodesfrom <- dfin2 |>
     select(from,vocabulary_id,domain_id) |>
     group_by(from) |>
@@ -89,7 +97,6 @@ omop_graph <- function(dfin,
   edges1 <- dfin2 |>
     select(from, to)
 
-
   graphin <- tbl_graph(nodes=nodes1, edges=edges1)
 
   #sets node attribute of num_edges
@@ -97,7 +104,7 @@ omop_graph <- function(dfin,
 
   ggr <- ggraph(graphin, layout=ggrlayout) +
     #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
-    geom_edge_link(colour="grey71", edge_alpha=0.3, edge_width=0.1 ) +
+    geom_edge_link(colour=edge_colour, edge_alpha=0.3, edge_width=0.1 ) +
     #couldn't get colouring edges to work
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
@@ -111,8 +118,8 @@ omop_graph <- function(dfin,
     #theme_graph() + gives font error
     theme(panel.background=element_blank(),
           plot.background=element_blank(),
-          legend.position = "bottom",
-          legend.key.size = unit(3, 'cm'),
+          legend.position = legendpos,
+          legend.key.size = unit(legendcm, 'cm'),
           #legend.key.height = unit(1, 'cm'),
           #legend.key.width = unit(1, 'cm'),
           legend.key = element_rect(fill = "white"),
@@ -136,8 +143,7 @@ omop_graph <- function(dfin,
 
   if (plot) plot(ggr)
 
-  #saving plots
-  #naming convention
+  #plot file naming convention
   #s  separation min
   #m  plot metres
   #ea edge alpha
@@ -149,12 +155,16 @@ omop_graph <- function(dfin,
 
   if (!is.null(filenamecustom)) filename <- filenamecustom
   else
-    filename <- paste0(filenameroot,".",filetype)
+    filename <- paste0(filenameroot,
+                       "-p",palettebrewer,
+                       "-leg",legendpos,legendcm,
+                       "-",width,"x",height,units,
+                       ".",filetype)
 
-  ggsave(ggr,filename=filename,width=width,height=height,units=units,limitsize = FALSE)
+  ggsave(ggr, filename=filename, width=width, height=height, units=units, limitsize = FALSE)
 
 
-  #if (messages) message("saved graph file as ", outfilename)
+  if (messages) message("saved graph file as ", filename)
 
   return(ggr)
 

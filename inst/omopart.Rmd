@@ -38,6 +38,16 @@ library(omopcept)
 
 ```
 
+#### new stuff 2023-10-16 using omop_graph()
+
+```{r omop_graph() calls, include=FALSE, eval=TRUE}
+
+
+
+```
+
+
+#### OLD below here, some useful code generating inputs 
 
 ```{r extract data, include=FALSE, eval=TRUE}
 
