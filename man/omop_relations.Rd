@@ -12,6 +12,7 @@ omop_relations(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
+  r_ids = NULL,
   messages = TRUE
 )
 
@@ -22,6 +23,7 @@ orels(
   v_ids = NULL,
   cc_ids = NULL,
   standard = NULL,
+  r_ids = NULL,
   messages = TRUE
 )
 }
@@ -38,6 +40,8 @@ orels(
 
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
 
+\item{r_ids}{one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')}
+
 \item{messages}{whether to print info messages, default=TRUE}
 }
 \value{
@@ -49,9 +53,10 @@ find omop concept relations of one passed - immediate relations with indication 
 super short name func to find relations
 }
 \examples{
-omop_relations(1633308)
+omop_relations("Non-invasive blood pressure")
+omop_relations("Non-invasive blood pressure",r_ids=c('Is a','Subsumes'))
 #omop_relations("lenalidomide")
-#omop_relations("Non-invasive blood pressure")
+#omop_relations(1633308)
 #chemodrugs <- omop_relations("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 #cmde <- omop_relations(v_ids="Cancer Modifier")
 # because of R argument matching, you can just use the first unique letters of

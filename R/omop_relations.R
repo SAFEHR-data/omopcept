@@ -6,14 +6,16 @@
 #' @param v_ids one or more vocabulary_id to filter by, default NULL for all
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
+#' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
 # @param itself whether to include passed concept in returned table (min_levels_of_separation==0), default=FALSE
 #' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
-#' omop_relations(1633308)
+#' omop_relations("Non-invasive blood pressure")
+#' omop_relations("Non-invasive blood pressure",r_ids=c('Is a','Subsumes'))
 #' #omop_relations("lenalidomide")
-#' #omop_relations("Non-invasive blood pressure")
+#' #omop_relations(1633308)
 #' #chemodrugs <- omop_relations("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 #' #cmde <- omop_relations(v_ids="Cancer Modifier")
 omop_relations <- function(c_id=NULL,
@@ -22,7 +24,7 @@ omop_relations <- function(c_id=NULL,
                                 v_ids=NULL,
                                 cc_ids=NULL,
                                 standard=NULL,
-                                #separation=NULL,
+                                r_ids=NULL,
                                 #itself=FALSE,
                                 messages=TRUE) {
 
@@ -38,6 +40,11 @@ omop_relations <- function(c_id=NULL,
 
   if (c_id != "none") df1 <- df1 |>
     filter(concept_id_1 == c_id) #TODO check whether I want to add concept_id_2 to this filter
+
+  if (!is.null(r_ids)) {
+    df1 <- df1 |>
+      filter(relationship_id %in% r_ids)
+  }
 
   #get most attributes from omop_concept() to join
   #not all e.g.valid_start_date, end & invalid_reason already in relations

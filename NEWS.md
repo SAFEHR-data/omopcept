@@ -2,13 +2,14 @@
 # omopcept 0.0.1.1 dev
 
 * `omop_graph()` auto file naming
+* `omop_relations()` add `r_ids` arg to filter by `relationship_id` e.g. `c('Is a','Subsumes')`
 
-# omopcept 0.0.1.0
+# omopcept 0.0.1.0 2023-10-14
 
 * `omop_graph()` working for visualising omop hierarchy with `ggraph`
 * `domain`, `vocabulary`, `concept_code` & `concept_class` optional args added to `omop_join_name()` & `omop_join_name_all()` to be able to also join these columns
 * `namefull` optional arg added to `omop_join_name()` to cope with e.g. `concept_id_2` in `omop_join_name_all()`
-* `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
+* `omop_relations()` and `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
 * bugfix, `omop_ancestors()` & `omop_decsendants()` were not filtering domin, separation etc., when `concept_id` not specified
 * option for NULL `c_id` to `omop_descendants()` and `omop_ancestors()`, returns all concepts within other filters
 
