@@ -12,8 +12,8 @@
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
-#' omop_relations_recursive("Non-invasive blood pressure", num_recurse=1)
-#' omop_relations("Non-invasive blood pressure", r_ids=c('Is a','Subsumes'), num_recurse=2)
+#' r1 <- omop_relations_recursive("Non-invasive blood pressure", num_recurse=1)
+#' #omop_relations_recursive("Non-invasive blood pressure", r_ids=c('Is a','Subsumes'), num_recurse=2)
 omop_relations_recursive <- function(c_id=NULL,
                                      c_ids=NULL,
                                      d_ids=NULL,
@@ -36,6 +36,9 @@ omop_relations_recursive <- function(c_id=NULL,
 
   for(recurse in 0:num_recurse)
   {
+
+    if (messages) message("recurse level ",recurse," of ",num_recurse)
+
     # get relations of each concept from the previous level
     # TODO maybe avoid or filter at end duplicate concept_id_1, concept_id_2, relationship_id
 

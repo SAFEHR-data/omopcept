@@ -3,6 +3,7 @@
 
 * `omop_graph()` auto file naming
 * `omop_relations()` add `r_ids` arg to filter by `relationship_id` e.g. `c('Is a','Subsumes')`
+* `omop_relations_recursive()` added to recursively extract relations of a single concept
 
 # omopcept 0.0.1.0 2023-10-14
 

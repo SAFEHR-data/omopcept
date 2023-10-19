@@ -42,6 +42,36 @@ library(omopcept)
 
 ```{r omop_graph() calls, include=FALSE, eval=TRUE}
 
+cancer <- omop_names("cancer")
+#returning 3340 concepts
+
+neor2 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2,r="Subsumes")
+
+#this is pretty good
+omop_graph(neor2, plot=FALSE, filenameroot = "neoplasm_subsumes2",width=80, height=110)
+
+#what is this error about ? I think I've had before.
+# Error in grid.Call(C_convert, x, as.integer(whatfrom), as.integer(whatto), :
+# Viewport has zero dimension(s)
+
+#that is all ICD10, if I include 'maps to' or similar relations 
+# first check what relations there are
+neor1 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 1) #,r="Subsumes")
+#they are only is a or subsumes
+neor2all <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2)
+
+omop_graph(neor2all, plot=FALSE, filenameroot = "neoplasm2",width=80, height=110)
+
+omop_graph(neor2all, plot=FALSE, filenameroot = "neoplasm2",width=80, height=110, node_colour_var = "vocabulary_id")
+
+
+music <- omop_names("music")
+#returning 120 concepts
+
+instrument <- omop_names("instrument")
+#returning 628 concepts
+
+
 
 
 ```

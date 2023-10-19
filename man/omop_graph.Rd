@@ -10,8 +10,10 @@ omop_graph(
   ggrlayout = "graphopt",
   palettebrewer = "Set1",
   edge_colour = "grey71",
+  node_colour_var = "domain_id",
   legendpos = "bottom",
   legendcm = 3,
+  saveplot = TRUE,
   filetype = "pdf",
   filenameroot = "omop_graph",
   filenamecustom = NULL,
@@ -32,9 +34,13 @@ omop_graph(
 
 \item{edge_colour}{colour for lines joining nodes}
 
+\item{node_colour_var}{column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"}
+
 \item{legendpos}{legend position, default 'bottom'}
 
 \item{legendcm}{legend size cm, default=3}
+
+\item{saveplot}{whether to save plot, default TRUE}
 
 \item{filetype}{output image file, default='pdf'}
 

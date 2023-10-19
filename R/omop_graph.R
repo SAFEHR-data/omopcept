@@ -7,10 +7,12 @@
 #' @param palettebrewer colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
 #'
 #' @param edge_colour colour for lines joining nodes
+#' @param node_colour_var column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
 #'
 #' @param legendpos legend position, default 'bottom'
 #' @param legendcm legend size cm, default=3
 #'
+#' @param saveplot whether to save plot, default TRUE
 #' @param filetype output image file, default='pdf'
 #' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
 #' @param filenamecustom optional filename for plot, otherwise default name is created
@@ -34,10 +36,12 @@ omop_graph <- function(dfin,
                        palettebrewer='Set1',
 
                        edge_colour='grey71',
+                       node_colour_var='domain_id',
 
                        legendpos = 'bottom',
                        legendcm = 3,
 
+                       saveplot = TRUE,
                        filetype = 'pdf',
                        filenameroot = 'omop_graph',
                        filenamecustom = NULL,
@@ -109,7 +113,7 @@ omop_graph <- function(dfin,
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    geom_node_point(aes(size=connections, colour=domain_id)
+    geom_node_point(aes(size=connections, colour=node_colour_var)
                     ,alpha=0.9,
                     show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
@@ -133,6 +137,8 @@ omop_graph <- function(dfin,
                        # disabling node text size
                        size=7,
                        colour=domain_id),
+                       #TODO this doesn't work
+                       #colour=node_colour_var),
                    show.legend=FALSE,
                    repel=TRUE,
                    check_overlap=FALSE,
@@ -161,7 +167,7 @@ omop_graph <- function(dfin,
                        "-",width,"x",height,units,
                        ".",filetype)
 
-  ggsave(ggr, filename=filename, width=width, height=height, units=units, limitsize = FALSE)
+  if (saveplot) ggsave(ggr, filename=filename, width=width, height=height, units=units, limitsize = FALSE)
 
 
   if (messages) message("saved graph file as ", filename)

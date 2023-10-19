@@ -24,4 +24,5 @@ Imports:
     igraph,
     tidygraph,
     ggraph,
+    ggplot2
 
