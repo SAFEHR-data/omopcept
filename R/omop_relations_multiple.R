@@ -12,8 +12,8 @@
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
-#' #omop_relations_multiple(TODO, num_recurse=1)
-#' #omop_relations_multiple(TODO, r_ids=c('Is a','Subsumes'), num_recurse=2)
+#' orm <- omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=1)
+#' #omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=2)
 omop_relations_multiple <- function(mc_ids,
                                      c_ids=NULL,
                                      d_ids=NULL,
@@ -26,17 +26,23 @@ omop_relations_multiple <- function(mc_ids,
 
 #DEVNOTE from NY first go at dev of multiple
 #just by copying recursive and adding a c_id loop at start
+#and moving dfall <- NULL to before loop
 
+dfall <- NULL
+
+if (messages) message("multiple-y querying concept relations of: ",length(mc_ids)," concepts - may take more than a few seconds")
+
+for(c_id in mc_ids)
+{
 
   #checks c_id and gets name (ALL if c_id==NULL)
   res <- check_c_id(c_id)
   c_id <- res$c_id[1]
   name1 <- res$name1[1]
 
-  if (messages) message("multiplely querying concept relations of: ",name1," - may take more than a few seconds")
+  if (messages) message("recursively querying concept relations of: ",name1)
 
-  dfall <- NULL
-
+  #TODO seems to be a problem if num_recurse is set to 0
   for(recurse in 0:num_recurse)
   {
 
@@ -71,6 +77,9 @@ omop_relations_multiple <- function(mc_ids,
     dfall <- bind_rows(dfall,dfprev)
 
   }
+
+} #end of c_id loop
+
 
   return(dfall)
 }

@@ -42,6 +42,6 @@ a dataframe of concepts and attributes
 extract omop concept relations of a vector of concept_ids - immediate relations with indication of relationship
 }
 \examples{
-#omop_relations_multiple("Non-invasive blood pressure", num_recurse=1)
-#omop_relations("Non-invasive blood pressure", r_ids=c('Is a','Subsumes'), num_recurse=2)
+orm <- omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=1)
+#omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=2)
 }
