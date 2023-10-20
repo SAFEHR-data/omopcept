@@ -1,0 +1,134 @@
+concept_id_1,concept_name_1,concept_id_2,concept_name_2,relationship_id,valid_start_date,valid_end_date,invalid_reason,domain_id,vocabulary_id,concept_class_id,standard_concept,concept_code
+2617264,"Activity therapy, such as music, dance, art or play therapies not for recreation, related to the care and treatment of patient's disabling mental health problems, per session (45 minutes or more)",4305729,Mental health functional therapies,Is a,2018-11-27,2099-12-31,NA,Observation,SNOMED,Procedure,S,390823002
+2617264,"Activity therapy, such as music, dance, art or play therapies not for recreation, related to the care and treatment of patient's disabling mental health problems, per session (45 minutes or more)",4327748,Activity therapy,Is a,2018-11-27,2099-12-31,NA,Procedure,SNOMED,Procedure,S,430884008
+4305729,Mental health functional therapies,4192172,Mental health HRGs,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,391029008
+4327748,Activity therapy,4172654,Recreational therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,42364006
+3043003,Activity preferences - music [Minimum Data Set],36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+3043003,Activity preferences - music [Minimum Data Set],45876109,Minimum Data Set (MDS) for Nursing Home Resident Assessment and Care Screening survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.MDS
+36210656,Survey terms not yet categorized,36207528,Survey instruments,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Hierarchy,C,LP29696-9
+45876109,Minimum Data Set (MDS) for Nursing Home Resident Assessment and Care Screening survey,45876096,Survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY
+40757838,How important it is to listen to music you like while in this facility [CMS Assessment],36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40757838,How important it is to listen to music you like while in this facility [CMS Assessment],45876102,Centers for Medicare & Medicaid Services (CMS) survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.CMS
+45876102,Centers for Medicare & Medicaid Services (CMS) survey,45876096,Survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY
+40757859,Resident prefers listening to music [MDSv3],36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40757859,Resident prefers listening to music [MDSv3],45876109,Minimum Data Set (MDS) for Nursing Home Resident Assessment and Care Screening survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.MDS
+40758165,Total minutes of recreational and music therapy in last 7 days [CMS Assessment],36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40758165,Total minutes of recreational and music therapy in last 7 days [CMS Assessment],45876102,Centers for Medicare & Medicaid Services (CMS) survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.CMS
+40758166,Number of days with at least 15 minutes of recreational and music therapy in last 7 days [CMS Assessment],36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40758166,Number of days with at least 15 minutes of recreational and music therapy in last 7 days [CMS Assessment],45876102,Centers for Medicare & Medicaid Services (CMS) survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.CMS
+40758167,Deprecated Start date of recreational and music therapy MDSv3,36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40758167,Deprecated Start date of recreational and music therapy MDSv3,45876109,Minimum Data Set (MDS) for Nursing Home Resident Assessment and Care Screening survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.MDS
+40758168,Deprecated End date of recreational and music therapy MDSv3,36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40758168,Deprecated End date of recreational and music therapy MDSv3,45876109,Minimum Data Set (MDS) for Nursing Home Resident Assessment and Care Screening survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.MDS
+40764798,"I was satisfied with my ability to do things for fun at home (like reading, listening to music, etc.) in past 7 days [PROMIS]",36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40764798,"I was satisfied with my ability to do things for fun at home (like reading, listening to music, etc.) in past 7 days [PROMIS]",45876126,Patient Reported Outcomes Measurement System (PROMIS) survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.PROMIS
+45876126,Patient Reported Outcomes Measurement System (PROMIS) survey,45876096,Survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY
+40767886,"I see myself as someone who is sophisticated in art, music or literature [BFI]",36207527,Clinical terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248771-0
+40767886,"I see myself as someone who is sophisticated in art, music or literature [BFI]",45875977,PhenX,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Class,C,PHENX
+36207527,Clinical terms not yet categorized,37044165,Clinical,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Hierarchy,C,LP7787-7
+40769027,"How much difficulty do you have doing things to relax at home or for leisure, reading, watching TV, sewing, listening to music [PhenX]",36207527,Clinical terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248771-0
+40769027,"How much difficulty do you have doing things to relax at home or for leisure, reading, watching TV, sewing, listening to music [PhenX]",45875977,PhenX,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Class,C,PHENX
+40769870,Have you been exposed to loud noise or listened to music with headphone in the past 24 hours 24 hour [PhenX],36207527,Clinical terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248771-0
+40769870,Have you been exposed to loud noise or listened to music with headphone in the past 24 hours 24 hour [PhenX],45875977,PhenX,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Class,C,PHENX
+40769871,How many hours ago did the noise or music end [PhenX],36207527,Clinical terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248771-0
+40769871,How many hours ago did the noise or music end [PhenX],45875977,PhenX,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Class,C,PHENX
+40770237,"Students are publicly recognized for their outstanding performances in speech, drama, art, music, etc [PhenX]",36207527,Clinical terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248771-0
+40770237,"Students are publicly recognized for their outstanding performances in speech, drama, art, music, etc [PhenX]",45875977,PhenX,Is a,1970-01-01,2099-12-31,NA,Measurement,LOINC,LOINC Class,C,PHENX
+40770644,"I have to limit the things I do for fun at home, like reading, listening to music, etc in the past 7 days [NeuroQol]",36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+40770644,"I have to limit the things I do for fun at home, like reading, listening to music, etc in the past 7 days [NeuroQol]",45876114,Quality of Life Outcomes in Neurological Disorders (NeuroQol) survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.NEUROQ
+45876114,Quality of Life Outcomes in Neurological Disorders (NeuroQol) survey,45876096,Survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY
+45876114,Quality of Life Outcomes in Neurological Disorders (NeuroQol) survey,45876113,Neurological survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.NEURO
+46236420,"I am satisfied with my ability to do things for fun at home (like reading, listening to music, etc.) [PROMIS]",36210656,Survey terms not yet categorized,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Hierarchy,C,LP248772-8
+46236420,"I am satisfied with my ability to do things for fun at home (like reading, listening to music, etc.) [PROMIS]",45876126,Patient Reported Outcomes Measurement System (PROMIS) survey,Is a,1970-01-01,2099-12-31,NA,Observation,LOINC,LOINC Class,C,SURVEY.PROMIS
+4024165,"Composer, musician AND/OR singer",4024164,Composer AND/OR performing artist,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106318001
+4024164,Composer AND/OR performing artist,4024147,Professional technical AND/OR related worker,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106254004
+4024164,Composer AND/OR performing artist,4009684,Literary/artistic/sports occupation,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,159049007
+4023661,Musical instrument maker AND/OR tuner,4026581,Production AND/OR related worker,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106512001
+4023661,Musical instrument maker AND/OR tuner,4053261,Musical instrument maker,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,160003009
+4026581,Production AND/OR related worker,4023630,"Production AND/OR related worker, transport equipment operator AND/OR laborer",Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106401004
+4053261,Musical instrument maker,4203714,Maker,Is a,2020-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,308285002
+4053261,Musical instrument maker,4143960,Other makers/repairers,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,NA,266023000
+42689764,Injury whilst attending music venue,42689728,Injury whilst engaged in leisure activity,Is a,2017-04-01,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,1067601000000108
+42689728,Injury whilst engaged in leisure activity,440921,Traumatic injury,Is a,2017-04-01,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,417746004
+35609188,Place of occurrence of injury is music venue,44790646,Place of occurrence of injury,Is a,2018-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,241241000000104
+44790646,Place of occurrence of injury,4327857,Finding of physical location of patient,Is a,2015-03-01,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,428735001
+35609190,Place of occurrence of injury is live music venue,35609188,Place of occurrence of injury is music venue,Is a,2018-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,1079641000000105
+36685647,All arms military musician,36685644,All arms personnel,Is a,2019-01-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,1100181000000103
+36685644,All arms personnel,36685628,Army - non-commissioned personnel,Is a,2019-01-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,1100021000000103
+4036185,"Heart murmur quality, musical",4028078,"Heart murmur, categorized by quality",Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,128151003
+4028078,"Heart murmur, categorized by quality",316822,Heart murmur,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,88610006
+608626,Music therapy care plan,37117046,Care plan,Is a,2022-01-28,2099-12-31,NA,Type Concept,SNOMED,Record Artifact,NA,734163000
+37117046,Care plan,4086960,Patient record type,Is a,2017-07-31,2099-12-31,NA,Type Concept,SNOMED,Record Artifact,NA,184216000
+4009371,Private music teacher,4146328,Private teacher,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,307979002
+4146328,Private teacher,4023470,Teacher,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106304008
+4009691,Musical composers/choreographers,4009684,Literary/artistic/sports occupation,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,159049007
+4009684,Literary/artistic/sports occupation,4033543,Occupation,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,14679004
+4009692,Conductor (musical),4145404,Musical performer,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,308014002
+4145404,Musical performer,4146557,Performer (entertainment),Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,265945005
+4060092,Musical alexia,440084,Alexia,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,9236007
+440084,Alexia,440424,Aphasia,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,87486003
+4056835,Musicogenic seizure,377091,Seizure,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,91175000
+377091,Seizure,4101796,Finding of brain,Is a,2018-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,299718000
+377091,Seizure,4196708,Seizure related finding,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,313287004
+4053129,Music therapy,4275106,Art therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,65153003
+4275106,Art therapy,4077953,Therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,276239002
+4311072,"Place of occurrence of accident or poisoning, music hall",4311068,"Place of occurrence of accident or poisoning, public building",Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Location,S,216390000
+4311068,"Place of occurrence of accident or poisoning, public building",4314870,Place of occurrence of accident or poisoning,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Location,S,216312009
+4036573,Music exercise,4053129,Music therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,21065008
+4036573,Music exercise,4275895,Relaxation training therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,64299003
+4275895,Relaxation training therapy,4077953,Therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,276239002
+4037982,Music and movement therapy,4053129,Music therapy,Is a,2011-07-31,2099-12-31,NA,Procedure,SNOMED,Procedure,S,21065008
+4033660,Musician's wart,4031484,Friction dermatosis,Is a,2017-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,238458007
+4033660,Musician's wart,4032286,Special friction-induced cutaneous lesion,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,NA,238477009
+4031484,Friction dermatosis,4031629,Traumatic skin changes,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,NA,238535007
+4031484,Friction dermatosis,4267683,Injury by causative force,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,400209005
+4031484,Friction dermatosis,4189459,Disorders of skin induced by physical agents,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,373591006
+4031484,Friction dermatosis,36683647,Injury to skin caused by trauma,Is a,2019-01-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,781645001
+4031484,Friction dermatosis,4154161,Injury by mechanism,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,NA,282745002
+4032286,Special friction-induced cutaneous lesion,4031484,Friction dermatosis,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,238458007
+4092115,Hallucinations of music,4084555,Non-verbal auditory hallucinations,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,247731002
+4084555,Non-verbal auditory hallucinations,4164151,Auditory hallucinations,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,45150006
+4092390,Playing loud music - antisocial behavior,4246609,Antisocial behavior,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,60814007
+4246609,Antisocial behavior,4109370,Finding relating to complex and social behaviors,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,284490008
+4107300,Music hall,4107304,Entertainment establishment,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Location,S,257658007
+4107304,Entertainment establishment,4105413,Recreational facility,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Location,S,257657002
+4077973,Isolated musical skills,4077960,Isolated skills associated with general impairment,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,276289005
+4077960,Isolated skills associated with general impairment,4269314,Mental state finding,Is a,2011-07-31,2099-12-31,NA,Condition,SNOMED,Clinical Finding,S,36456004
+4146909,Musical instrument tuner,4023661,Musical instrument maker AND/OR tuner,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106513006
+4136491,Under care of music therapist,4124221,Under care of arts therapist,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Clinical Finding,S,305591000
+4124221,Under care of arts therapist,4136489,Under care of professional allied to medicine,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Clinical Finding,S,305590004
+4140788,Seen by music therapist,4139875,Seen by arts therapist,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Clinical Finding,S,305763006
+4139875,Seen by arts therapist,4136645,Seen by professional allied to medicine,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Clinical Finding,S,305762001
+4139894,Seen by music therapy service,4138346,Seen by arts therapy service,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Clinical Finding,S,305839006
+4138346,Seen by arts therapy service,4138345,Seen by professional allied to medicine service,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Clinical Finding,S,305838003
+4140063,Referral by music therapist,4138507,Referral by arts therapist,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306057001
+4138507,Referral by arts therapist,4126142,Referral by professional allied to medicine,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306056005
+4142608,Referral to music therapy service,4141576,Referral to arts therapy services,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306154005
+4141576,Referral to arts therapy services,4127587,Referral to professional allied to medicine service,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306153004
+4127772,Referral to music therapist,4140200,Referral to arts therapist,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306345003
+4140200,Referral to arts therapist,4140199,Referral to professional allied to medicine,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306344004
+4128079,Discharge by music therapist,4144339,Discharge by arts therapist,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306528009
+4144339,Discharge by arts therapist,4140350,Discharge by professional allied to medicine,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306527004
+4142293,Discharge from music therapy service,4144358,Discharge from arts therapy service,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306622000
+4144358,Discharge from arts therapy service,4140501,Discharge from professionals allied to medicine service,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Procedure,S,306621007
+4206568,Music therapist,4205116,Arts therapist,Is a,2011-07-31,2099-12-31,NA,Provider,SNOMED,Social Context,NA,309410006
+4205116,Arts therapist,4205114,Profession allied to medicine,Is a,2011-07-31,2099-12-31,NA,Provider,SNOMED,Social Context,NA,309398001
+4148657,Music therapy service,4147250,Arts therapy services,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Qualifier Value,S,310082003
+4147250,Arts therapy services,4149141,Professional allied to medicine service,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Qualifier Value,S,310081005
+4148171,All arms military musician,4151316,All arms personnel,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,NA,310909007
+4151316,All arms personnel,4149753,Army - non-commissioned personnel,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,NA,310893000
+4151472,Musician - Royal Marines,4151470,Royal Marines - non-commissioned personnel,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,NA,311312009
+4151470,Royal Marines - non-commissioned personnel,4151816,Royal Marines personnel,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,NA,311310001
+44794894,Royal Air Force musician,45770482,Trade group 21 personnel - RAF,Is a,2015-03-01,2099-12-31,NA,Observation,SNOMED,Social Context,S,929571000000109
+45770482,Trade group 21 personnel - RAF,45770454,RAF - non-commissioned personnel,Is a,2015-01-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,929251000000103
+44797336,Royal Air Force director of music,45771272,RAF officer,Is a,2015-03-01,2099-12-31,NA,Observation,SNOMED,Social Context,S,929191000000101
+45771272,RAF officer,45773637,RAF personnel,Is a,2015-01-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,929181000000103
+4184164,Other musical instrument makers and tuners,4023661,Musical instrument maker AND/OR tuner,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,106513006
+45759365,Music assistive training device,45772809,Artistic-training assistive device,Is a,2015-01-31,2099-12-31,NA,Device,SNOMED,Physical Object,S,705437009
+45772809,Artistic-training assistive device,45767843,Skill-training assistive device,Is a,2015-01-31,2099-12-31,NA,Device,SNOMED,Physical Object,S,705433008
+44804307,Music,44804131,National Public Health Classification data,Is a,2015-03-01,2099-12-31,NA,Observation,SNOMED,Qualifier Value,S,724401000000107
+44804131,National Public Health Classification data,4019758,Classification system,Is a,2015-03-01,2099-12-31,NA,Observation,SNOMED,Qualifier Value,S,115670007
+4296158,Musician wren,4028129,Troglodytidae,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Organism,S,107180002
+4028129,Troglodytidae,4027587,Passeriformes,Is a,2011-07-31,2099-12-31,NA,Observation,SNOMED,Organism,S,107142003
+45770493,Musician - Royal Marines,45770490,Royal Marines - non-commissioned personnel,Is a,2015-01-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,929691000000109
+45770490,Royal Marines - non-commissioned personnel,45770489,Royal Marines personnel,Is a,2015-01-31,2099-12-31,NA,Observation,SNOMED,Social Context,S,929681000000107
