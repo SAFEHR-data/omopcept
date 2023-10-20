@@ -32,15 +32,17 @@ dfall <- NULL
 
 if (messages) message("multiple-y querying concept relations of: ",length(mc_ids)," concepts - may take more than a few seconds")
 
+cnum <- 0
 for(c_id in mc_ids)
 {
+  cnum <- cnum+1
 
   #checks c_id and gets name (ALL if c_id==NULL)
   res <- check_c_id(c_id)
   c_id <- res$c_id[1]
   name1 <- res$name1[1]
 
-  if (messages) message("recursively querying concept relations of: ",name1)
+  if (messages) message("recursively querying relations of: ",name1," ",cnum,"/",length(mc_ids))
 
   #TODO seems to be a problem if num_recurse is set to 0
   for(recurse in 0:num_recurse)
@@ -49,7 +51,6 @@ for(c_id in mc_ids)
     if (messages) message("recurse level ",recurse," of ",num_recurse)
 
     # get relations of each concept from the previous level
-    # TODO maybe avoid or filter at end duplicate concept_id_1, concept_id_2, relationship_id
 
     if (recurse == 0) {
       prev_c_ids <- c_id
@@ -61,17 +62,22 @@ for(c_id in mc_ids)
 
     for(c_id in prev_c_ids) {
 
-      # get immediate relations
-      dfprev1 <- omop_relations(c_id=c_id,
-                               c_ids=c_ids,
-                               d_ids=d_ids,
-                               v_ids=v_ids,
-                               cc_ids=cc_ids,
-                               standard=standard,
-                               r_ids=r_ids,
-                               messages=messages)
+      # TODO maybe avoid or filter at end duplicate concept_id_1, concept_id_2, relationship_id
+      # need to avoid because otherwise it takes ages repeating queries
+      if (!c_id %in% dfall$concept_id_1) {
 
-      dfprev <- bind_rows(dfprev,dfprev1)
+        # get immediate relations
+        dfprev1 <- omop_relations(c_id=c_id,
+                                 c_ids=c_ids,
+                                 d_ids=d_ids,
+                                 v_ids=v_ids,
+                                 cc_ids=cc_ids,
+                                 standard=standard,
+                                 r_ids=r_ids,
+                                 messages=messages)
+
+        dfprev <- bind_rows(dfprev,dfprev1)
+      }
     }
 
     dfall <- bind_rows(dfall,dfprev)
