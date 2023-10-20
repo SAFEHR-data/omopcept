@@ -8,6 +8,7 @@
 #'
 #' @param edge_colour colour for lines joining nodes
 #' @param node_colour_var column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
+#' @param text_colour_var column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
 #'
 #' @param legendpos legend position, default 'bottom'
 #' @param legendcm legend size cm, default=3
@@ -20,6 +21,7 @@
 #' @param width plot width, default=50
 #' @param height plot height, default=30
 #' @param units plot size units default='cm'
+#' @param txtsize text size for title & legend, default=20
 #'
 #' @param graphtitle optional title for graph, default NULL for none
 #' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
@@ -37,6 +39,7 @@ omop_graph <- function(dfin,
 
                        edge_colour='grey71',
                        node_colour_var='domain_id',
+                       text_colour_var=NULL,
 
                        legendpos = 'bottom',
                        legendcm = 3,
@@ -49,11 +52,15 @@ omop_graph <- function(dfin,
                        width=50,
                        height=30,
                        units='cm',
+                       txtsize=20,
 
-                       graphtitle=NULL,
+                       graphtitle="OMOP network graph",
                        plot=TRUE,
                        messages=TRUE
                        ) {
+
+  #set node & text colour same by default, but user can change
+  if (is.null(text_colour_var)) text_colour_var <- node_colour_var
 
   # to detect input type from presence of specific column names
   # then create a table containing 2 columns named 'from' and 'to'
@@ -113,7 +120,8 @@ omop_graph <- function(dfin,
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    geom_node_point(aes(size=connections, colour=node_colour_var)
+    geom_node_point(aes(size=connections, colour=.data[[node_colour_var]])
+    #geom_node_point(aes(size=connections, colour=domain_id)
                     ,alpha=0.9,
                     show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
@@ -129,23 +137,22 @@ omop_graph <- function(dfin,
           legend.key = element_rect(fill = "white"),
           #legend.title = element_text(size=30),
           legend.title = element_blank(),
-          legend.text = element_text(size=20) ) +
+          legend.text = element_text(size=txtsize),
+          title = element_text(graphtitle,txtsize)) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
     geom_node_text(aes(label=name,
                        # colour=domain_id,
                        # size=connections*3),
                        # disabling node text size
                        size=7,
-                       colour=domain_id),
-                       #TODO this doesn't work
-                       #colour=node_colour_var),
+                       colour=text_colour_var),
                    show.legend=FALSE,
                    repel=TRUE,
                    check_overlap=FALSE,
                    nudge_y=0.3, #move labels above points
                    alpha=0.9)
 
-  if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
+  #if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
 
   if (plot) plot(ggr)
 

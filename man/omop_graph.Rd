@@ -11,6 +11,7 @@ omop_graph(
   palettebrewer = "Set1",
   edge_colour = "grey71",
   node_colour_var = "domain_id",
+  text_colour_var = NULL,
   legendpos = "bottom",
   legendcm = 3,
   saveplot = TRUE,
@@ -20,7 +21,8 @@ omop_graph(
   width = 50,
   height = 30,
   units = "cm",
-  graphtitle = NULL,
+  txtsize = 20,
+  graphtitle = "OMOP network graph",
   plot = TRUE,
   messages = TRUE
 )
@@ -35,6 +37,8 @@ omop_graph(
 \item{edge_colour}{colour for lines joining nodes}
 
 \item{node_colour_var}{column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"}
+
+\item{text_colour_var}{column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"}
 
 \item{legendpos}{legend position, default 'bottom'}
 
@@ -53,6 +57,8 @@ omop_graph(
 \item{height}{plot height, default=30}
 
 \item{units}{plot size units default='cm'}
+
+\item{txtsize}{text size for title & legend, default=20}
 
 \item{graphtitle}{optional title for graph, default NULL for none}
 

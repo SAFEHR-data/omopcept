@@ -71,8 +71,17 @@ music <- omop_names("music")
 instrument <- omop_names("instrument")
 #returning 628 concepts
 
+#If music be the food of omop !
+music_rel <- omop_relations_multiple(music$concept_id, r_ids=c('Is a'))
 
+write_csv(music_rel, file=here("inst/extdata/music-relations.csv"))
 
+#because above takes > 5 mins, saved as csv
+#music_rel <- read_csv("inst/extdata/music-relations.csv")
+
+omop_graph(music_rel, plot=FALSE, filenameroot = "music",width=80, height=110)
+
+omop_graph(music_rel, plot=FALSE, filenameroot = "music-titled",width=80, height=110, graphtitle = "If music be the food of OMOP ...")
 
 ```
 
