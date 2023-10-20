@@ -12,7 +12,9 @@ omop_graph(
   edge_colour = "grey71",
   node_colour_var = "domain_id",
   text_colour_var = NULL,
+  node_txtsize = 9,
   legendpos = "bottom",
+  legenddir = "horizontal",
   legendcm = 3,
   saveplot = TRUE,
   filetype = "pdf",
@@ -22,7 +24,9 @@ omop_graph(
   height = 30,
   units = "cm",
   txtsize = 20,
+  titlecolour = "darkred",
   graphtitle = "OMOP network graph",
+  graphsubtitle = NULL,
   plot = TRUE,
   messages = TRUE
 )
@@ -40,7 +44,11 @@ omop_graph(
 
 \item{text_colour_var}{column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"}
 
+\item{node_txtsize}{node text size, default=9}
+
 \item{legendpos}{legend position, default 'bottom'}
+
+\item{legenddir}{legen direction default = 'horizontal'}
 
 \item{legendcm}{legend size cm, default=3}
 
@@ -59,6 +67,8 @@ omop_graph(
 \item{units}{plot size units default='cm'}
 
 \item{txtsize}{text size for title & legend, default=20}
+
+\item{titlecolour}{colour for main title, default='darkred'}
 
 \item{graphtitle}{optional title for graph, default NULL for none}
 

@@ -9,8 +9,10 @@
 #' @param edge_colour colour for lines joining nodes
 #' @param node_colour_var column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
 #' @param text_colour_var column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
+#' @param node_txtsize node text size, default=9
 #'
 #' @param legendpos legend position, default 'bottom'
+#' @param legenddir legen direction default = 'horizontal'
 #' @param legendcm legend size cm, default=3
 #'
 #' @param saveplot whether to save plot, default TRUE
@@ -22,6 +24,7 @@
 #' @param height plot height, default=30
 #' @param units plot size units default='cm'
 #' @param txtsize text size for title & legend, default=20
+#' @param titlecolour colour for main title, default='darkred'
 #'
 #' @param graphtitle optional title for graph, default NULL for none
 #' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
@@ -40,8 +43,10 @@ omop_graph <- function(dfin,
                        edge_colour='grey71',
                        node_colour_var='domain_id',
                        text_colour_var=NULL,
+                       node_txtsize=9,
 
                        legendpos = 'bottom',
+                       legenddir = 'horizontal',
                        legendcm = 3,
 
                        saveplot = TRUE,
@@ -53,8 +58,10 @@ omop_graph <- function(dfin,
                        height=30,
                        units='cm',
                        txtsize=20,
+                       titlecolour='darkred',
 
                        graphtitle="OMOP network graph",
+                       graphsubtitle=NULL,
                        plot=TRUE,
                        messages=TRUE
                        ) {
@@ -122,15 +129,17 @@ omop_graph <- function(dfin,
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
     geom_node_point(aes(size=connections, colour=.data[[node_colour_var]])
     #geom_node_point(aes(size=connections, colour=domain_id)
-                    ,alpha=0.9,
+                    ,alpha=0.8,
                     show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     scale_fill_brewer(palette = palettebrewer) +
+    labs(title=graphtitle,subtitle=graphsubtitle) +
     #this sets bg to white & other elements for good graphs
     #theme_graph() + gives font error
     theme(panel.background=element_blank(),
           plot.background=element_blank(),
           legend.position = legendpos,
+          legend.direction = legenddir,
           legend.key.size = unit(legendcm, 'cm'),
           #legend.key.height = unit(1, 'cm'),
           #legend.key.width = unit(1, 'cm'),
@@ -138,19 +147,25 @@ omop_graph <- function(dfin,
           #legend.title = element_text(size=30),
           legend.title = element_blank(),
           legend.text = element_text(size=txtsize),
-          title = element_text(graphtitle,txtsize)) +
+          #hjust=0.5 to mak centred
+          title = element_text(size=4*txtsize,
+                               #hjust=0.5,
+                               colour="darkred"),
+          plot.subtitle = element_text(size=1*txtsize,
+                                  #hjust=0.5,
+                                  colour="darkred")) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
     geom_node_text(aes(label=name,
                        # colour=domain_id,
-                       # size=connections*3),
+                       #size=connections*4,
                        # disabling node text size
-                       size=7,
-                       colour=text_colour_var),
+                       size=9,
+                       colour=.data[[text_colour_var]]),
                    show.legend=FALSE,
                    repel=TRUE,
                    check_overlap=FALSE,
                    nudge_y=0.3, #move labels above points
-                   alpha=0.9)
+                   alpha=1)
 
   #if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
 
@@ -171,6 +186,7 @@ omop_graph <- function(dfin,
     filename <- paste0(filenameroot,
                        "-p",palettebrewer,
                        "-leg",legendpos,legendcm,
+                       "-nts",node_txtsize,
                        "-",width,"x",height,units,
                        ".",filetype)
 

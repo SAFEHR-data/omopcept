@@ -72,16 +72,122 @@ instrument <- omop_names("instrument")
 #returning 628 concepts
 
 #If music be the food of omop !
-music_rel <- omop_relations_multiple(music$concept_id, r_ids=c('Is a'))
+#music_rel <- omop_relations_multiple(music$concept_id, r_ids=c('Is a'))
 
-write_csv(music_rel, file=here("inst/extdata/music-relations.csv"))
+#write_csv(music_rel, file=here("inst/extdata/music-relations.csv"))
 
 #because above takes > 5 mins, saved as csv
-#music_rel <- read_csv("inst/extdata/music-relations.csv")
+music_rel <- read_csv("inst/extdata/music-relations.csv")
 
 omop_graph(music_rel, plot=FALSE, filenameroot = "music",width=80, height=110)
 
-omop_graph(music_rel, plot=FALSE, filenameroot = "music-titled",width=80, height=110, graphtitle = "If music be the food of OMOP ...")
+omop_graph(music_rel, plot=FALSE, filenameroot = "music-titled",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "If music be the food of ... OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+#but the music plot didn't look great
+
+# trying a blood plot
+bloodgroup <- omop_names("blood group")
+
+bloodgroup |> count(concept_class_id,sort=TRUE)
+
+bloodgroupcomponent <- bloodgroup |> filter(concept_class_id=="LOINC component")
+
+bloodgrouprels <- omop_relations_multiple(bloodgroupcomponent$concept_id)
+
+omop_graph(bloodgrouprels, plot=FALSE, filenameroot = "bloodgroup",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "There will be blood ... in OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+
+#try instead to subset relations table by just those starting with R
+#should be quick
+rrelations2 <- omop_concept_relationship() |>
+  omop_join_name_all(domain = TRUE,vocabulary=TRUE,concept_class=TRUE) |> 
+  filter(grepl("^r",concept_name_1, ignore.case=TRUE)) |> 
+  collect()
+
+#too big
+
+#freq_rid_rrelations
+#    relationship_id           n
+#  1 Mapped from          102954
+#  2 Maps to              102490
+#  3 Brand name of         69857
+#  4 Is a                  62037
+#  5 Subsumes              61770
+#  6 Has marketed form     60968
+#  7 Marketed form of      47477
+#  8 RxNorm has dose form  41287
+#  9 Has brand name        40397
+# 10 Has Module            40063
+
+rrel_is_sub <- rrelations2 |> 
+  filter(relationship_id %in% c("Is a","Subsumes")) 
+
+#123k rows - maybe too much
+
+# this takes ages
+#omop_graph(rrel_is_sub, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+rrelicd10 <- rrel_is_sub |> 
+  filter(vocabulary_id == "ICD10") |> 
+  filter(str_detect(concept_name_1,"injured"))
+
+# how else could I filter ??
+# perhaps length of concept_name1 - lots of drugs with very long names ??
+rrel_is_sub2 <- rrel_is_sub |> 
+  filter(concept_name_2 != "Actual medicinal product pack") |> 
+  filter(concept_name_1 != "Actual medicinal product pack") |> 
+  filter(concept_name_2 != "Actual medicinal product") |> 
+  filter(concept_name_1 != "Actual medicinal product") |> 
+  filter(concept_class_id != "Pharma/Biol Product") |> 
+  filter(vocabulary_id != "OMOP Genomic")
+
+rrel_is_sub2 |> count(concept_class_id,sort=TRUE)
+# # A tibble: 69 × 2
+#    concept_class_id         n
+#    <chr>                <int>
+#  1 Procedure            29374
+#  2 Pharma/Biol Product  13944
+#  3 Clinical Finding     13398
+#  4 LOINC Class          11589
+#  5 LOINC Group           9317
+#  6 Clinical Observation  4738
+#  7 Physical Object       4728
+#  8 LOINC Hierarchy       3763
+#  9 Lab Test              3752
+# 10 LOINC Component       2630
+
+rrel_is_sub2 |> count(vocabulary_id,sort=TRUE)
+rrel_is_sub3 |> count(domain_id,sort=TRUE)
+
+#because its taking for ever maybe sort by concept_name_1
+#and start trying to just slice_head()
+#start with a smallish one, maybe 10k & see how it does
+#seems that 2.5 - 3k is max can get in this plot
+
+rrel_is_sub3 <- rrel_is_sub2 |> 
+  #try other way to just select ICD10 & snomed
+  filter(vocabulary_id %in% c("ICD10","SNOMED")) |>
+  filter(concept_class_id != "LOINC Class") |>
+  filter(!domain_id %in% c("Drug","Type Concept","Race","Provider","Unit","Metadata","Meas Value")) |>  
+  filter(!grepl("^r ",concept_name_1, ignore.case=TRUE)) |>
+  filter(!grepl("^r ",concept_name_2, ignore.case=TRUE)) |>  
+  filter(!grepl("^r'",concept_name_1, ignore.case=TRUE)) |>
+  filter(!grepl("^r'",concept_name_2, ignore.case=TRUE)) |>
+  filter(!grepl("^rf",concept_name_1, ignore.case=TRUE)) |>
+  filter(!grepl("^rf",concept_name_2, ignore.case=TRUE)) |>  
+  filter(!grepl("^rb",concept_name_1, ignore.case=TRUE)) |>
+  filter(!grepl("^rb",concept_name_2, ignore.case=TRUE)) |>
+  filter(!grepl("^radiology",concept_name_1, ignore.case=TRUE)) |>
+  filter(!grepl("^radiology",concept_name_2, ignore.case=TRUE)) |>  
+  arrange(concept_name_1) |> 
+  slice_head(n= 2000)
+
+#add on nice injuries
+rrel_is_sub3 <- bind_rows(rrel_is_sub3,rrelicd10)
+
+omop_graph(rrel_is_sub3, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+
 
 ```
 
