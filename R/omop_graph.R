@@ -27,6 +27,8 @@
 #' @param titlecolour colour for main title, default='darkred'
 #'
 #' @param graphtitle optional title for graph, default NULL for none
+#' @param graphsubtitle optional subtitle for graph, default NULL for none
+#'
 #' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
 #' @param messages whether to print info messages, default=TRUE
 #'
