@@ -96,7 +96,6 @@ bloodgrouprels <- omop_relations_multiple(bloodgroupcomponent$concept_id)
 
 omop_graph(bloodgrouprels, plot=FALSE, filenameroot = "bloodgroup",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "There will be blood ... in OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
 
-
 #try instead to subset relations table by just those starting with R
 #should be quick
 rrelations2 <- omop_concept_relationship() |>
@@ -185,7 +184,96 @@ rrel_is_sub3 <- rrel_is_sub2 |>
 #add on nice injuries
 rrel_is_sub3 <- bind_rows(rrel_is_sub3,rrelicd10)
 
+# FINAL PLOT FOR OHDSI GLOBAL POSTER
 omop_graph(rrel_is_sub3, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+# try some cancer plots
+cancer_rel <- omop_concept_relationship() |>
+  omop_join_name_all(domain = TRUE,vocabulary=TRUE,concept_class=TRUE) |> 
+  filter(grepl("cancer",concept_name_1, ignore.case=TRUE)) |> 
+  collect()
+
+#26k rows in relation table with cancer in concept1
+
+freq_cancer_rel_domain <- cancer_rel |> count(domain_id, sort=TRUE)
+freq_cancer_rel_vocab <- cancer_rel |> count(vocabulary_id, sort=TRUE)
+
+#    vocabulary_id          n
+#  1 LOINC              13724
+#  2 SNOMED              5883
+#  3 HemOnc              3394
+#  4 RxNorm Extension    1703
+#  5 UK Biobank           799
+#  6 Cancer Modifier      394
+#  7 HCPCS                359
+#  8 Read                 185
+#  9 OncoTree             101
+# 10 OMOP Genomic          68
+
+cancer_rel_hemonc <- cancer_rel |> filter(vocabulary_id=="HemOnc")
+
+omop_graph(cancer_rel_hemonc, plot=FALSE, filenameroot = "cancer_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cancer relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+#what happens if just subset HemOnc
+
+hemonc_rel <- omop_concept_relationship() |> 
+  omop_join_name_all(domain = TRUE,vocabulary=TRUE,concept_class=TRUE) |> 
+  filter(vocabulary_id=="HemOnc") |> 
+  collect()
+
+#70k rows
+
+freq_hemonc_rel_domain <- hemonc_rel |> count(domain_id, sort=TRUE)
+freq_hemonc_rel_rship <- hemonc_rel |> count(relationship_id, sort=TRUE)
+
+#  1 Accepted use of       5092
+#  2 Has accepted use      5092
+#  3 Subsumes              4373
+#  4 Brand name of         4207
+#  5 Has brand name        4207
+#  6 Cytotoxic chemo of    3891
+#  7 Has cytotoxic chemo   3891
+#  8 Has cytotox chemo Rx  3876
+#  9 Is a                  3222
+# 10 Context of            2872
+
+hemonc_rel_chemo <- hemonc_rel |> filter(relationship_id=="Cytotoxic chemo of")
+#3.8k rows
+
+omop_graph(hemonc_rel_chemo, plot=FALSE, filenameroot = "chemo_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+#I expected the above to have links from cancers to treatments - but it didn't
+
+hemonc_rel_has_chemo <- hemonc_rel |> filter(relationship_id=="Has cytotoxic chemo")
+#3.8k rows
+
+omop_graph(hemonc_rel_has_chemo, plot=FALSE, filenameroot = "chemo_has_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+
+hemonc_rel_accepted_chemo <- hemonc_rel |> filter(relationship_id=="Accepted use of")
+#3.8k rows
+
+omop_graph(hemonc_rel_accepted_chemo, plot=FALSE, filenameroot = "chemo_hemonc_accepted",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+# try filtering lung cancer
+
+hemonc_rel_lung <- hemonc_rel |> 
+  filter(grepl("lung",concept_name_1, ignore.case=TRUE)) 
+
+# only has conditions
+
+omop_graph(hemonc_rel_lung, plot=FALSE, filenameroot = "chemo_hemonc_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+
+cancer_lung_rel <- omop_concept_relationship() |>
+  omop_join_name_all(domain = TRUE,vocabulary=TRUE,concept_class=TRUE) |> 
+  filter(grepl("cancer",concept_name_1, ignore.case=TRUE)) |> 
+  filter(grepl("lung",concept_name_1, ignore.case=TRUE)) |> 
+  collect()
+
+# only has conditions
+
+omop_graph(cancer_lung_rel, plot=FALSE, filenameroot = "cancer_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung cancer relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
 
