@@ -276,6 +276,71 @@ cancer_lung_rel <- omop_concept_relationship() |>
 omop_graph(cancer_lung_rel, plot=FALSE, filenameroot = "cancer_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung cancer relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
+# pregnancy
+
+preg_rel <- omop_concept_relationship() |>
+  omop_join_name_all(domain = TRUE,vocabulary=TRUE,concept_class=TRUE) |> 
+  filter(grepl("pregnan",concept_name_1, ignore.case=TRUE)) |> 
+  #filter(grepl("lung",concept_name_1, ignore.case=TRUE)) |> 
+  collect()
+
+#30k pregnancy relationships
+
+freq_preg_rel_domain <- preg_rel |> count(domain_id, sort=TRUE)
+freq_preg_rel_rship <- preg_rel |> count(relationship_id, sort=TRUE)
+#  1 Mapped from         4370
+#  2 Maps to             3814
+#  3 Is a                3438
+#  4 Has Module          2654
+#  5 Has status          2650
+#  6 Subsumes            2460
+#  7 Interprets of       1305
+#  8 Has finding site     724
+#  9 Has interprets       717
+# 10 Concept was_a from   566
+
+preg_rel_isa <- preg_rel |> filter(relationship_id=="Is a") 
+#3.4k
+
+#try filtering those that have preg in concept 1 & 2
+preg_rel_preg <- preg_rel |> 
+    filter(grepl("pregnan",concept_name_2, ignore.case=TRUE)) 
+#15k
+
+omop_graph(preg_rel_isa, plot=FALSE, filenameroot = "preg_isa",width=100, height=60, units="in", node_txtsize = 14, graphtitle = "Pregnancy 'Is a' relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
+pregnames <- omop_names("pregnan")
+#4381 rows
+
+birthdatenames <- omop_names("birth date")
+#returning 10 concepts
+birthnames <- omop_names("birth")
+#returning 2116 concepts
+cesariannames <- omop_names("cesarian")
+#returning 4 concepts & are invalid_reason = D
+
+#some docs, move these later
+
+#1. decide which domain (generally using Observation as final)
+#(note condition table doesn't allow you to modify things )
+
+#2. search for concept_id
+
+# For births you can use fact relationship table to link mother & child
+
+# [] in Athena, square brackets indicate a standard survey
+
+# when setting up a consortium project important that mapping conventions
+# are agreed early on, otherwise one site may make decisions that impact 
+# heavily on the way 
+
+clb <- omop_names("certificate of live birth")
+#26
+
+cert_live_birth_rel <- omop_relations_recursive(1012231, num_recurse = 1)
+
+omop_graph(cert_live_birth_rel, plot=FALSE, filenameroot = "cert_live_birth",width=30, height=20, units="in", node_txtsize = 18, graphtitle = "Certificate of live birth",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+
 
 ```
 
