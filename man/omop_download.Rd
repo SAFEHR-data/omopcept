@@ -2,7 +2,7 @@
 % Please edit documentation in R/omop_download.R
 \name{omop_download}
 \alias{omop_download}
-\title{download omop concept file(s) from provided location}
+\title{download omop vocabulary file from provided location to local package cache}
 \usage{
 omop_download(
   tablename = "concept",
@@ -21,5 +21,8 @@ omop_download(
 \item{download_max_secs}{max download secounds, default 720 = 12 mins}
 }
 \description{
-initially using UCLH temporary private filestore
+default using UCLH temporary private filestore, option use local files
+}
+\details{
+TODO do I want to rename this function ? omop_vocab_table_download() or ..._save()
 }

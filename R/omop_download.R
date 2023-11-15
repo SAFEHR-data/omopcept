@@ -1,6 +1,8 @@
-#' download omop concept file(s) from provided location
+#' download omop vocabulary file from provided location to local package cache
 #'
-#' initially using UCLH temporary private filestore
+#' default using UCLH temporary private filestore, option use local files
+#'
+#' TODO do I want to rename this function ? omop_vocab_table_download() or ..._save()
 #'
 #' @param tablename which omop table to download, defaults to 'concept'
 #' @param from url of file source location, defaults to UCLH filestore
