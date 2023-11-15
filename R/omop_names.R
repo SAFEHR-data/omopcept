@@ -35,6 +35,7 @@ omop_names <- function(#df1 = NULL,
     #TODO put negate back in if possible
     #but get Error: filter expressions must be either an expression or a list of expressions
 
+    #don't use arrow:: here it generates check error
     filter(arrow_match_substring_regex(concept_name,
                                        options=list(pattern=findstring,
                                                     ignore_case=ignore_case))) |>

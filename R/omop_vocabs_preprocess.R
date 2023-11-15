@@ -24,11 +24,11 @@ omop_vocabs_preprocess <- function(from,
   }
 
   read_athena_data <- function(file, col_types) {
-    read_tsv(here(from, file), col_types = col_types)
+    read_tsv(file.path(from, file), col_types = col_types)
   }
 
   write_result <- function(data,file) {
-    write_parquet(data,here("omop_metadata",file))
+    write_parquet(data,file.path(to,file))
   }
 
   concepts <- read_athena_data("CONCEPT.csv", col_types = "icccccciic") |>

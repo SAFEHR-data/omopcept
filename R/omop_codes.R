@@ -27,6 +27,7 @@ omop_codes <- function( findstring,
 
     #TODO put negate back in if possible
 
+    #don't use arrow:: here it generates check error
     filter(arrow_match_substring_regex(concept_code,
                                        options=list(pattern=findstring,
                                                     ignore_case=ignore_case))) |>

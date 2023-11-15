@@ -1,6 +1,6 @@
 #' open a reference to omop concept file(s) from provided location
 #'
-#' defaults to package cache used by omop_download()
+#' defaults to package cache used by omop_vocab_table_save()
 #'
 #' @param location url of file location, defaults to package cache
 #' @export
@@ -15,7 +15,7 @@ omop_concept <- function(location = tools::R_user_dir("omopcept", which = "cache
 
   filepath = file.path(location,"concept.parquet")
 
-  if(!file.exists(filepath)) omop_download("concept")
+  if(!file.exists(filepath)) omop_vocab_table_save("concept")
 
   #just creates reference to the data
   concept <- arrow::open_dataset(filepath)

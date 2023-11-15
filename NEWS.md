@@ -1,6 +1,10 @@
 
-# omopcept 0.0.1.1 dev
+# omopcept 0.0.2.0 2023-11-15
 
+# omopcept 0.0.1.1 2023-11-15
+
+* `omop_vocabs_preprocess()` read in omop vocab csvs, preprocess to parquet save in package cache
+* `omop_vocab_table_save()` renamed from `omop_download()`
 * `omop_graph()` auto file naming
 * `omop_relations()` add `r_ids` arg to filter by `relationship_id` e.g. `c('Is a','Subsumes')`
 * `omop_relations_recursive()` added to recursively extract relations of a single concept

@@ -43,7 +43,7 @@ omop_vocab_table_save <- function( tablename = "concept",
   #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcept"
 
   #recursive means it creates all nested folders needed
-  if (!dir.exists(dest_path)) {dir.create(to, recursive=TRUE )}
+  if (!dir.exists(to)) {dir.create(to, recursive=TRUE )}
 
   download <- function(f, mode) {
     utils::download.file(paste0(from,f),

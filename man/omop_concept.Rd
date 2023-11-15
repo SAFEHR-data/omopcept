@@ -13,7 +13,7 @@ oc(location = tools::R_user_dir("omopcept", which = "cache"))
 \item{location}{url of file location, defaults to package cache}
 }
 \description{
-defaults to package cache used by omop_download()
+defaults to package cache used by omop_vocab_table_save()
 }
 \examples{
 # open reference, query and collect data to dataframe
