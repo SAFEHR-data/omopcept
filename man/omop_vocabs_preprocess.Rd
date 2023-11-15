@@ -5,11 +5,23 @@
 \title{read in omop vocabulary csvs downloaded from Athena, preprocess
 and write out as binary parquet files for better performance.}
 \usage{
-omop_vocabs_preprocess(athena_source_directory)
+omop_vocabs_preprocess(
+  from,
+  to = tools::R_user_dir("omopcept", which = "cache")
+)
 }
 \arguments{
-\item{athena_source_directory}{filepath where omop vocab csvs are stored}
+\item{from}{filepath where omop vocab csvs are stored}
+
+\item{to}{path to save parquet files locally, defaults to package cache which is where omopcept functions look}
+}
+\value{
+nothing
 }
 \description{
-TODO think: do I want to save parquets directly into the package cache from here
+by default saves parquet files locally to package cache where omopcept functions can access
+}
+\seealso{
+\code{\link[=omop_vocab_table_save]{omop_vocab_table_save()}}
+alternative that saves an already processed parquet file from remote or local source to local package cache
 }

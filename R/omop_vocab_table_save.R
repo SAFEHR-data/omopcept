@@ -1,16 +1,18 @@
-#' download omop vocabulary file from provided location to local package cache
+#' save omop vocabulary parquet file from provided location to local package cache
 #'
-#' default using UCLH temporary private filestore, option use local files
-#'
-#' TODO do I want to rename this function ? omop_vocab_table_download() or ..._save()
+#' default using UCLH temporary private filestore, option to use local files
 #'
 #' @param tablename which omop table to download, defaults to 'concept'
 #' @param from url of file source location, defaults to UCLH filestore
-#' @param to path to save file locally, defaults to package cache which is where omop_concept() looks for it
+#' @param to path to save file locally, defaults to package cache which is where omopcept functions look
 #' @param download_max_secs max download secounds, default 720 = 12 mins
 #'
+#' @returns nothing
+#' @seealso [omop_vocabs_preprocess()]
+#'    alternative that reads in csvs downloaded from Athena and saves to parquet also in local package cache
+#'
 #' @export
-omop_download <- function( tablename = "concept",
+omop_vocab_table_save <- function( tablename = "concept",
                            from = "https://omopes.blob.core.windows.net/newcontainer/",
                            to = tools::R_user_dir("omopcept", which = "cache"),
                            download_max_secs = 720) {
@@ -36,22 +38,16 @@ omop_download <- function( tablename = "concept",
   # that should persist even across R sessions.
   # The primary function you should use to derive acceptable locations for user data is tools::R_user_dir()
 
-  dest_path <- to
+  #dest_path <- to
 
   #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcept"
 
-  #FAILED before on DataScienceDesktop
-  #In dir.create(dest_path) :
-  #  cannot create dir 'F:\UserProfiles\andsouth\AppData\Local\R\cache\R\omopcept', reason 'No such file or directory'
-  #have to go up quite a few levels to find one that does work
-  #dir.exists("F:\\UserProfiles\\andsouth\\AppData\\Local/") [1] TRUE
-
   #recursive means it creates all nested folders needed
-  if (!dir.exists(dest_path)) {dir.create(dest_path, recursive=TRUE )}
+  if (!dir.exists(dest_path)) {dir.create(to, recursive=TRUE )}
 
   download <- function(f, mode) {
     utils::download.file(paste0(from,f),
-                  destfile = file.path(dest_path,f),
+                  destfile = file.path(to,f),
                   mode = mode)
   }
 

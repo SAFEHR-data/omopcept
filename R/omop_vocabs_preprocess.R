@@ -1,13 +1,20 @@
 #' read in omop vocabulary csvs downloaded from Athena, preprocess
 #' and write out as binary parquet files for better performance.
 #'
-#' TODO think: do I want to save parquets directly into the package cache from here
+#' by default saves parquet files locally to package cache where omopcept functions can access
 #'
-#' @param athena_source_directory filepath where omop vocab csvs are stored
+#' @param from filepath where omop vocab csvs are stored
+#' @param to path to save parquet files locally, defaults to package cache which is where omopcept functions look
 #'
-omop_vocabs_preprocess <- function(athena_source_directory) {
+#' @returns nothing
+#' @seealso [omop_vocab_table_save()]
+#'    alternative that saves an already processed parquet file from remote or local source to local package cache
+#'
+#' @export
+omop_vocabs_preprocess <- function(from,
+                                   to = tools::R_user_dir("omopcept", which = "cache")) {
 
-  stopifnot(file.exists(athena_source_directory))
+  stopifnot("specified location of vocab csvs seems not to exist" = file.exists(from))
 
   convert_valid_dates <- function(df) { df |>
       mutate(
@@ -17,7 +24,7 @@ omop_vocabs_preprocess <- function(athena_source_directory) {
   }
 
   read_athena_data <- function(file, col_types) {
-    read_tsv(here(athena_source_directory, file), col_types = col_types)
+    read_tsv(here(from, file), col_types = col_types)
   }
 
   write_result <- function(data,file) {
