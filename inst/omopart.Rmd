@@ -342,6 +342,27 @@ cert_live_birth_rel <- omop_relations_recursive(1012231, num_recurse = 1)
 omop_graph(cert_live_birth_rel, plot=FALSE, filenameroot = "cert_live_birth",width=30, height=20, units="in", node_txtsize = 18, graphtitle = "Certificate of live birth",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
+#omopmas 2023
+
+chr <- omop_names('christmas')
+rei <- omop_names('reindeer')
+mis <- omop_names('mistletoe')
+
+chr_rel <- omop_relations_multiple(chr$concept_id)
+rei_rel <- omop_relations_multiple(rei$concept_id)
+mis_rel <- omop_relations_multiple(mis$concept_id)
+
+omop_graph(chr_rel)
+omop_graph(rei_rel)
+
+chr_rei_rel <- bind_rows(chr_rel,rei_rel)
+
+#A4 title text over-runs
+omop_graph(chr_rel, filenameroot = "omopmas", graphtitle = "Happy OMOPmas !",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept",width=210, height=297, units="mm", node_txtsize = 24)
+#A3
+omop_graph(chr_rel, filenameroot = "omopmas", graphtitle = "Happy OMOPmas !",graphsubtitle = "made by @southmapr 2023 using OMOP, R & https://github.com/andysouth/omopcept",width=297, height=420, units="mm", node_txtsize = 24)
+
+
 ```
 
 

@@ -44,15 +44,14 @@ for(c_id in mc_ids)
 
   if (messages) message("recursively querying relations of: ",name1," ",cnum,"/",length(mc_ids))
 
-  #TODO seems to be a problem if num_recurse is set to 0
-  for(recurse in 0:num_recurse)
+  for(recurse in 1:num_recurse)
   {
 
     if (messages) message("recurse level ",recurse," of ",num_recurse)
 
     # get relations of each concept from the previous level
 
-    if (recurse == 0) {
+    if (recurse == 1) {
       prev_c_ids <- c_id
     } else {
       prev_c_ids <- unique(dfprev$concept_id_2)

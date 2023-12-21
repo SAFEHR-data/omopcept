@@ -34,7 +34,7 @@ omop_relations_recursive <- function(c_id=NULL,
 
   dfall <- NULL
 
-  for(recurse in 0:num_recurse)
+  for(recurse in 1:num_recurse)
   {
 
     if (messages) message("recurse level ",recurse," of ",num_recurse)
@@ -42,7 +42,7 @@ omop_relations_recursive <- function(c_id=NULL,
     # get relations of each concept from the previous level
     # TODO maybe avoid or filter at end duplicate concept_id_1, concept_id_2, relationship_id
 
-    if (recurse == 0) {
+    if (recurse == 1) {
       prev_c_ids <- c_id
     } else {
       prev_c_ids <- unique(dfprev$concept_id_2)

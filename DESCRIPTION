@@ -27,4 +27,7 @@ Imports:
     ggplot2,
     readr,
     lubridate
-
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

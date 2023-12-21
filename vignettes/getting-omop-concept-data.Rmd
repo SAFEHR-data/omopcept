@@ -1,0 +1,26 @@
+---
+title: "getting-omop-concept-data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{getting-omop-concept-data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(omopcept)
+```
+
+
+`omopcept` requires OMOP concept tables.
+
+In default operation omopcept will download these concept tables from a temporary online filestore we have created.
+
+There is also an option to process and save in `omopcept` concept tables that you have downloaded yourself from [Athena](https://athena.ohdsi.org/).
