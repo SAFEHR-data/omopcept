@@ -27,7 +27,7 @@
 #' @importFrom arrow open_dataset
 #' @importFrom arrow write_parquet
 #'
-#' @importFrom tidygraph tbl_graph
+# @importFrom tidygraph tbl_graph
 #'
 #' @importFrom readr read_tsv
 #'
@@ -39,8 +39,9 @@
 # with xtra functions as they crop up
 # @import dplyr
 #' @import ggplot2
-#' @import igraph
-#' @import ggraph
+# @import igraph
+# @import ggraph
+
 # @importFrom igraph degree
 # @importFrom igraph V
 # @importFrom ggraph ggraph

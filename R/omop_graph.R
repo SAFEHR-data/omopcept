@@ -68,6 +68,19 @@ omop_graph <- function(dfin,
                        messages=TRUE
                        ) {
 
+  #TODO get sorted to install req packs
+
+  # install required packages if not present
+  required_packages <- c("igraph","tidygraph","ggraph")
+  install_package <- function(packname) {
+    if (!requireNamespace(packname, quietly = TRUE)) {
+      message("Trying to install required package:",packname)
+      utils::install.packages(packname)
+    }
+  }
+  #required_packages |> purrr::map(\(pkg) install_package(pkg))
+  lapply(required_packages,install_package)
+
   #set node & text colour same by default, but user can change
   if (is.null(text_colour_var)) text_colour_var <- node_colour_var
 
@@ -117,19 +130,19 @@ omop_graph <- function(dfin,
   edges1 <- dfin2 |>
     select(from, to)
 
-  graphin <- tbl_graph(nodes=nodes1, edges=edges1)
+  graphin <- tidygraph::tbl_graph(nodes=nodes1, edges=edges1)
 
   #sets node attribute of num_edges
-  V(graphin)$connections <- degree(graphin)
+  igraph::V(graphin)$connections <- igraph::degree(graphin)
 
-  ggr <- ggraph(graphin, layout=ggrlayout) +
+  ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
     #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
-    geom_edge_link(colour=edge_colour, edge_alpha=0.3, edge_width=0.1 ) +
+    ggraph::geom_edge_link(colour=edge_colour, edge_alpha=0.3, edge_width=0.1 ) +
     #couldn't get colouring edges to work
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    geom_node_point(aes(size=connections, colour=.data[[node_colour_var]])
+    ggraph::geom_node_point(aes(size=connections, colour=.data[[node_colour_var]])
     #geom_node_point(aes(size=connections, colour=domain_id)
                     ,alpha=0.8,
                     show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
@@ -157,7 +170,7 @@ omop_graph <- function(dfin,
                                   #hjust=0.5,
                                   colour="darkred")) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
-    geom_node_text(aes(label=name,
+    ggraph::geom_node_text(aes(label=name,
                        # colour=domain_id,
                        #size=connections*4,
                        # disabling node text size

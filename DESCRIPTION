@@ -21,13 +21,13 @@ Imports:
     rlang,
     arrow,
     stringr,
-    igraph,
-    tidygraph,
-    ggraph,
     ggplot2,
     readr,
     lubridate
-Suggests: 
+Suggests:
+    igraph,
+    tidygraph,
+    ggraph,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
