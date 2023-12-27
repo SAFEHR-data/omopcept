@@ -1,6 +1,7 @@
 
-# omopcept 0.0.2.0 2023-11-15
+# omopcept 0.0.2.0 2023-12-23
 
+* graph pkgs igraph,tidygraph,ggraph moved from imports to suggests
 * `num_recurse` loop start at 1 rather than 0 in `omop_relations_multiple()` & `omop_relations_recursive()`
 
 # omopcept 0.0.1.1 2023-11-15
