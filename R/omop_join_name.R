@@ -144,7 +144,7 @@ omop_join_name_all <- function(df,
 
 
   colnames <- df |>
-    select(contains("concept_id")) |>
+    select(any_of(contains("concept_id"))) |>
     names() |>
     stringr::str_remove("_concept_id$")
 
