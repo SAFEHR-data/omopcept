@@ -7,14 +7,26 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-**Warning: under active development 2023-09, breaking changes possible**
+**Active development 2024, breaking changes possible**
 
-omopcept provides access to a subset of **OMOP** con**CEPT**s (without
-the cons!) and flexible tidyverse compatible R functions for querying.
-It includes concise named copies of functions designed for interactive
-use e.g. `oid()` and `onames()` to search concept ids and names
-respectively. For example the line below can be used to return all \~
-1000 OMOP ids for SNOMED codes for clinical drugs starting with A.
+**omopcept** provides access to **OMOP** *con***CEPT***s* (without the
+*cons*!).
+
+Initial motivation was to make it super-easy to get the names associated
+with concept IDs.  
+Later additions allow exploration and visualisation of OMOP hierarchies.
+
+**omopcept** provides R functions that are :
+
+- modern
+- flexible
+- tidyverse compatible
+- memory efficient (using arrow parquet)
+
+**omopcept** includes concise named copies of functions designed for
+interactive use e.g. `oid()` and `onames()` to search concept ids and
+names respectively. For example the line below can be used to return all
+\~ 1000 OMOP ids for SNOMED codes for clinical drugs starting with A.
 
     onames("^a",d="DRUG",v="SNOMED",cc="Clinical Drug")
 
@@ -28,13 +40,22 @@ Install the development version of omopcept with:
 remotes::install_github("andysouth/omopcept")
 ```
 
+## OMOP vocabularies data
+
+OMOP vocabularies can be searched and downloaded from [Athena – the
+OHDSI vocabularies repository](https://athena.ohdsi.org). **omopcept**
+provides R tools to interact with OMOP concepts in a more reproducible
+way.
+
+**omopcept** can use vocabulary files that you have downloaded from
+Athena, or automatically download a subset of the vocabularies that we
+have saved in the cloud.
+
 ## Getting started with omopcept
 
-On initial use omopcept downloads a
-[parquet](https://parquet.apache.org/) file containing the concepts to a
-local package cache where it can be accessed in future sessions. On use
-it opens the file (with omop_concept()) but doesn’t read in the data to
-save time. The [arrow R
+On initial use omopcept tries to download OMOP vocabulary files from the
+cloud to a local package cache where it can be accessed in future
+sessions. The [arrow R
 package](https://arrow.apache.org/docs/r/index.html) allows parquet
 files to be opened and queried in dplyr pipelines without having to read
 in the data. e.g. the code below will return just the top rows of the
@@ -67,7 +88,7 @@ omop_concept() |>
 | `omop_concept_ancestor()`     | `oca()`                | return reference to concept ancestor table                                                     |
 | `omop_concept_relationship()` | `ocr()`                | return reference to concept relationship table                                                 |
 
-## OMOP background
+## OMOP outline
 
 The [OMOP Common Data Model](https://ohdsi.github.io/CommonDataModel/)
 is an open standard for health data. “\[It is\] designed to standardize
@@ -77,26 +98,28 @@ analyses that can produce reliable evidence”.
 OMOP is maintained by OHDSI (pronounced “Odyssey”). “The Observational
 Health Data Sciences and Informatics program is a multi-stakeholder,
 interdisciplinary collaborative that strives to improve medical decision
-making and bring better health outcomes to patients around the world.”  
-OMOP concepts can be searched and downloaded from [Athena – the OHDSI
-vocabularies repository](https://athena.ohdsi.org). This package
-provides R tools to interact with the concepts in a more reproducible
-way.
+making and bring better health outcomes to patients around the world.”
 
-## Concept data
+## OMOP vocabularies in the background
 
-OMOP vocab data downloaded from Athena includes a tables called
-CONCEPT.csv, CONCEPT_ANCESTOR.csv and CONCEPT_RELATIONSHIP.csv that we
-saved in parquet format for use in this package.
+Vocabularies downloaded from Athena include tables called CONCEPT.csv,
+CONCEPT_ANCESTOR.csv and CONCEPT_RELATIONSHIP.csv.
+
+You have two main options :
+
+1.  manually download selected vocabulary csv files from Athena, use
+    `omopcept::omop_vocabs_preprocess()`
+
+2.  automatically download pre-processed vocabulary files saved in the
+    cloud by us
 
 omopcept downloads a selection of vocabularies and stores them locally
 the first time you use it (in the recommended data location for R
 packages). The download does not need to be repeated until you update
-the package.
-
-We plan to allow the location of the concept files to be specified so
-that in a future version users could point it to their own downloaded
-files.
+the package. Vocabularies are stored as
+[parquet](https://parquet.apache.org/) files that can be queried in a
+memory-efficient manner without having to first read the data in to
+memory.
 
 | fields           | about                               | query_arguments |
 |:-----------------|:------------------------------------|:----------------|
@@ -187,10 +210,12 @@ data.frame(concept_id=(c(3571338L,3655355L)),
 
 ## Vocabularies included
 
-The vocabularies are a default download from Athena with a few extra
-vocabs added. Later we may offer option to add other vocabularies.
+The vocabularies that omopcept downloads automatically are a default
+download from Athena with a few extra vocabs added. If you wish to
+control which vocabularies are included you can manually download
+vocabulary csv files from Athena.
 
-### Numbers of concepts in the package by domain and vocabulary
+### Numbers of concepts in automatic **omopcept** vocabulary download by domain and vocabulary
 
 ``` r
 library(dplyr)
