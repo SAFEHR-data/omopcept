@@ -43,6 +43,8 @@ e.g. drug_concept_id to get drug_name etc.
 data.frame(concept_id=(c(3571338L,3655355L)),
            drug_concept_id=(c(4000794L,35628998L))) |>
            omop_join_name_all()
+#2024-01 fix, used to fail
+data.frame(domain_concept_id_1=(c(3571338L,3655355L))) |> omop_join_name_all()
 #examples commented for now mostly to speed package build
 #data.frame(route_concept_id=(c(4132161L,	4171047L)),
 #          drug_concept_id=(c(1550560L,	35780880L))) |>

@@ -97,6 +97,8 @@ ojoin <- omop_join_name
 #' data.frame(concept_id=(c(3571338L,3655355L)),
 #'            drug_concept_id=(c(4000794L,35628998L))) |>
 #'            omop_join_name_all()
+#' #2024-01 fix, used to fail
+#' data.frame(domain_concept_id_1=(c(3571338L,3655355L))) |> omop_join_name_all()
 #' #examples commented for now mostly to speed package build
 #' #data.frame(route_concept_id=(c(4132161L,	4171047L)),
 #' #          drug_concept_id=(c(1550560L,	35780880L))) |>
@@ -123,10 +125,28 @@ omop_join_name_all <- function(df,
   #if colname contains *_concept_id do omop_join_name(namestart=*)
   #else if colname contains concept_id do omop_join_name(namefull=colname)
 
+  #2023-01 bug
+  #data.frame(domain_concept_id_1=(c(3571338L,3655355L))) |> omop_join_name_all()
+  #Error in `left_join()` at omopcept/R/omop_join_name.R:65:2:
+  #! Join columns in `x` must be present in the data.
+  # Problem with `domain_1_concept_id`
+  #what happens
+  #concept_id gets removed from domain_concept_id_1
+  #leaving domain_1
+  #then omop_join_name(namestart=domain_1 looks for domain_1_concept_id
+  #potential solution
+  #want to use omop_join_name(namefull=
+  #so I don't want str_remove "_concept_id" to kick in
+  #can I get that str_remove to only operate
+  #if the string is at end of word ?, yes just add a $
+  #hurrah! fixes current bug, but does it cause others ?
+  #maybe this is time to add tests ?
+
+
   colnames <- df |>
     select(contains("concept_id")) |>
     names() |>
-    stringr::str_remove("_concept_id")
+    stringr::str_remove("_concept_id$")
 
 
   for(cname in colnames)

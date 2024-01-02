@@ -1,6 +1,7 @@
 
 # omopcept 0.0.2.0 2024-01-02
 
+* fix bug in `omop_join_name_all()` to cope with "domain_concept_id_1" from FACT_RELATIONSHIP
 * `omop_join_name_all()` now copes with a list of multiple tables
 * update readme about vocabulary download options
 * graph pkgs igraph,tidygraph,ggraph moved from imports to suggests
