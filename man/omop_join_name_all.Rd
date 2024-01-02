@@ -22,7 +22,7 @@ ojoinall(
 )
 }
 \arguments{
-\item{df}{dataframe}
+\item{df}{dataframe, or a list of multiple dataframes}
 
 \item{domain}{whether to add domain_id column, default FALSE}
 
@@ -33,7 +33,7 @@ ojoinall(
 \item{concept_code}{whether to add concept_code column, default FALSE}
 }
 \value{
-dataframe based on input df with 1 extra column added for each concept_id column
+dataframe based on input df with 1 extra column added for each concept_id column, or a list of multiple dataframes
 }
 \description{
 adds \\\emph{_name based on \\}_concept_id

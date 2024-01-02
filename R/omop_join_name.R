@@ -85,13 +85,13 @@ ojoin <- omop_join_name
 #' adds \\*_name based on \\*_concept_id
 #' e.g. drug_concept_id to get drug_name etc.
 #'
-#' @param df dataframe
+#' @param df dataframe, or a list of multiple dataframes
 #' @param domain whether to add domain_id column, default FALSE
 #' @param vocabulary whether to add vocabulary_id column, default FALSE
 #' @param concept_class whether to add concept_class_id column, default FALSE
 #' @param concept_code whether to add concept_code column, default FALSE
 #'
-#' @return dataframe based on input df with 1 extra column added for each concept_id column
+#' @return dataframe based on input df with 1 extra column added for each concept_id column, or a list of multiple dataframes
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,3655355L)),
@@ -111,6 +111,13 @@ omop_join_name_all <- function(df,
                                vocabulary = FALSE,
                                concept_class = FALSE,
                                concept_code = FALSE) {
+
+  #2024-01-02 trying to get working on a list of multiple tables
+  #by checking class of df, if class==list use lapply to call func itself on components
+  if (class(df) == 'list') {
+    alltables <- lapply(df, function(x) omop_join_name_all(x))
+    return(alltables)
+  }
 
   #logic
   #if colname contains *_concept_id do omop_join_name(namestart=*)

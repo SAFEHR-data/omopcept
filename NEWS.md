@@ -1,6 +1,7 @@
 
 # omopcept 0.0.2.0 2024-01-02
 
+* `omop_join_name_all()` now copes with a list of multiple tables
 * update readme about vocabulary download options
 * graph pkgs igraph,tidygraph,ggraph moved from imports to suggests
 * `num_recurse` loop start at 1 rather than 0 in `omop_relations_multiple()` & `omop_relations_recursive()`
