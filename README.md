@@ -113,13 +113,15 @@ You have two main options :
 2.  automatically download pre-processed vocabulary files saved in the
     cloud by us
 
-omopcept downloads a selection of vocabularies and stores them locally
-the first time you use it (in the recommended data location for R
-packages). The download does not need to be repeated until you update
+**omopcept** downloads a selection of vocabularies and stores them
+locally the first time you use it (in the recommended data location for
+R packages). The download does not need to be repeated until you update
 the package. Vocabularies are stored as
 [parquet](https://parquet.apache.org/) files that can be queried in a
 memory-efficient manner without having to first read the data in to
 memory.
+
+### OMOP concept table fields
 
 | fields           | about                               | query_arguments |
 |:-----------------|:------------------------------------|:----------------|
