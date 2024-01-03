@@ -46,9 +46,17 @@ omop_vocab_table_save <- function( tablename = "concept",
   if (!dir.exists(to)) {dir.create(to, recursive=TRUE )}
 
   download <- function(f, mode) {
-    utils::download.file(paste0(from,f),
+
+    result <- utils::download.file(paste0(from,f),
                   destfile = file.path(to,f),
                   mode = mode)
+
+    #if download fails try to remove any partial file
+    if (result != 0) {
+      warning("download of vocabulary table seems to have failed, try repeating")
+      file.remove(file.path(to,f))
+    }
+
   }
 
   download(paste0(tablename,".parquet"), "wb")
