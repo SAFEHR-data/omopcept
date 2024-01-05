@@ -67,7 +67,6 @@ omop_join_name <- function(df,
     #move name column next to id to make output more readable
     dplyr::relocate(name_col_name, .after=id_col_name)
 
-#TODO maybe add option to deselect some table columns to make more readable
 
 }
 
