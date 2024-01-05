@@ -1,10 +1,18 @@
 
-# omopcept 0.0.2.0 2024-01-02
+# omopcept 0.0.3.1 2024-01-05 DEV version
 
+
+
+# omopcept 0.0.3.0 2024-01-05
+
+* `omop_names()` added argument `exact=` TRUE for exact string search, "start" for exact start, "end" for exact end
 * `omop_check_names()` to check that concept names and ids match in a passed table
 * fix bug in `omop_join_name_all()` to cope with "domain_concept_id_1" from FACT_RELATIONSHIP
 * `omop_join_name_all()` now copes with a list of multiple tables
 * update readme about vocabulary download options
+
+# omopcept 0.0.2.0 2023-12-27
+
 * graph pkgs igraph,tidygraph,ggraph moved from imports to suggests
 * `num_recurse` loop start at 1 rather than 0 in `omop_relations_multiple()` & `omop_relations_recursive()`
 

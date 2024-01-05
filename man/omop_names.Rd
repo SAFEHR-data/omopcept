@@ -8,6 +8,7 @@
 omop_names(
   findstring,
   ignore_case = TRUE,
+  exact = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -19,6 +20,7 @@ omop_names(
 onames(
   findstring,
   ignore_case = TRUE,
+  exact = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -31,6 +33,8 @@ onames(
 \item{findstring}{to search for or regex, e.g. "^a" to find those starting with A}
 
 \item{ignore_case}{ignore case in string comparison, default TRUE}
+
+\item{exact}{TRUE for exact string search, "start" for exact start, "end" for exact end, default=FALSE for str_detect}
 
 \item{c_ids}{one or more concept_id to filter by, default NULL for all}
 
@@ -56,6 +60,15 @@ omop_names("AJCC/UICC Stage")
 #set the findstring to "" to get all rows satisfying the other conditions
 #omop_names("", v_ids="Gender")
 #omop_names("", d_ids="Type Concept", standard="S")
+#exact= options
+#t1 <- onames("tobacco")
+#returning 616 concepts
+#t2 <- onames("tobacco",exact=TRUE)
+#returning 2 concepts
+#t3 <- onames("tobacco",exact="start")
+#returning 229 concepts
+#t4 <- onames("tobacco",exact="end")
+#returning 54 concepts
 # onames("chemotherapy", v_ids="LOINC")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
