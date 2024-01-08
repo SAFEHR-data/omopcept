@@ -1,6 +1,11 @@
 
-# omopcept 0.0.3.1 2024-01-05 DEV version
+# omopcept 0.0.4.1 2024-01-08 DEV version
 
+
+
+# omopcept 0.0.4.0 2024-01-08
+
+* fix bug in omop_join_names_all() - Error in class(df) == "list"
 
 
 # omopcept 0.0.3.0 2024-01-05

@@ -113,9 +113,9 @@ omop_join_name_all <- function(df,
                                concept_class = FALSE,
                                concept_code = FALSE) {
 
-  #2024-01-02 trying to get working on a list of multiple tables
-  #by checking class of df, if class==list use lapply to call func itself on components
-  if (class(df) == 'list') {
+  #to apply to list of multiple tables
+  #if inherits from list use lapply to call func itself on components
+  if (inherits(df,'list')) {
     alltables <- lapply(df, function(x) omop_join_name_all(x))
     return(alltables)
   }
