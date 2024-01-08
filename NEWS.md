@@ -16,10 +16,12 @@
 * `omop_join_name_all()` now copes with a list of multiple tables
 * update readme about vocabulary download options
 
+
 # omopcept 0.0.2.0 2023-12-27
 
 * graph pkgs igraph,tidygraph,ggraph moved from imports to suggests
 * `num_recurse` loop start at 1 rather than 0 in `omop_relations_multiple()` & `omop_relations_recursive()`
+
 
 # omopcept 0.0.1.1 2023-11-15
 
@@ -29,6 +31,7 @@
 * `omop_relations()` add `r_ids` arg to filter by `relationship_id` e.g. `c('Is a','Subsumes')`
 * `omop_relations_recursive()` added to recursively extract relations of a single concept
 
+
 # omopcept 0.0.1.0 2023-10-14
 
 * `omop_graph()` working for visualising omop hierarchy with `ggraph`
@@ -37,6 +40,7 @@
 * `omop_relations()` and `omop_concept_relationship()` for getting more info about immediate neighbour relationships 
 * bugfix, `omop_ancestors()` & `omop_decsendants()` were not filtering domin, separation etc., when `concept_id` not specified
 * option for NULL `c_id` to `omop_descendants()` and `omop_ancestors()`, returns all concepts within other filters
+
 
 # omopcept 0.0.0.9005 2023-08-08
 
@@ -53,6 +57,7 @@
 * **omop_ancestors()**
 * shortname function copies of above. **odesc()** and **oance()**
 * added optional **messages** argument to query functions
+
 
 # omopcept 0.0.0.9002 2023-05-15
 
