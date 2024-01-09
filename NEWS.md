@@ -1,6 +1,7 @@
 
 # omopcept 0.0.4.1 2024-01-08 DEV version
 
+* `omop_join_name()` now has args for all columns in concept table
 
 
 # omopcept 0.0.4.0 2024-01-08

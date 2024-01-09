@@ -12,7 +12,10 @@ omop_join_name(
   domain = FALSE,
   vocabulary = FALSE,
   concept_class = FALSE,
-  concept_code = FALSE
+  concept_code = FALSE,
+  standard = FALSE,
+  valid_dates = FALSE,
+  invalid = FALSE
 )
 
 ojoin(
@@ -22,7 +25,10 @@ ojoin(
   domain = FALSE,
   vocabulary = FALSE,
   concept_class = FALSE,
-  concept_code = FALSE
+  concept_code = FALSE,
+  standard = FALSE,
+  valid_dates = FALSE,
+  invalid = FALSE
 )
 }
 \arguments{
@@ -39,6 +45,12 @@ ojoin(
 \item{concept_class}{whether to add concept_class_id column, default FALSE}
 
 \item{concept_code}{whether to add concept_code column, default FALSE}
+
+\item{standard}{whether to add standard_concept column, default FALSE}
+
+\item{valid_dates}{whether to add columns valid_start_date & valid_end_date, default FALSE}
+
+\item{invalid}{whether to add invalid_reason column, default FALSE}
 }
 \description{
 adds (namestart)_name based on (namestart)_concept_id

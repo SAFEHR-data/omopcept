@@ -10,6 +10,9 @@
 #' @param vocabulary whether to add vocabulary_id column, default FALSE
 #' @param concept_class whether to add concept_class_id column, default FALSE
 #' @param concept_code whether to add concept_code column, default FALSE
+#' @param standard whether to add standard_concept column, default FALSE
+#' @param valid_dates whether to add columns valid_start_date & valid_end_date, default FALSE
+#' @param invalid whether to add invalid_reason column, default FALSE
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
@@ -24,8 +27,10 @@ omop_join_name <- function(df,
                            domain = FALSE,
                            vocabulary = FALSE,
                            concept_class = FALSE,
-                           concept_code = FALSE
-                           #todo can add standard_concept
+                           concept_code = FALSE,
+                           standard = FALSE,
+                           valid_dates = FALSE,
+                           invalid = FALSE
                            ) {
 
   #"" is to cope with concept_id from omop_join_name_all()
@@ -53,6 +58,13 @@ omop_join_name <- function(df,
     columns2join <- c(columns2join, "concept_class_id")
   if (concept_code == TRUE & !("concept_code" %in% names(df)))
     columns2join <- c(columns2join, "concept_code")
+  #TODO check these
+  if (standard == TRUE & !("standard_concept" %in% names(df)))
+    columns2join <- c(columns2join, "standard_concept")
+  if (valid_dates == TRUE & !("valid_start_date" %in% names(df)))
+    columns2join <- c(columns2join, "valid_start_date", "valid_end_date")
+  if (invalid == TRUE & !("invalid_reason" %in% names(df)))
+    columns2join <- c(columns2join, "invalid_reason")
 
   id_and_name <- omopcept::omop_concept() |>
     select(any_of(columns2join)) |>
