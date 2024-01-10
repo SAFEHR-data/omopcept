@@ -3,35 +3,11 @@
 \name{omop_join_name}
 \alias{omop_join_name}
 \alias{ojoin}
-\title{join omop concept name onto a dataframe with a *_concept_id column}
+\title{join omop concept name and other concept columns onto a dataframe with a *_concept_id column}
 \usage{
-omop_join_name(
-  df,
-  namestart = "",
-  namefull = "",
-  allcolumns = FALSE,
-  domain = FALSE,
-  vocabulary = FALSE,
-  concept_class = FALSE,
-  concept_code = FALSE,
-  standard = FALSE,
-  valid_dates = FALSE,
-  invalid = FALSE
-)
+omop_join_name(df, namestart = "", namefull = "", columns = c("concept_name"))
 
-ojoin(
-  df,
-  namestart = "",
-  namefull = "",
-  allcolumns = FALSE,
-  domain = FALSE,
-  vocabulary = FALSE,
-  concept_class = FALSE,
-  concept_code = FALSE,
-  standard = FALSE,
-  valid_dates = FALSE,
-  invalid = FALSE
-)
+ojoin(df, namestart = "", namefull = "", columns = c("concept_name"))
 }
 \arguments{
 \item{df}{dataframe}
@@ -40,21 +16,7 @@ ojoin(
 
 \item{namefull}{optional full name of concept_id column, if default "" namestart used}
 
-\item{allcolumns}{whether to add all columns from omop concept table, default FALSE, if TRUE it over-rides following single column args}
-
-\item{domain}{whether to add domain_id column, default FALSE}
-
-\item{vocabulary}{whether to add vocabulary_id column, default FALSE}
-
-\item{concept_class}{whether to add concept_class_id column, default FALSE}
-
-\item{concept_code}{whether to add concept_code column, default FALSE}
-
-\item{standard}{whether to add standard_concept column, default FALSE}
-
-\item{valid_dates}{whether to add columns valid_start_date & valid_end_date, default FALSE}
-
-\item{invalid}{whether to add invalid_reason column, default FALSE}
+\item{columns}{which columns from omop concept table to join on. Option of "all", default=c("concept_name"), e.g. c("concept_name","domain_id")}
 }
 \description{
 adds (namestart)_name based on (namestart)_concept_id

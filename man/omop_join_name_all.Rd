@@ -5,42 +5,14 @@
 \alias{ojoinall}
 \title{join omop concept names onto all *_concept_id columns in a dataframe}
 \usage{
-omop_join_name_all(
-  df,
-  allcolumns = FALSE,
-  domain = FALSE,
-  vocabulary = FALSE,
-  concept_class = FALSE,
-  concept_code = FALSE,
-  standard = FALSE,
-  valid_dates = FALSE,
-  invalid = FALSE
-)
+omop_join_name_all(df, columns = c("concept_name"))
 
-ojoinall(
-  df,
-  allcolumns = FALSE,
-  domain = FALSE,
-  vocabulary = FALSE,
-  concept_class = FALSE,
-  concept_code = FALSE,
-  standard = FALSE,
-  valid_dates = FALSE,
-  invalid = FALSE
-)
+ojoinall(df, columns = c("concept_name"))
 }
 \arguments{
 \item{df}{dataframe, or a list of multiple dataframes}
 
-\item{allcolumns}{whether to add all columns from omop concept table, default FALSE, if TRUE it over-rides following single column args}
-
-\item{domain}{whether to add domain_id column, default FALSE}
-
-\item{vocabulary}{whether to add vocabulary_id column, default FALSE}
-
-\item{concept_class}{whether to add concept_class_id column, default FALSE}
-
-\item{concept_code}{whether to add concept_code column, default FALSE}
+\item{columns}{which columns from omop concept table to join on. Option of "all", default=c("concept_name"), e.g. c("concept_name","domain_id")}
 }
 \value{
 dataframe based on input df with 1 extra column added for each concept_id column, or a list of multiple dataframes
@@ -53,7 +25,6 @@ e.g. drug_concept_id to get drug_name etc.
 data.frame(concept_id=(c(3571338L,3655355L)),
            drug_concept_id=(c(4000794L,35628998L))) |>
            omop_join_name_all()
-#2024-01 fix, used to fail
 data.frame(domain_concept_id_1=(c(3571338L,3655355L))) |> omop_join_name_all()
 #examples commented for now mostly to speed package build
 #data.frame(route_concept_id=(c(4132161L,	4171047L)),
@@ -64,6 +35,10 @@ data.frame(domain_concept_id_1=(c(3571338L,3655355L))) |> omop_join_name_all()
 #       omop_join_name_all()
 #df3 <- omop_concept_relationship() |> head() |>
 #          dplyr::collect() |> omop_join_name_all()
+# multiple tables in a list
+#df4 <- data.frame(concept_id=(c(3571338L,3655355L)))
+#list1 <- list(df4,df4)
+#list2 <- list1 |> omop_join_name_all(columns="all")
 data.frame(concept_id=(c(3571338L,3655355L)),
            drug_concept_id=(c(4000794L,35628998L))) |>
            ojoinall()

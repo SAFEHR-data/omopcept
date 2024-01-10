@@ -1,4 +1,4 @@
-#' join omop concept name onto a dataframe with a *_concept_id column
+#' join omop concept name and other concept columns onto a dataframe with a *_concept_id column
 #'
 #' adds (namestart)_name based on (namestart)_concept_id
 #' e.g. drug_concept_id to get drug_name
@@ -6,14 +6,7 @@
 #' @param df dataframe
 #' @param namestart start of *_concept_id column, if "" will join on concept_name, ignored if namefull used
 #' @param namefull optional full name of concept_id column, if default "" namestart used
-#' @param allcolumns whether to add all columns from omop concept table, default FALSE, if TRUE it over-rides following single column args
-#' @param domain whether to add domain_id column, default FALSE
-#' @param vocabulary whether to add vocabulary_id column, default FALSE
-#' @param concept_class whether to add concept_class_id column, default FALSE
-#' @param concept_code whether to add concept_code column, default FALSE
-#' @param standard whether to add standard_concept column, default FALSE
-#' @param valid_dates whether to add columns valid_start_date & valid_end_date, default FALSE
-#' @param invalid whether to add invalid_reason column, default FALSE
+#' @param columns which columns from omop concept table to join on. Option of "all", default=c("concept_name"), e.g. c("concept_name","domain_id")
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,4002075L))) |> omop_join_name()
@@ -25,14 +18,7 @@
 omop_join_name <- function(df,
                            namestart = "",
                            namefull = "",
-                           allcolumns = FALSE,
-                           domain = FALSE,
-                           vocabulary = FALSE,
-                           concept_class = FALSE,
-                           concept_code = FALSE,
-                           standard = FALSE,
-                           valid_dates = FALSE,
-                           invalid = FALSE
+                           columns = c("concept_name")
                            ) {
 
   #"" is to cope with concept_id from omop_join_name_all()
@@ -48,27 +34,26 @@ omop_join_name <- function(df,
 
   from_omop_concept <- omopcept::omop_concept()
 
-
-  if (allcolumns == FALSE )
+  if (columns != "all" )
   {
-    columns2join <- c("concept_id","concept_name")
+    columns2join <- c("concept_id",columns)
 
-    #optionally include other concept columns
-    #protect against problem if more than 1 id column it can become .x,.y etc.
-    if (domain == TRUE & !("domain_id" %in% names(df)))
-      columns2join <- c(columns2join, "domain_id")
-    if (vocabulary == TRUE & !("vocabulary_id" %in% names(df)))
-      columns2join <- c(columns2join, "vocabulary_id")
-    if (concept_class == TRUE & !("concept_class_id" %in% names(df)))
-      columns2join <- c(columns2join, "concept_class_id")
-    if (concept_code == TRUE & !("concept_code" %in% names(df)))
-      columns2join <- c(columns2join, "concept_code")
-    if (standard == TRUE & !("standard_concept" %in% names(df)))
-      columns2join <- c(columns2join, "standard_concept")
-    if (valid_dates == TRUE & !("valid_start_date" %in% names(df)))
-      columns2join <- c(columns2join, "valid_start_date", "valid_end_date")
-    if (invalid == TRUE & !("invalid_reason" %in% names(df)))
-      columns2join <- c(columns2join, "invalid_reason")
+    #TODO protect against problem if more than 1 id column it can become .x,.y etc.
+    #this is how it worked before
+    # if (domain == TRUE & !("domain_id" %in% names(df)))
+    #   columns2join <- c(columns2join, "domain_id")
+    # if (vocabulary == TRUE & !("vocabulary_id" %in% names(df)))
+    #   columns2join <- c(columns2join, "vocabulary_id")
+    # if (concept_class == TRUE & !("concept_class_id" %in% names(df)))
+    #   columns2join <- c(columns2join, "concept_class_id")
+    # if (concept_code == TRUE & !("concept_code" %in% names(df)))
+    #   columns2join <- c(columns2join, "concept_code")
+    # if (standard == TRUE & !("standard_concept" %in% names(df)))
+    #   columns2join <- c(columns2join, "standard_concept")
+    # if (valid_dates == TRUE & !("valid_start_date" %in% names(df)))
+    #   columns2join <- c(columns2join, "valid_start_date", "valid_end_date")
+    # if (invalid == TRUE & !("invalid_reason" %in% names(df)))
+    #   columns2join <- c(columns2join, "invalid_reason")
 
 
     from_omop_concept <- from_omop_concept |>
@@ -105,21 +90,13 @@ ojoin <- omop_join_name
 #' e.g. drug_concept_id to get drug_name etc.
 #'
 #' @param df dataframe, or a list of multiple dataframes
-#' @param allcolumns whether to add all columns from omop concept table, default FALSE, if TRUE it over-rides following single column args
-#' @param domain whether to add domain_id column, default FALSE
-#' @param vocabulary whether to add vocabulary_id column, default FALSE
-#' @param concept_class whether to add concept_class_id column, default FALSE
-#' @param concept_code whether to add concept_code column, default FALSE
-#' @param standard whether to add standard_concept column, default FALSE
-#' @param valid_dates whether to add columns valid_start_date & valid_end_date, default FALSE
-#' @param invalid whether to add invalid_reason column, default FALSE
+#' @param columns which columns from omop concept table to join on. Option of "all", default=c("concept_name"), e.g. c("concept_name","domain_id")
 #' @return dataframe based on input df with 1 extra column added for each concept_id column, or a list of multiple dataframes
 #' @export
 #' @examples
 #' data.frame(concept_id=(c(3571338L,3655355L)),
 #'            drug_concept_id=(c(4000794L,35628998L))) |>
 #'            omop_join_name_all()
-#' #2024-01 fix, used to fail
 #' data.frame(domain_concept_id_1=(c(3571338L,3655355L))) |> omop_join_name_all()
 #' #examples commented for now mostly to speed package build
 #' #data.frame(route_concept_id=(c(4132161L,	4171047L)),
@@ -130,28 +107,18 @@ ojoin <- omop_join_name
 #' #       omop_join_name_all()
 #' #df3 <- omop_concept_relationship() |> head() |>
 #' #          dplyr::collect() |> omop_join_name_all()
+#' # multiple tables in a list
+#' #df4 <- data.frame(concept_id=(c(3571338L,3655355L)))
+#' #list1 <- list(df4,df4)
+#' #list2 <- list1 |> omop_join_name_all(columns="all")
 omop_join_name_all <- function(df,
-                               allcolumns = FALSE,
-                               domain = FALSE,
-                               vocabulary = FALSE,
-                               concept_class = FALSE,
-                               concept_code = FALSE,
-                               standard = FALSE,
-                               valid_dates = FALSE,
-                               invalid = FALSE) {
+                               columns = c("concept_name")
+                               ) {
 
   #to apply to list of multiple tables
   #if inherits from list use lapply to call func itself on components
   if (inherits(df,'list')) {
-    alltables <- lapply(df, function(x) omop_join_name_all(x,
-                                                           allcolumns = allcolumns,
-                                                           domain = domain,
-                                                           vocabulary = vocabulary,
-                                                           concept_class = concept_class,
-                                                           concept_code = concept_code,
-                                                           standard = standard,
-                                                           valid_dates = valid_dates,
-                                                           invalid = invalid))
+    alltables <- lapply(df, function(x) omop_join_name_all(x, columns = columns))
     return(alltables)
   }
 
@@ -167,9 +134,9 @@ omop_join_name_all <- function(df,
   for(cname in colnames)
   {
     if (str_detect(cname,"concept_id")) {
-          df <- df |> omop_join_name(namefull=cname, domain=domain, vocabulary=vocabulary, concept_class=concept_class, concept_code=concept_code )
+          df <- df |> omop_join_name(namefull=cname, columns = columns )
     } else
-          df <- df |> omop_join_name(namestart=cname, domain=domain, vocabulary=vocabulary, concept_class=concept_class, concept_code=concept_code )
+          df <- df |> omop_join_name(namestart=cname, columns = columns )
   }
 
   return(df)
