@@ -7,22 +7,32 @@
 \usage{
 omop_join_name_all(
   df,
+  allcolumns = FALSE,
   domain = FALSE,
   vocabulary = FALSE,
   concept_class = FALSE,
-  concept_code = FALSE
+  concept_code = FALSE,
+  standard = FALSE,
+  valid_dates = FALSE,
+  invalid = FALSE
 )
 
 ojoinall(
   df,
+  allcolumns = FALSE,
   domain = FALSE,
   vocabulary = FALSE,
   concept_class = FALSE,
-  concept_code = FALSE
+  concept_code = FALSE,
+  standard = FALSE,
+  valid_dates = FALSE,
+  invalid = FALSE
 )
 }
 \arguments{
 \item{df}{dataframe, or a list of multiple dataframes}
+
+\item{allcolumns}{whether to add all columns from omop concept table, default FALSE, if TRUE it over-rides following single column args}
 
 \item{domain}{whether to add domain_id column, default FALSE}
 

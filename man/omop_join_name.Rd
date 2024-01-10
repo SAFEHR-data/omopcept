@@ -9,6 +9,7 @@ omop_join_name(
   df,
   namestart = "",
   namefull = "",
+  allcolumns = FALSE,
   domain = FALSE,
   vocabulary = FALSE,
   concept_class = FALSE,
@@ -22,6 +23,7 @@ ojoin(
   df,
   namestart = "",
   namefull = "",
+  allcolumns = FALSE,
   domain = FALSE,
   vocabulary = FALSE,
   concept_class = FALSE,
@@ -37,6 +39,8 @@ ojoin(
 \item{namestart}{start of *_concept_id column, if "" will join on concept_name, ignored if namefull used}
 
 \item{namefull}{optional full name of concept_id column, if default "" namestart used}
+
+\item{allcolumns}{whether to add all columns from omop concept table, default FALSE, if TRUE it over-rides following single column args}
 
 \item{domain}{whether to add domain_id column, default FALSE}
 
