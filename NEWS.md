@@ -1,7 +1,8 @@
 
 # omopcept 0.0.4.1 2024-01-08 DEV version
 
-* `omop_join_name()` now has args for all columns in concept table
+* BREAKING CHANGE `omop_join_name()` & `omop_join_name_all()` refactor and simplify column args
+* `omop_join_name()` arg columns="all" to join all concept table columns
 
 
 # omopcept 0.0.4.0 2024-01-08
