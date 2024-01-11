@@ -33,7 +33,7 @@ omop_join_name <- function(df,
 
   from_omop_concept <- omopcept::omop_concept()
 
-  if (columns != "all" )
+  if (columns[1] != "all" )
   {
     columns2join <- c("concept_id",columns)
 
