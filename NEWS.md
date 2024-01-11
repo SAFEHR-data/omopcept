@@ -1,6 +1,7 @@
 
 # omopcept 0.0.4.1 2024-01-08 DEV version
 
+* `omop_concept_fields()` `omop_concept_ancestor_fields()` `omop_concept_relationship_fields()` to get column names of omop tables, short name equivalents `ocfields()` `ocafields()` `ocrfields()`
 * `omop_join_name()` made much faster by not using copy=true in join
 * BREAKING CHANGE `omop_join_name()` & `omop_join_name_all()` refactor and simplify column args
 * `omop_join_name()` arg columns="all" to join all concept table columns
