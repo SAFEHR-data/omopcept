@@ -15,7 +15,7 @@ omop_concept <- function(location = tools::R_user_dir("omopcept", which = "cache
 
   filepath = file.path(location,"concept.parquet")
 
-  if(!file.exists(filepath)) omop_vocab_table_save("concept")
+  if (!file.exists(filepath)) omop_vocab_table_save("concept")
 
   #just creates reference to the data
   concept <- arrow::open_dataset(filepath)
