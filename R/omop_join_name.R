@@ -66,7 +66,7 @@ omop_join_name <- function(df,
 
   #beware tricky code
   #join works fast within arrow by
-  #a. put arg table into arrow
+  #a. put arg table into arrow (if not already)
   #to avoid Error in `auto_copy()`:! `x` and `y` must share the same src.
   #b. using {{}} so that an arg can be used in join_by
 
