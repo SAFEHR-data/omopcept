@@ -13,7 +13,7 @@ omop_concept_ancestor <- function(location = tools::R_user_dir("omopcept", which
 
   filepath = file.path(location,"concept_ancestor.parquet")
 
-  if(!file.exists(filepath)) omop_vocab_table_save("concept_ancestor")
+  if (!file.exists(filepath)) omop_vocab_table_save("concept_ancestor")
 
   #just creates reference to the data
   concept_ancestor <- arrow::open_dataset(filepath)
