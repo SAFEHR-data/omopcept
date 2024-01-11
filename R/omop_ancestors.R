@@ -57,7 +57,9 @@ omop_ancestors <- function(c_id=NULL,
     left_join(omopcept::omop_concept(), by = "concept_id") |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
     omop_join_name(namestart="descendant") |>
-    collect()
+    collect() #|>
+    #before omop_join_name adapted got "only data frames are allowed as unnamed arguments to be auto spliced"
+
 
   if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
 

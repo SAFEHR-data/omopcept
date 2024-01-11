@@ -31,7 +31,6 @@ omop_join_name <- function(df,
   #maybe offer an option of
   #name_col_name <- sub("_concept_id","_name",id_col_name)
 
-
   from_omop_concept <- omopcept::omop_concept()
 
   if (columns != "all" )
@@ -65,15 +64,27 @@ omop_join_name <- function(df,
   from_omop_concept <- from_omop_concept |>
     rename_with(~name_col_name, concept_name)
 
-  #TODO can I make this faster by replacing the copy=TRUE
-  #with some filter & collect ?
+  #beware tricky code
+  #join works fast within arrow by
+  #a. put arg table into arrow
+  #to avoid Error in `auto_copy()`:! `x` and `y` must share the same src.
+  #b. using {{}} so that an arg can be used in join_by
+
+  #allows func to accept either a df or an "arrow_dplyr_query" e.g. from omop_ancestors()
+  #otherwise get "only data frames are allowed as unnamed arguments to be auto spliced"
+  if (inherits(df,"data.frame")) df <- arrow::arrow_table(df)
 
   df |>
-    left_join(from_omop_concept, by = dynamic_by(id_col_name,"concept_id"), copy = TRUE) |>
+    left_join(from_omop_concept, by = join_by({{id_col_name}} == "concept_id")) |>
     #move name column next to id to make output more readable
-    dplyr::relocate(name_col_name, .after = id_col_name)
+    dplyr::relocate(name_col_name, .after = id_col_name) |>
+    collect()
 
 }
+
+#temp test of faster join
+# omop_join2 <- function(df, id_col_name){
+# }
 
 
 #' super short name func to join concept_names on
