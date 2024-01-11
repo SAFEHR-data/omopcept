@@ -3,24 +3,26 @@
 \name{omop_id}
 \alias{omop_id}
 \alias{oid}
-\title{query a concept record by concept_id from omop concepts table}
+\title{query concept records by concept_id from omop concepts table}
 \usage{
-omop_id(c_id, messages = TRUE)
+omop_id(c_id, columns = "all")
 
-oid(c_id, messages = TRUE)
+oid(c_id, columns = "all")
 }
 \arguments{
-\item{c_id}{one concept_id to filter by}
+\item{c_id}{concept_id s to get records of}
 
-\item{messages}{whether to print info messages, default=TRUE}
+\item{columns}{which columns from omop concept table to return. default "all", options c("concept_name") & c("concept_name","domain_id")}
 }
 \description{
-query a concept record by concept_id from omop concepts table
+query concept records by concept_id from omop concepts table
 
 super short name func to get info about a concept_id
 }
 \examples{
-omop_id(3807321L)
+omop_id(196523)
+#can specify as an integer or not
+omop_id(196523L)
 
 oid(43807321L)
 }

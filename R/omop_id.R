@@ -1,24 +1,19 @@
-#' query a concept record by concept_id from omop concepts table
+#' query concept records by concept_id from omop concepts table
 #'
-#' @param c_id one concept_id to filter by
-#' @param messages whether to print info messages, default=TRUE
+#' @param c_id concept_id s to get records of
+#' @param columns which columns from omop concept table to return. default "all", options c("concept_name") & c("concept_name","domain_id")
 #' @export
 #' @examples
-#' omop_id(3807321L)
-# omop_id("438073")
+#' omop_id(196523)
+#' #can specify as an integer or not
+#' omop_id(196523L)
 #'
 omop_id <- function(c_id,
-                    messages=TRUE) {
+                    columns = "all") {
 
-  df1 <- omopcept::omop_concept() |>
+  if (!inherits(c_id,"integer"))  c_id <- as.integer(c_id)
 
-    # using str_detect means user could supply substring
-    #?? Error: Filter expression not supported for Arrow Datasets
-    #filter(str_detect(c_id)) |>
-    filter(concept_id == c_id) |>
-    collect()
-
-  if (messages) message("returning ",nrow(df1)," concepts")
+  df1 <- omop_join_name(data.frame(concept_id = c_id), columns = columns)
 
   return(df1)
 

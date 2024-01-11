@@ -61,8 +61,12 @@ omop_join_name <- function(df,
 
   #beware rename concept_name column before joining in case
   #there is already a concept_name column in df
-  from_omop_concept <- from_omop_concept |>
-    rename_with(~name_col_name, concept_name)
+  #condition protects against error when called from omop_id() with no name column
+  if (name_col_name != "concept_name")
+  {
+    from_omop_concept <- from_omop_concept |>
+      rename_with(~name_col_name, concept_name)
+  }
 
   #beware tricky code
   #join works fast within arrow by
@@ -77,7 +81,8 @@ omop_join_name <- function(df,
   df |>
     left_join(from_omop_concept, by = join_by({{id_col_name}} == "concept_id")) |>
     #move name column next to id to make output more readable
-    dplyr::relocate(name_col_name, .after = id_col_name) |>
+    #any_of protects if no name column
+    dplyr::relocate(any_of(name_col_name), .after = id_col_name) |>
     collect()
 
 }
