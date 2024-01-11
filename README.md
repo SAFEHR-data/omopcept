@@ -9,7 +9,7 @@
 
 **Active development 2024, breaking changes possible**
 
-**omopcept** provides access to **OMOP** *con***CEPT***s* (without the
+**omopcept** provides access to **OMOP** *con***CEPT***s* (all pros, no
 *cons*!).
 
 Initial motivation was to make it super-easy to get the names associated
@@ -72,22 +72,26 @@ omop_concept() |>
 
 ## Main omopcept functions
 
-| full name                     | quick interactive name | action                                                                                         |
-|-------------------------------|------------------------|------------------------------------------------------------------------------------------------|
-| `omop_names()`                | `onames()`             | search concepts by parts of names                                                              |
-| `omop_id()`                   | `oid()`                | search for a concept_id                                                                        |
-| `omop_join_name()`            | `ojoin()`              | join an omop name column onto a table with an id column                                        |
-| `omop_join_name_all()`        | `ojoinall()`           | join omop names columns onto all id columns in a table                                         |
-| `omop_check_names()`          | `ochecknames()`        | check that names match ids                                                                     |
-|                               |                        |                                                                                                |
-| `omop_ancestors()`            | `oance()`              | return ancestors of a concept                                                                  |
-| `omop_descendants()`          | `odesc()`              | return descendants of a concept                                                                |
-| `omop_relations()`            | `orels()`              | return (immediate) relations of a concept including the nature of the relationship e.g. ‘Is a’ |
-| `omop_relations_recursive()`  | \-                     | return (immediate) relations of a concept and the relations of those up to `num_recurse`       |
-|                               |                        |                                                                                                |
-| `omop_concept()`              | `oc()`                 | return reference to concept table (for use in dplyr pipelines)                                 |
-| `omop_concept_ancestor()`     | `oca()`                | return reference to concept ancestor table                                                     |
-| `omop_concept_relationship()` | `ocr()`                | return reference to concept relationship table                                                 |
+| full name                            | quick interactive name | action                                                                                         |
+|--------------------------------------|------------------------|------------------------------------------------------------------------------------------------|
+| `omop_names()`                       | `onames()`             | search concepts by parts of names                                                              |
+| `omop_id()`                          | `oid()`                | search for concept_id(s)                                                                       |
+| `omop_domain()`                      | \-                     | return domain for concept_id(s)                                                                |
+| `omop_join_name()`                   | `ojoin()`              | join an omop name column onto a table with an id column                                        |
+| `omop_join_name_all()`               | `ojoinall()`           | join omop names columns onto all id columns in a table                                         |
+| `omop_check_names()`                 | `ochecknames()`        | check that names match ids                                                                     |
+|                                      |                        |                                                                                                |
+| `omop_ancestors()`                   | `oance()`              | return ancestors of a concept                                                                  |
+| `omop_descendants()`                 | `odesc()`              | return descendants of a concept                                                                |
+| `omop_relations()`                   | `orels()`              | return (immediate) relations of a concept including the nature of the relationship e.g. ‘Is a’ |
+| `omop_relations_recursive()`         | \-                     | return (immediate) relations of a concept and the relations of those up to `num_recurse`       |
+|                                      |                        |                                                                                                |
+| `omop_concept()`                     | `oc()`                 | return reference to concept table (for use in dplyr pipelines)                                 |
+| `omop_concept_ancestor()`            | `oca()`                | return reference to concept ancestor table                                                     |
+| `omop_concept_relationship()`        | `ocr()`                | return reference to concept relationship table                                                 |
+| `omop_concept_fields()`              | `ocfields()`           | names of concept table columns                                                                 |
+| `omop_concept_ancestor_fields()`     | `ocafields()`          | names of concept ancestor table columns                                                        |
+| `omop_concept_relationship_fields()` | `ocrfields()`          | names of concept relationship table columns                                                    |
 
 ## OMOP outline
 
@@ -187,15 +191,19 @@ Helps to interpret OMOP data.
 
 data.frame(concept_id=(c(3571338L,4002075L))) |> 
   omop_join_name()
-#>   concept_id      concept_name
+#> # A tibble: 2 × 2
+#>   concept_id concept_name     
+#>        <int> <chr>            
 #> 1    3571338 Problem behaviour
-#> 2    4002075       BLUE LOTION
+#> 2    4002075 BLUE LOTION
  
 
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> 
   omop_join_name(namestart="drug")
-#>   drug_concept_id       drug_concept_name
-#> 1         4000794                BUZZ OFF
+#> # A tibble: 2 × 2
+#>   drug_concept_id drug_concept_name      
+#>             <int> <chr>                  
+#> 1         4000794 BUZZ OFF               
 #> 2         4002592 DEXAMETHASONE INJECTION
 ```
 
@@ -206,9 +214,11 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 data.frame(concept_id=(c(3571338L,3655355L)),
             drug_concept_id=(c(4000794L,35628998L))) |>
             omop_join_name_all()
-#>   concept_id         concept_name drug_concept_id drug_concept_name
-#> 1    3571338    Problem behaviour         4000794          BUZZ OFF
-#> 2    3655355 Erectile dysfunction        35628998            Viagra
+#> # A tibble: 2 × 4
+#>   concept_id concept_name         drug_concept_id drug_concept_name
+#>        <int> <chr>                          <int> <chr>            
+#> 1    3571338 Problem behaviour            4000794 BUZZ OFF         
+#> 2    3655355 Erectile dysfunction        35628998 Viagra
 ```
 
 ## Vocabularies included

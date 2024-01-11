@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 **Active development 2024, breaking changes possible**     
      
-**omopcept** provides access to **OMOP** *con***CEPT***s* (without the *cons*!).   
+**omopcept** provides access to **OMOP** *con***CEPT***s* (all pros, no *cons*!).   
    
 Initial motivation was to make it super-easy to get the names associated with concept IDs.   
 Later additions allow exploration and visualisation of OMOP hierarchies.
@@ -80,7 +80,8 @@ omop_concept() |>
 | full name | quick interactive name | action  |
 | ------- | ------- | ---------------- |
 | `omop_names()` | `onames()` | search concepts by parts of names |
-| `omop_id()` | `oid()` | search for a concept_id |
+| `omop_id()` | `oid()` | search for concept_id(s) |
+| `omop_domain()` | - | return domain for concept_id(s) |
 | `omop_join_name()` | `ojoin()` | join an omop name column onto a table with an id column |
 | `omop_join_name_all()` | `ojoinall()` | join omop names columns onto all id columns in a table |
 | `omop_check_names()` | `ochecknames()` | check that names match ids |
@@ -93,6 +94,9 @@ omop_concept() |>
 | `omop_concept()` | `oc()` | return reference to concept table (for use in dplyr pipelines) |
 | `omop_concept_ancestor()` | `oca()` | return reference to concept ancestor table |
 | `omop_concept_relationship()` | `ocr()` | return reference to concept relationship table |
+| `omop_concept_fields()` | `ocfields()` | names of concept table columns |
+| `omop_concept_ancestor_fields()` | `ocafields()` | names of concept ancestor table columns|
+| `omop_concept_relationship_fields()` | `ocrfields()` | names of concept relationship table columns |
 
 ## OMOP outline
 
