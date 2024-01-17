@@ -15,6 +15,10 @@
 #' #df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(namestart="route")
 #' #df3 <- omop_concept_relationship() |> head() |>
 #' #       dplyr::collect() |> omop_join_name(namefull="concept_id_1")
+#' #want to try to catch the error in the first 2 NA column
+#' #but not yet working
+#' #could try purrr::possibly
+#' #data.frame(bad_concept_id=(c(NA,NA)),concept_id=(c(3571338L,4002075L))) |> omop_join_name_all()
 omop_join_name <- function(df,
                            namestart = "",
                            namefull = "",
@@ -78,18 +82,37 @@ omop_join_name <- function(df,
   #otherwise get "only data frames are allowed as unnamed arguments to be auto spliced"
   if (inherits(df,"data.frame")) df <- arrow::arrow_table(df)
 
-  df |>
-    left_join(from_omop_concept, by = join_by({{id_col_name}} == "concept_id")) |>
-    #move name column next to id to make output more readable
-    #any_of protects if no name column
-    dplyr::relocate(any_of(name_col_name), .after = id_col_name) |>
-    collect()
+  #protect against the function (& the _all version) failing
+  #because e.g. all values are NA which can lead to
+  #Incompatible data types for corresponding join field keys
+  #can't do class on the column because it may just be an arrow query
+  #could test the column & if all NA there is no point in joining anyway !!
+  #but tricky to test if all NA when it is an arrow query, would have to collect
+  #more generally can try-catch to avoid *_all failing for all tables when just one is at fault
+
+  tryCatch(
+    expr = {
+
+      df <- df |>
+        left_join(from_omop_concept, by = join_by({{id_col_name}} == "concept_id")) |>
+        #move name column next to id to make output more readable
+        #any_of protects if no name column
+        dplyr::relocate(any_of(name_col_name), .after = id_col_name) |>
+        collect()
+
+    },
+    error = function(e){
+      first_values <- df |> head() |> collect() |> select(id_col_name) |> pull()
+      message('problem with column ', id_col_name, " not able to join names. First values = ", first_values)
+      #print(e)
+    },
+    finally = {
+      #message('All done, quitting.')
+      return(df)
+    })
 
 }
 
-#temp test of faster join
-# omop_join2 <- function(df, id_col_name){
-# }
 
 
 #' super short name func to join concept_names on
