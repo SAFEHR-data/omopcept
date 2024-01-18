@@ -29,5 +29,8 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |> omop_join_name(namestart="
 #df2 <- drug_exposure |> distinct(route_concept_id) |> omop_join_name(namestart="route")
 #df3 <- omop_concept_relationship() |> head() |>
 #       dplyr::collect() |> omop_join_name(namefull="concept_id_1")
+#copes with different formatted columns e.g. if al NAs
+#TODO add this as a test
+#data.frame(bad_concept_id=(c(NA,NA)),concept_id=(c(3571338L,4002075L))) |> omop_join_name_all()
 data.frame(drug_concept_id=(c(4000794L,4002592L))) |> ojoin(namestart="drug")
 }
