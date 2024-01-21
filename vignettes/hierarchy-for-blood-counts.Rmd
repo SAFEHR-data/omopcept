@@ -1,0 +1,84 @@
+---
+title: "Exploring OMOP hierarchy for blood counts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exploring OMOP hierarchy for blood counts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup, include = FALSE}
+library(omopcept)
+library(stringr)
+library(dplyr)
+library(knitr) #for kable
+```
+
+## Use case
+
+A need to map blood count components from two different source systems to OMOP. There are different potential OMOP concept ids. How to choose between them ? How to deal with a situation where different institutions end up with differeny OMOP concept ids for essentially the same measure.
+
+
+### Leukocytes
+
+Starting with a single concept id `3010813` (chosen in a mapping process) for the number of Leukocytes in a volume of blood. 
+
+\small
+```{r leukocytes, include=TRUE}
+lvbg <- omop_id(3010813)
+
+lvbg |> 
+  select(-valid_start_date,-valid_end_date,-invalid_reason) |> 
+  kable()
+```
+\normalsize
+
+Using omopcept to find the immediate relations of "Leukocytes [#/volume] in Blood"
+
+\small
+```{r leukocyte volume relations}
+
+leuk_r <- omop_relations(3010813)
+
+leuk_r |> arrange(relationship_id) |>
+  select(relationship_id,concept_name_2,domain_id,concept_class_id) |> 
+  kable()
+```
+\normalsize
+
+Of these relations `Leukocytes | Blood | Hematology and Cell counts` looks like it may be useful, it has a `concept_class_id` of `LOINC Hierarchy` and itself has the following relations.
+
+\small
+```{r leukocyte hierarchy relations}
+
+lbhcc_r <- omop_relations(37043992) |> 
+  arrange(relationship_id) 
+
+lbhcc_r |>
+  select(relationship_id,concept_name_2,domain_id,concept_class_id) |> 
+  kable()
+
+```
+\normalsize
+
+Can we find similar hierarchy parents for other blood count concepts ?
+
+
+#new fixed=TRUE arg for omop_names() allows this 
+bhccounts <- omop_names("Blood | Hematology and Cell counts", fixed=TRUE) |> 
+  #returning 452 concepts
+  #removing those for Fetus
+  filter(!str_detect(concept_name,"Fetus"))
+  #now down to 417 concepts
+
+See https://github.com/OHDSI/Vocabulary-v5.0/issues/301
+which has some info about this
