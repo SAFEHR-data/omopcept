@@ -67,11 +67,16 @@ lbhcc_r |>
   select(relationship_id,concept_name_2,domain_id,concept_class_id) |> 
   kable()
 
+lbhcc_r |> 
+  omop_graph( graphtitle = "", saveplot = FALSE )
+
 ```
 \normalsize
 
 Can we find similar hierarchy parents for other blood count concepts ?
 
+\small
+```{r loinc hierarchy for other blood counts}
 
 #new fixed=TRUE arg for omop_names() allows this 
 bhccounts <- omop_names("Blood | Hematology and Cell counts", fixed=TRUE) |> 
@@ -79,6 +84,10 @@ bhccounts <- omop_names("Blood | Hematology and Cell counts", fixed=TRUE) |>
   #removing those for Fetus
   filter(!str_detect(concept_name,"Fetus"))
   #now down to 417 concepts
+```
+\normalsize
+
+
 
 See https://github.com/OHDSI/Vocabulary-v5.0/issues/301
 which has some info about this
