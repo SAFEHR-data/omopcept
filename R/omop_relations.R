@@ -7,6 +7,7 @@
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
 #' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
+#' @param itself whether to include relations to concept itself, default=FALSE
 #' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
@@ -24,7 +25,7 @@ omop_relations <- function(c_id=NULL,
                                 cc_ids=NULL,
                                 standard=NULL,
                                 r_ids=NULL,
-                                #itself=FALSE,
+                                itself=FALSE,
                                 messages=TRUE) {
 
 
@@ -59,8 +60,8 @@ omop_relations <- function(c_id=NULL,
     #dplyr::relocate(concept_name_2, .after=concept_id_1) |>
     collect()
 
-  #TODO do I want an itself arg, doing something with c1 & 2
-  #if (!itself) df1 <- df1 |> filter(!min_levels_of_separation==0)
+  # default option remove relations to itself
+  if (itself==FALSE) df1 <- df1 |> filter(concept_id_1 != concept_id_2)
 
   if (messages) message("returning ",nrow(df1)," concepts")
 

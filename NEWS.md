@@ -1,7 +1,8 @@
 
 # omopcept 0.0.4.1 2024-01-08 DEV version
 
-* `omop_names()` add an arg 'fixed' (default=FALSE) that when true matches string as-is
+* `omop_relations()` add arg `itself` whether to include relations to concept itself, default=FALSE
+* `omop_names()` add an arg `fixed` (default=FALSE) that when true matches string as-is
 * `omop_domain()` return domain_id s for concept_id s
 * `omop_id()` now accepts multiple ids and can specify columns to return + a bit faster
 * `omop_concept_fields()` `omop_concept_ancestor_fields()` `omop_concept_relationship_fields()` to get column names of omop tables, short name equivalents `ocfields()` `ocafields()` `ocrfields()`
