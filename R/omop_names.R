@@ -4,6 +4,7 @@
 #' @param findstring to search for or regex, e.g. "^a" to find those starting with A
 #' @param ignore_case ignore case in string comparison, default TRUE
 #' @param exact TRUE for exact string search, "start" for exact start, "end" for exact end, default=FALSE for str_detect
+#' @param fixed default FALSE allows regex,TRUE uses grepl exact matching
 # @param negate If TRUE, return non-matching elements, default FALSE
 #' @param c_ids one or more concept_id to filter by, default NULL for all
 #' @param d_ids one or more domain_id to filter by, default NULL for all
@@ -33,6 +34,7 @@ omop_names <- function(#df1 = NULL,
   findstring,
   ignore_case = TRUE,
   exact = FALSE,
+  fixed = FALSE,
   #negate = FALSE,
   c_ids=NULL,
   d_ids=NULL,
@@ -40,6 +42,12 @@ omop_names <- function(#df1 = NULL,
   cc_ids=NULL,
   standard=NULL,
   messages=TRUE) {
+
+  #warn that fixed==TRUE overrides exact!=FALSE
+  if (fixed==TRUE & exact!=FALSE)
+  {
+    warning("fixed==TRUE overrides non FALSE values of exact, and may generate unexpected results")
+  }
 
   # refine search regex
   if (exact == TRUE | exact == "start")
@@ -49,7 +57,7 @@ omop_names <- function(#df1 = NULL,
 
   df1 <- omopcept::omop_concept() |>
 
-    filter(grepl(findstring, concept_name, ignore.case = ignore_case)) |>
+    filter(grepl(findstring, concept_name, ignore.case = ignore_case, fixed = fixed)) |>
 
     #old way, see below about arrow_match_substring_regex
     # filter(arrow_match_substring_regex(concept_name,

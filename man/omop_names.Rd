@@ -9,6 +9,7 @@ omop_names(
   findstring,
   ignore_case = TRUE,
   exact = FALSE,
+  fixed = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -21,6 +22,7 @@ onames(
   findstring,
   ignore_case = TRUE,
   exact = FALSE,
+  fixed = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -35,6 +37,8 @@ onames(
 \item{ignore_case}{ignore case in string comparison, default TRUE}
 
 \item{exact}{TRUE for exact string search, "start" for exact start, "end" for exact end, default=FALSE for str_detect}
+
+\item{fixed}{default FALSE allows regex,TRUE uses grepl exact matching}
 
 \item{c_ids}{one or more concept_id to filter by, default NULL for all}
 
