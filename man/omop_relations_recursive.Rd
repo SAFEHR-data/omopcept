@@ -12,6 +12,7 @@ omop_relations_recursive(
   cc_ids = NULL,
   standard = NULL,
   r_ids = NULL,
+  itself = FALSE,
   messages = TRUE,
   num_recurse = 1
 )
@@ -30,6 +31,8 @@ omop_relations_recursive(
 \item{standard}{one or more standard_concept to filter by, default NULL for all, S,C}
 
 \item{r_ids}{one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')}
+
+\item{itself}{whether to include relations to concept itself, default=FALSE}
 
 \item{messages}{whether to print info messages, default=TRUE}
 

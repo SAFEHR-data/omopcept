@@ -7,6 +7,7 @@
 #' @param cc_ids one or more concept_class_id to filter by, default NULL for all
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
 #' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
+#' @param itself whether to include relations to concept itself, default=FALSE
 #' @param messages whether to print info messages, default=TRUE
 #' @param num_recurse number of recursions to search
 #' @return a dataframe of concepts and attributes
@@ -21,6 +22,7 @@ omop_relations_recursive <- function(c_id=NULL,
                                      cc_ids=NULL,
                                      standard=NULL,
                                      r_ids=NULL,
+                                     itself=FALSE,
                                      messages=TRUE,
                                      num_recurse=1) {
 
@@ -60,6 +62,7 @@ omop_relations_recursive <- function(c_id=NULL,
                                cc_ids=cc_ids,
                                standard=standard,
                                r_ids=r_ids,
+                               itself=itself,
                                messages=messages)
 
       dfprev <- bind_rows(dfprev,dfprev1)
