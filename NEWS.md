@@ -1,6 +1,11 @@
 
-# omopcept 0.0.4.1 2024-01-08 DEV version
+# omopcept 0.0.5.1 2024-01-30 DEV version
 
+
+
+# omopcept 0.0.5.0 2024-01-30
+
+* started vignette on hierarchy, access with `vignette("hierarchy-for-blood-counts")`
 * `omop_relations()` add arg `itself` whether to include relations to concept itself, default=FALSE
 * `omop_names()` add an arg `fixed` (default=FALSE) that when true matches string as-is
 * `omop_domain()` return domain_id s for concept_id s
