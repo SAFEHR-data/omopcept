@@ -34,6 +34,7 @@
 #' @importFrom lubridate ymd
 #'
 #' @importFrom utils globalVariables
+#' @importFrom utils head
 #
 # trying importing whole packages rather than having to fiddle
 # with xtra functions as they crop up
