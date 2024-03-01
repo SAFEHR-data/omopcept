@@ -1,6 +1,7 @@
 
-# omopcept 0.0.5.1 2024-01-30 DEV version
+# omopcept 0.0.5.1 2024-03-01 DEV version
 
+* `omop_join_name()` protects against concept_id columns that are not integer
 
 
 # omopcept 0.0.5.0 2024-01-30

@@ -29,6 +29,11 @@ omop_join_name <- function(df,
   else if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
+  #protect against concept_id columns that are not integer
+  #this also fixes previous issue with columns full of NAs
+  #now those columns are converted to integer and it does join a name column full of NAs
+  df[[id_col_name]] <- as.integer(df[[id_col_name]])
+
   #e.g. ancestor_concept_id to ancestor_name
   name_col_name <- sub("_id","_name",id_col_name)
   #maybe offer an option of

@@ -18,6 +18,7 @@
 #' @importFrom dplyr group_by
 #' @importFrom dplyr any_of
 #' @importFrom dplyr contains
+#' @importFrom dplyr tibble
 #'
 #' @importFrom rlang .data
 #'
