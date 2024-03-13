@@ -1,8 +1,12 @@
 
-# omopcept 0.0.5.2 2024-03-04 DEV version
+# omopcept 0.0.5.3 2024-03-13 DEV version
 
 
-# omopcept 0.0.5.1 2024-03-01 DEV
+# omopcept 0.0.5.2 2024-03-13
+
+* add to `omop_codes()` exact & fixed args, e.g. easier to search for loinc codes
+
+# omopcept 0.0.5.1 2024-03-01
 
 * `omop_join_name()` protects against concept_id columns that are not integer
 

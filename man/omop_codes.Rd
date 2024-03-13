@@ -8,6 +8,8 @@
 omop_codes(
   findstring,
   ignore_case = TRUE,
+  exact = TRUE,
+  fixed = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -19,6 +21,8 @@ omop_codes(
 ocodes(
   findstring,
   ignore_case = TRUE,
+  exact = TRUE,
+  fixed = FALSE,
   c_ids = NULL,
   d_ids = NULL,
   v_ids = NULL,
@@ -31,6 +35,10 @@ ocodes(
 \item{findstring}{string to search for or regex}
 
 \item{ignore_case}{ignore case in string comparison, default TRUE}
+
+\item{exact}{TRUE for exact string search, "start" for exact start, "end" for exact end, default=TRUE because user likely to look for whole code}
+
+\item{fixed}{default FALSE allows regex,TRUE uses grepl exact matching}
 
 \item{c_ids}{one or more concept_id to filter by, default NULL for all}
 
@@ -50,6 +58,7 @@ string search of concept_code in omop concepts table
 super short name func to search concepts by concept_code
 }
 \examples{
-omop_codes("AJCC/UICC-Stage")
+omop_codes("81752-8")
+omop_codes("AJCC/UICC-Stage",exact=FALSE)
 ocodes("AJCC/UICC-Stage")
 }
