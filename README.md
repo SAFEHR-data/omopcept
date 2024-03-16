@@ -85,6 +85,7 @@ omop_concept() |>
 | `omop_descendants()`                 | `odesc()`              | return descendants of a concept                                                                |
 | `omop_relations()`                   | `orels()`              | return (immediate) relations of a concept including the nature of the relationship e.g. ‘Is a’ |
 | `omop_relations_recursive()`         | \-                     | return (immediate) relations of a concept and the relations of those up to `num_recurse`       |
+| `omop_graph()`                       | \-                     | graph omop relationships (experimental)                                                        |
 |                                      |                        |                                                                                                |
 | `omop_concept()`                     | `oc()`                 | return reference to concept table (for use in dplyr pipelines)                                 |
 | `omop_concept_ancestor()`            | `oca()`                | return reference to concept ancestor table                                                     |
