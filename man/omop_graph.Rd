@@ -9,10 +9,12 @@ omop_graph(
   dfin,
   ggrlayout = "graphopt",
   palettebrewer = "Set1",
-  edge_colour = "grey71",
-  node_colour_var = "domain_id",
-  text_colour_var = NULL,
-  node_txtsize = 9,
+  edgecolour = "grey71",
+  nodecolourvar = "domain_id",
+  textcolourvar = NULL,
+  nodetxtsize = 9,
+  legendtxtsize = 18,
+  titletxtsize = 18,
   legendshow = TRUE,
   legendpos = "bottom",
   legenddir = "horizontal",
@@ -24,7 +26,6 @@ omop_graph(
   width = 50,
   height = 30,
   units = "cm",
-  txtsize = 20,
   titlecolour = "darkred",
   graphtitle = "OMOP network graph",
   graphsubtitle = NULL,
@@ -39,13 +40,19 @@ omop_graph(
 
 \item{palettebrewer}{colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
 
-\item{edge_colour}{colour for lines joining nodes}
+\item{edgecolour}{colour for lines joining nodes}
 
-\item{node_colour_var}{column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"}
+\item{nodecolourvar}{column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"}
 
-\item{text_colour_var}{column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"}
+\item{textcolourvar}{column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"}
 
-\item{node_txtsize}{node text size, default=9}
+\item{nodetxtsize}{node text size, default=9}
+
+\item{legendtxtsize}{text size for legend, default=20}
+
+\item{titletxtsize}{text size for title, default=20}
+
+\item{legendshow}{whether to show legend, default TRUE}
 
 \item{legendpos}{legend position, default 'bottom'}
 
@@ -67,8 +74,6 @@ omop_graph(
 
 \item{units}{plot size units default='cm'}
 
-\item{txtsize}{text size for title & legend, default=20}
-
 \item{titlecolour}{colour for main title, default='darkred'}
 
 \item{graphtitle}{optional title for graph, default NULL for none}
@@ -78,8 +83,6 @@ omop_graph(
 \item{plot}{whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf}
 
 \item{messages}{whether to print info messages, default=TRUE}
-
-\item{legend}{whether to show legend, default TRUE}
 }
 \value{
 ggraph object

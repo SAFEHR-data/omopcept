@@ -6,12 +6,15 @@
 #' @param ggrlayout ggraph layout, default = 'graphopt'
 #' @param palettebrewer colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
 #'
-#' @param edge_colour colour for lines joining nodes
-#' @param node_colour_var column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
-#' @param text_colour_var column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
-#' @param node_txtsize node text size, default=9
+#' @param edgecolour colour for lines joining nodes
+#' @param nodecolourvar column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
+#' @param textcolourvar column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
 #'
-#' @param legend whether to show legend, default TRUE
+#' @param nodetxtsize node text size, default=9
+#' @param legendtxtsize text size for legend, default=20
+#' @param titletxtsize text size for title, default=20
+#'
+#' @param legendshow whether to show legend, default TRUE
 #' @param legendpos legend position, default 'bottom'
 #' @param legenddir legen direction default = 'horizontal'
 #' @param legendcm legend size cm, default=3
@@ -24,7 +27,6 @@
 #' @param width plot width, default=50
 #' @param height plot height, default=30
 #' @param units plot size units default='cm'
-#' @param txtsize text size for title & legend, default=20
 #' @param titlecolour colour for main title, default='darkred'
 #'
 #' @param graphtitle optional title for graph, default NULL for none
@@ -43,10 +45,13 @@ omop_graph <- function(dfin,
                        ggrlayout='graphopt',
                        palettebrewer='Set1',
 
-                       edge_colour='grey71',
-                       node_colour_var='domain_id',
-                       text_colour_var=NULL,
-                       node_txtsize=9,
+                       edgecolour='grey71',
+                       nodecolourvar='domain_id',
+                       textcolourvar=NULL,
+
+                       nodetxtsize=9,
+                       legendtxtsize=18,
+                       titletxtsize=18,
 
                        legendshow = TRUE,
                        legendpos = 'bottom',
@@ -61,7 +66,6 @@ omop_graph <- function(dfin,
                        width=50,
                        height=30,
                        units='cm',
-                       txtsize=20,
                        titlecolour='darkred',
 
                        graphtitle="OMOP network graph",
@@ -84,7 +88,7 @@ omop_graph <- function(dfin,
   lapply(required_packages,install_package)
 
   #set node & text colour same by default, but user can change
-  if (is.null(text_colour_var)) text_colour_var <- node_colour_var
+  if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
 
   # to detect input type from presence of specific column names
   # then create a table containing 2 columns named 'from' and 'to'
@@ -139,12 +143,12 @@ omop_graph <- function(dfin,
 
   ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
     #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
-    ggraph::geom_edge_link(colour=edge_colour, edge_alpha=0.3, edge_width=0.1 ) +
+    ggraph::geom_edge_link(colour=edgecolour, edge_alpha=0.3, edge_width=0.1 ) +
     #couldn't get colouring edges to work
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    ggraph::geom_node_point(aes(size=connections, colour=.data[[node_colour_var]])
+    ggraph::geom_node_point(aes(size=connections, colour=.data[[nodecolourvar]])
     #geom_node_point(aes(size=connections, colour=domain_id)
                     ,alpha=0.8,
                     show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
@@ -163,17 +167,17 @@ omop_graph <- function(dfin,
           legend.key = element_rect(fill = "white"),
           #legend.title = element_text(size=30),
           legend.title = element_blank(),
-          legend.text = element_text(size=txtsize),
+          legend.text = element_text(size=legendtxtsize),
           #hjust=0.5 to make centred
-          title = element_text(size=4*txtsize, colour=titlecolour),
-          plot.subtitle = element_text(size=1*txtsize, colour=titlecolour)) +
+          title = element_text(size=titletxtsize, colour=titlecolour),
+          plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
     ggraph::geom_node_text(aes(label=name,
                        # colour=domain_id,
-                       #size=connections*4,
+                       # size=connections*4,
                        # disabling node text size
-                       size=9,
-                       colour=.data[[text_colour_var]]),
+                       size=nodetxtsize,
+                       colour=.data[[textcolourvar]]),
                    show.legend=FALSE,
                    repel=TRUE,
                    check_overlap=FALSE,
@@ -202,7 +206,7 @@ omop_graph <- function(dfin,
       filename <- paste0(filenameroot,
                          "-p",palettebrewer,
                          "-leg",legendpos,legendcm,
-                         "-nts",node_txtsize,
+                         "-nts",nodetxtsize,
                          "-",width,"x",height,units,
                          ".",filetype)
 
