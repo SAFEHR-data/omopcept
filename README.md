@@ -142,7 +142,7 @@ memory.
 | valid_end_date   |                                     |                 |
 | invalid_reason   |                                     |                 |
 
-## String search in `concept_name` field
+## `omop_names()`: query concepts by their names
 
 ``` r
 
@@ -183,7 +183,7 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 #> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
 ```
 
-## Join OMOP names onto a `*concept_id` dataframe column
+## `omop_join_name()`: join concept names onto a `*concept_id` dataframe column
 
 Helps to interpret OMOP data.
 
@@ -208,7 +208,7 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 #> 2         4002592 DEXAMETHASONE INJECTION
 ```
 
-## Join omop concept names onto all `*_concept_id` columns in a dataframe
+## `omop_join_name_all()`: join concept names onto all `*_concept_id` columns in a dataframe
 
 ``` r
 
@@ -221,6 +221,10 @@ data.frame(concept_id=(c(3571338L,3655355L)),
 #> 1    3571338 Problem behaviour            4000794 BUZZ OFF         
 #> 2    3655355 Erectile dysfunction        35628998 Viagra
 ```
+
+## `omop_graph()`: starting to visualise OMOP hierarchies
+
+<img src="man/figures/README-omop_graph-1.png" width="100%" />
 
 ## Vocabularies included
 

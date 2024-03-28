@@ -184,7 +184,8 @@ omop_graph <- function(dfin,
 
   #if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
 
-  if (plot) plot(ggr)
+  #
+  #if (plot) plot(ggr)
 
   #plot file naming convention
   #s  separation min
@@ -196,19 +197,23 @@ omop_graph <- function(dfin,
   #nts node text size
   #d? domains
 
-  if (!is.null(filenamecustom)) filename <- filenamecustom
-  else
-    filename <- paste0(filenameroot,
-                       "-p",palettebrewer,
-                       "-leg",legendpos,legendcm,
-                       "-nts",node_txtsize,
-                       "-",width,"x",height,units,
-                       ".",filetype)
+  if (saveplot)
+  {
+    if (!is.null(filenamecustom)) filename <- filenamecustom
+    else
+      filename <- paste0(filenameroot,
+                         "-p",palettebrewer,
+                         "-leg",legendpos,legendcm,
+                         "-nts",node_txtsize,
+                         "-",width,"x",height,units,
+                         ".",filetype)
 
-  if (saveplot) ggsave(ggr, filename=filename, width=width, height=height, units=units, limitsize = FALSE)
+    ggsave(ggr, filename=filename, width=width, height=height, units=units, limitsize=FALSE)
 
 
-  if (messages) message("saved graph file as ", filename)
+    if (messages) message("saved graph file as ", filename)
+  }
+
 
   return(ggr)
 

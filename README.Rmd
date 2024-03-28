@@ -139,7 +139,7 @@ df1 <- data.frame(fields=fieldnames,
 knitr::kable(df1)
 ```
 
-## String search in `concept_name` field
+## `omop_names()`: query concepts by their names
 
 ```{r omop_names, echo=TRUE}
 
@@ -149,7 +149,7 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 
 ```
 
-## Join OMOP names onto a `*concept_id` dataframe column 
+## `omop_join_name()`: join concept names onto a `*concept_id` dataframe column 
 
 Helps to interpret OMOP data.
 
@@ -166,13 +166,23 @@ data.frame(drug_concept_id=(c(4000794L,4002592L))) |>
 
 ```
 
-## Join omop concept names onto all `*_concept_id` columns in a dataframe
+## `omop_join_name_all()`: join concept names onto all `*_concept_id` columns in a dataframe
 
 ```{r omop_join_name_all, echo=TRUE}
 
 data.frame(concept_id=(c(3571338L,3655355L)),
             drug_concept_id=(c(4000794L,35628998L))) |>
             omop_join_name_all()
+```
+
+## `omop_graph()`: starting to visualise OMOP hierarchies
+
+```{r omop_graph, echo=FALSE}
+
+relations <- omop_relations_recursive(4055049L, r_ids=c('Is a','Subsumes'), num_recurse=2) 
+
+omop_graph(relations, saveplot=FALSE, graphtitle=NULL )
+
 ```
 
 ## Vocabularies included
