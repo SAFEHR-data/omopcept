@@ -13,6 +13,7 @@ omop_graph(
   node_colour_var = "domain_id",
   text_colour_var = NULL,
   node_txtsize = 9,
+  legendshow = TRUE,
   legendpos = "bottom",
   legenddir = "horizontal",
   legendcm = 3,
@@ -77,6 +78,8 @@ omop_graph(
 \item{plot}{whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf}
 
 \item{messages}{whether to print info messages, default=TRUE}
+
+\item{legend}{whether to show legend, default TRUE}
 }
 \value{
 ggraph object

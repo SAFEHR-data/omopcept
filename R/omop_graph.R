@@ -11,6 +11,7 @@
 #' @param text_colour_var column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
 #' @param node_txtsize node text size, default=9
 #'
+#' @param legend whether to show legend, default TRUE
 #' @param legendpos legend position, default 'bottom'
 #' @param legenddir legen direction default = 'horizontal'
 #' @param legendcm legend size cm, default=3
@@ -47,6 +48,7 @@ omop_graph <- function(dfin,
                        text_colour_var=NULL,
                        node_txtsize=9,
 
+                       legendshow = TRUE,
                        legendpos = 'bottom',
                        legenddir = 'horizontal',
                        legendcm = 3,
@@ -145,7 +147,7 @@ omop_graph <- function(dfin,
     ggraph::geom_node_point(aes(size=connections, colour=.data[[node_colour_var]])
     #geom_node_point(aes(size=connections, colour=domain_id)
                     ,alpha=0.8,
-                    show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
+                    show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     scale_fill_brewer(palette = palettebrewer) +
     labs(title=graphtitle,subtitle=graphsubtitle) +
@@ -162,13 +164,9 @@ omop_graph <- function(dfin,
           #legend.title = element_text(size=30),
           legend.title = element_blank(),
           legend.text = element_text(size=txtsize),
-          #hjust=0.5 to mak centred
-          title = element_text(size=4*txtsize,
-                               #hjust=0.5,
-                               colour="darkred"),
-          plot.subtitle = element_text(size=1*txtsize,
-                                  #hjust=0.5,
-                                  colour="darkred")) +
+          #hjust=0.5 to make centred
+          title = element_text(size=4*txtsize, colour=titlecolour),
+          plot.subtitle = element_text(size=1*txtsize, colour=titlecolour)) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
     ggraph::geom_node_text(aes(label=name,
                        # colour=domain_id,
