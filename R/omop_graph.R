@@ -10,6 +10,7 @@
 #' @param nodecolourvar column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
 #' @param textcolourvar column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
 #'
+#' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
 #' @param legendtxtsize text size for legend, default=20
 #' @param titletxtsize text size for title, default=20
@@ -49,6 +50,7 @@ omop_graph <- function(dfin,
                        nodecolourvar='domain_id',
                        textcolourvar=NULL,
 
+                       nodetxtangle=0,
                        nodetxtsize=9,
                        legendtxtsize=18,
                        titletxtsize=18,
@@ -68,7 +70,7 @@ omop_graph <- function(dfin,
                        units='cm',
                        titlecolour='darkred',
 
-                       graphtitle="OMOP network graph",
+                       graphtitle="omopcept graph",
                        graphsubtitle=NULL,
                        plot=TRUE,
                        messages=TRUE
@@ -178,6 +180,7 @@ omop_graph <- function(dfin,
                        # disabling node text size
                        size=nodetxtsize,
                        colour=.data[[textcolourvar]]),
+                   angle=nodetxtangle,
                    show.legend=FALSE,
                    repel=TRUE,
                    check_overlap=FALSE,
@@ -204,9 +207,11 @@ omop_graph <- function(dfin,
     if (!is.null(filenamecustom)) filename <- filenamecustom
     else
       filename <- paste0(filenameroot,
+                         "-",ggrlayout,
                          "-p",palettebrewer,
                          "-leg",legendpos,legendcm,
                          "-nts",nodetxtsize,
+                         "-nta",nodetxtangle,
                          "-",width,"x",height,units,
                          ".",filetype)
 

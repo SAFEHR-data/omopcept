@@ -1,6 +1,7 @@
 
 # omopcept 0.0.5.3 2024-03-13 DEV version
 
+* `omop_graph()` gets args `nodetxtangle` `legendshow`
 
 # omopcept 0.0.5.2 2024-03-13
 

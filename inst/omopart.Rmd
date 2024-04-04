@@ -521,6 +521,45 @@ for(i in 1:nrow(holidays))
   holsrel <-  bind_rows(holsrel, dfatmp)
 }
 
+# cancer staging
+
+#1 concept
+ajccfinding <- omop_names("AJCC/UICC finding", fixed=TRUE)
+
+ajcc_rel1 <- omop_relations_recursive(734320, num_recurse=1)
+ajcc_rel2 <- omop_relations_recursive(734320, num_recurse=2)
+
+#good first tree plot (although lots of nodes don't get labelled)
+omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE)
+omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width=200)
+
+#dendrogram & treemap give :
+#! `graph` doesn't contain a root.ℹ  Provide graph with one parentless node
+# maybe I can add one row to the data
+# or even do it in omop_graph()
+
+ar2 <- ajcc_rel2
+ar2[1+nrow(ar2),]$concept_name_2 <- ar2[1,]$concept_name_1
+omop_graph(ar2, ggrlayout="dendrogram", legendshow = FALSE) #looks same as tree
+
+#try taking out the edition nodes
+ajcc_rel2_no_ed <- ajcc_rel2 |> 
+  filter(!str_detect(concept_name_1, "edition"))
+
+omop_graph(ajcc_rel2_no_ed, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width = 100)
+
+
+# figo
+# interesting that figo hierarchy seems different, i.e. edition is child of stages
+
+figofind <- omop_names("figo finding")
+
+figofind[1,]$concept_id 
+
+figo_rel1 <- omop_relations_recursive(734316, num_recurse=1)
+figo_rel2 <- omop_relations_recursive(734316, num_recurse=2)
+
+
 
 
 ```
