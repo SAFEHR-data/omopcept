@@ -1,5 +1,5 @@
 ---
-title: "preparation of images for uclh art competition"
+title: "experimental OMOP visualisations"
 output:
   html_document:
     keep_md: yes
@@ -7,7 +7,7 @@ author: "Andy South"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 ---
 
-
+A progression of experimental OMOP visualisations. The intention is not that this document should be knitted, but that it provides a record of ongoing visualisation attempts by the package author. Most of these are from omop_graph() calls each of which generates a plot saved as pdf.   
 
 ```{r setup, include=FALSE}
 
