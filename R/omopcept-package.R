@@ -27,15 +27,22 @@
 #'
 #' @importFrom arrow open_dataset
 #' @importFrom arrow write_parquet
-#'
-# @importFrom tidygraph tbl_graph
+#' @importFrom arrow read_parquet
 #'
 #' @importFrom readr read_tsv
+#' @importFrom readr read_csv
 #'
 #' @importFrom lubridate ymd
 #'
 #' @importFrom utils globalVariables
 #' @importFrom utils head
+#'
+#' @importFrom tools file_path_sans_ext
+#'
+#  #TODO these are only used in omop_cdm() & omop_table()
+#  #maybe don't import them ?
+# @importFrom fs dir_ls
+# @importFrom purrr map
 #
 # trying importing whole packages rather than having to fiddle
 # with xtra functions as they crop up
@@ -44,6 +51,7 @@
 # @import igraph
 # @import ggraph
 
+# @importFrom tidygraph tbl_graph
 # @importFrom igraph degree
 # @importFrom igraph V
 # @importFrom ggraph ggraph
