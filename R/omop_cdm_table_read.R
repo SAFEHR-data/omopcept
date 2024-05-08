@@ -4,9 +4,10 @@
 #' @param path file path
 #' @param filetype default "parquet" option "csv"
 #' @return a dataframe
-#' @example
-#' #person = omop_table("person",path)
-omop_table <- function(tablename,
+#' @export
+#' @examples
+#' #person = omop_cdm_table_read("person",path)
+omop_cdm_table_read <- function(tablename,
                        path,
                        filetype="parquet") {
 

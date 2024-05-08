@@ -2,7 +2,8 @@
 # omopcept 0.0.5.3 2024-05-01 DEV version
 
 * `omop_graph()` gets args `nodetxtangle` `legendshow`
-* read in omop cdm instance with `omop_cdm()` & `omop_table()`
+* read in omop cdm instance with `omop_cdm_read()` & `omop_cdm_table_read()`
+* combine cdm instances with `omop_cdm_combine()`
 
 # omopcept 0.0.5.2 2024-03-13
 

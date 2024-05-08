@@ -6,11 +6,11 @@
 #' @param filetype default "parquet" option "csv"
 #'
 #' @return a list containing omop tables
+#' @export
+#' @examples
+#' #omop = omop_cdm_read(path,filetype="csv")
 #'
-#' @example
-#' #omop = omop_cdm(path,filetype="csv")
-#'
-omop_cdm <- function(path,
+omop_cdm_read <- function(path,
                      filetype = "parquet",
                      lowercasenames = TRUE) {
 

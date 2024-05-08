@@ -8,7 +8,7 @@
 # @param filetype default "parquet" option "csv"
 #'
 #' @return a list containing merged omop tables
-#'
+#' @export
 #' @examples
 #' cdm1 <- list(person=data.frame(id=1:3,age=21:23),
 #'              measurement=data.frame(id=1:3,meas=5:7))

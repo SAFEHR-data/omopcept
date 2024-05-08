@@ -1,5 +1,7 @@
 #' recursively extract omop concept relations of one passed - immediate relations with indication of relationship
 #'
+# TODO I could rename this to omop_relations() & rename that to omop_rel1() and not export it
+# num_recurse==1 is same as what omop_relations is currently so can just have that as default
 #' @param c_id single omop concept_id or exact concept_name to get relations of, default NULL returns all
 #' @param c_ids one or more concept_id to filter by, default NULL for all
 #' @param d_ids one or more domain_id to filter by, default NULL for all

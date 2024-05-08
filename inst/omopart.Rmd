@@ -528,6 +528,8 @@ ajccfinding <- omop_names("AJCC/UICC finding", fixed=TRUE)
 
 ajcc_rel1 <- omop_relations_recursive(734320, num_recurse=1)
 ajcc_rel2 <- omop_relations_recursive(734320, num_recurse=2)
+#does it make it quicker if I filter by vocab ? not hugely it seems
+ajcc_rel2quick <- omop_relations_recursive(734320, num_recurse=2, v_ids = "Cancer Modifier")
 
 #good first tree plot (although lots of nodes don't get labelled)
 omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE)
@@ -535,8 +537,9 @@ omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, wid
 
 #dendrogram & treemap give :
 #! `graph` doesn't contain a root.ℹ  Provide graph with one parentless node
-# maybe I can add one row to the data
-# or even do it in omop_graph()
+# adding one row to the data can fix (see below)
+# could even do it in omop_graph()
+# but dendrogram & treemap initial results were a bit rubbish anyway 
 
 ar2 <- ajcc_rel2
 ar2[1+nrow(ar2),]$concept_name_2 <- ar2[1,]$concept_name_1
@@ -548,6 +551,10 @@ ajcc_rel2_no_ed <- ajcc_rel2 |>
 
 omop_graph(ajcc_rel2_no_ed, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width = 100)
 
+# GOOD nodetxtangle = 45 makes most labels visible
+omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width = 150, nodetxtangle = 45)
+
+omop_graph(ajcc_rel2, legendshow = FALSE, saveplot = TRUE, width = 100, height=100)
 
 # figo
 # interesting that figo hierarchy seems different, i.e. edition is child of stages
@@ -559,8 +566,26 @@ figofind[1,]$concept_id
 figo_rel1 <- omop_relations_recursive(734316, num_recurse=1)
 figo_rel2 <- omop_relations_recursive(734316, num_recurse=2)
 
+omop_graph(figo_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width = 50, nodetxtangle = 45)
 
+# try to make a pretty cancer plot for Steve's talk
+# perhaps start at something detailed and work up ?
+cm <- omop_names("", v_ids="Cancer Modifier")
+#returning 6043 concepts
+cm |> count(concept_class_id, sort=TRUE)
+#  1 Staging/Grading     3281
+#  2 Metastasis           579
+#  3 Extension/Invasion   545
+#  4 Topography           518
+#  5 Histopattern         444
+#  6 Margin               433
+#  7 Nodes                192
+#  8 Dimension             29
+#  9 Morph Abnormality     15
+# 10 Qualifier Value        7
 
+bc <- omop_names("breast cancer") #244
+bcs <- omop_names("breast cancer",v="SNOMED") #49
 
 ```
 
@@ -577,8 +602,6 @@ dfin <- dfme3 |> head(2000)
 
 dfin <- dfme1
 
-#TODO PUT THIS INTO A FUNCTION THAT ACCEPTS ARGS
-#AND USES ARGS TO AUTO-GENERATE OUTPUT FILENAME
 #MAYBE SAVE ONE OF OMOP DATA OBJECTS IN PACKAGE TO SPEED PLOT PRODUCTION
 
 #try filtering an equal number of domains

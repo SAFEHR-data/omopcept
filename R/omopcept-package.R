@@ -39,8 +39,8 @@
 #'
 #' @importFrom tools file_path_sans_ext
 #'
-#  #TODO these are only used in omop_cdm() & omop_table()
-#  #maybe don't import them ?
+## only used in omop_cdm_read() & omop_cdm_table_read()
+## not imported here, install checked in the function
 # @importFrom fs dir_ls
 # @importFrom purrr map
 #
