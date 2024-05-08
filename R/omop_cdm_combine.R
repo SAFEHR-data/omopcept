@@ -10,11 +10,11 @@
 #' @return a list containing merged omop tables
 #'
 #' @examples
-#' cdm1 <- list(person=tibble(id=1:3,age=21:23),
-#'              measurement=tibble(id=1:3,meas=5:7))
-#' cdm2 <- list(person=tibble(id=11:12,age=91:92),
-#'             measurement=tibble(id=11:12,meas=15:16),
-#'             death=tibble(id=11:12,d=c(0,1)))
+#' cdm1 <- list(person=data.frame(id=1:3,age=21:23),
+#'              measurement=data.frame(id=1:3,meas=5:7))
+#' cdm2 <- list(person=data.frame(id=11:12,age=91:92),
+#'             measurement=data.frame(id=11:12,meas=15:16),
+#'             death=data.frame(id=11:12,d=c(0,1)))
 #' cdm3 <- omop_cdm_combine(cdm1, cdm2)
 #'
 omop_cdm_combine <- function(cdm1, cdm2) {
