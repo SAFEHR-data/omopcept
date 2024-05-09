@@ -20,11 +20,19 @@ combine two omop cdm (Common Data Model) instances
 initially works on lists but TODO get it to work on folder names by calling omop_cdm_read()
 }
 \examples{
-cdm1 <- list(person=data.frame(person_id=1:3,age=21:23),
-             measurement=data.frame(person_id=1:3,meas=5:7))
-cdm2 <- list(person=data.frame(person_id=11:12,age=91:92),
-            measurement=data.frame(person_id=11:12,meas=15:16),
-            death=data.frame(person_id=11:12,d=c(0,1)))
+pids1 <- 1:3
+pids2 <- 11:12
+cdm1 <- list(person=data.frame(person_id=pids1,age=21:23),
+             measurement=data.frame(person_id=pids1,meas=5:7))
+cdm2 <- list(person=data.frame(person_id=pids2,age=91:92),
+            measurement=data.frame(person_id=pids2,meas=15:16),
+            death=data.frame(person_id=pids2,d=c(0,1)))
 cdm3 <- omop_cdm_combine(cdm1, cdm2)
+#test creation of new ids when overlap
+pids21 <- 1:2
+cdm21 <- list(person=data.frame(person_id=pids21,age=91:92),
+            measurement=data.frame(person_id=pids21,meas=15:16),
+            death=data.frame(person_id=pids21,d=c(0,1)))
+cdm31 <- omop_cdm_combine(cdm1, cdm21)
 
 }

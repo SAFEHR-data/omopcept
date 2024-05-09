@@ -10,19 +10,47 @@
 #' @return a list containing merged omop tables
 #' @export
 #' @examples
-#' cdm1 <- list(person=data.frame(person_id=1:3,age=21:23),
-#'              measurement=data.frame(person_id=1:3,meas=5:7))
-#' cdm2 <- list(person=data.frame(person_id=11:12,age=91:92),
-#'             measurement=data.frame(person_id=11:12,meas=15:16),
-#'             death=data.frame(person_id=11:12,d=c(0,1)))
+#' pids1 <- 1:3
+#' pids2 <- 11:12
+#' cdm1 <- list(person=data.frame(person_id=pids1,age=21:23),
+#'              measurement=data.frame(person_id=pids1,meas=5:7))
+#' cdm2 <- list(person=data.frame(person_id=pids2,age=91:92),
+#'             measurement=data.frame(person_id=pids2,meas=15:16),
+#'             death=data.frame(person_id=pids2,d=c(0,1)))
 #' cdm3 <- omop_cdm_combine(cdm1, cdm2)
+#' #test creation of new ids when overlap
+#' pids21 <- 1:2
+#' cdm21 <- list(person=data.frame(person_id=pids21,age=91:92),
+#'             measurement=data.frame(person_id=pids21,meas=15:16),
+#'             death=data.frame(person_id=pids21,d=c(0,1)))
+#' cdm31 <- omop_cdm_combine(cdm1, cdm21)
 #'
 omop_cdm_combine <- function(cdm1, cdm2) {
                      #filetype = "parquet",
                      #lowercasenames = TRUE) {
 
-  # loops version provided by Ana, works :-)
-  # may be slow on big inputs ?
+  # add an ?option to make person_id unique
+  # by adding a number greater than max in one input to the other
+  max1person <- max(cdm1$person$person_id, na.rm = TRUE)
+  min2person <- min(cdm2$person$person_id, na.rm = TRUE)
+  #if they are already separate then don't need to modify
+  if (min2person < max1person)
+  {
+    #get nearest tens val above max1
+    addto2 <- 10^nchar(max1person)
+  }
+
+  #find all person_id columns in cdm2 & add
+  cdm12 <- cdm1
+  for (name in names(cdm2)) {
+
+    if ("person_id" %in% names(cdm2[[name]])) {
+
+      cdm2[[name]]$person_id <- addto2 + cdm2[[name]]$person_id
+
+    }}
+
+  # loops version provided by Ana, just seconds on few thousand rows
   all_names <- union(names(cdm1), names(cdm2))
 
   combined_list <- list()
@@ -37,8 +65,7 @@ omop_cdm_combine <- function(cdm1, cdm2) {
     else combined_list[[name]] <- cdm2[[name]]
   }
 
-  # add an ?option to make person_id unique
-  # by adding a number greater than max in one input to the other
+
 
 
   combined_list
