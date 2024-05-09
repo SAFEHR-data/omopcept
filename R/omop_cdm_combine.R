@@ -10,11 +10,11 @@
 #' @return a list containing merged omop tables
 #' @export
 #' @examples
-#' cdm1 <- list(person=data.frame(id=1:3,age=21:23),
-#'              measurement=data.frame(id=1:3,meas=5:7))
-#' cdm2 <- list(person=data.frame(id=11:12,age=91:92),
-#'             measurement=data.frame(id=11:12,meas=15:16),
-#'             death=data.frame(id=11:12,d=c(0,1)))
+#' cdm1 <- list(person=data.frame(person_id=1:3,age=21:23),
+#'              measurement=data.frame(person_id=1:3,meas=5:7))
+#' cdm2 <- list(person=data.frame(person_id=11:12,age=91:92),
+#'             measurement=data.frame(person_id=11:12,meas=15:16),
+#'             death=data.frame(person_id=11:12,d=c(0,1)))
 #' cdm3 <- omop_cdm_combine(cdm1, cdm2)
 #'
 omop_cdm_combine <- function(cdm1, cdm2) {
@@ -37,8 +37,11 @@ omop_cdm_combine <- function(cdm1, cdm2) {
     else combined_list[[name]] <- cdm2[[name]]
   }
 
-  combined_list
+  # add an ?option to make person_id unique
+  # by adding a number greater than max in one input to the other
 
+
+  combined_list
 
   # OLD version2 that nearly worked, but list included NAs for columns not present in inputs (because goes via a dataframe)
   # merged <- as.list(bind_rows(cdm1,cdm2))
