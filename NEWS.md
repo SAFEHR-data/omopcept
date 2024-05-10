@@ -1,9 +1,13 @@
 
-# omopcept 0.0.5.5 2024-05-01 DEV version
+# omopcept 0.0.5.6 2024-05-10 DEV version
 
 
 
-# omopcept 0.0.5.4 2024-05-01
+# omopcept 0.0.5.5 2024-05-10
+
+* `omop_cdm_combine()` gets `make_care_site_id_unique` & `add_care_site_name_to_person_id_tables` arg
+
+# omopcept 0.0.5.4 2024-05-09
 
 * `omop_cdm_combine()` gets `make_person_id_unique` arg
 

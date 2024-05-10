@@ -5,7 +5,13 @@
 \title{combine two omop cdm (Common Data Model) instances
 initially works on lists but TODO get it to work on folder names by calling omop_cdm_read()}
 \usage{
-omop_cdm_combine(cdm1, cdm2, make_person_id_unique = TRUE)
+omop_cdm_combine(
+  cdm1,
+  cdm2,
+  make_person_id_unique = TRUE,
+  make_care_site_id_unique = TRUE,
+  add_care_site_name_to_person_id_tables = TRUE
+)
 }
 \arguments{
 \item{cdm1}{list containing cdm tables}
@@ -13,6 +19,10 @@ omop_cdm_combine(cdm1, cdm2, make_person_id_unique = TRUE)
 \item{cdm2}{list containing cdm tables}
 
 \item{make_person_id_unique}{whether to check & shift person ids of cdm2, default TRUE}
+
+\item{make_care_site_id_unique}{whether to set care_site_id to 1 & 2 for ecah instance, default TRUE}
+
+\item{add_care_site_name_to_person_id_tables}{whether to add column to all tables with person_id}
 }
 \value{
 a list containing merged omop tables
@@ -24,17 +34,19 @@ initially works on lists but TODO get it to work on folder names by calling omop
 \examples{
 pids1 <- 1:3
 pids2 <- 11:12
-cdm1 <- list(person=data.frame(person_id=pids1,age=21:23),
-             measurement=data.frame(person_id=pids1,meas=5:7))
+cdm1 <- list(person=data.frame(person_id=pids1,age=21:23,care_site_id=1),
+             measurement=data.frame(person_id=pids1,meas=5:7),
+             care_site=data.frame(care_site_id=1, care_site_name="hospital1"))
 cdm2 <- list(person=data.frame(person_id=pids2,age=91:92),
             measurement=data.frame(person_id=pids2,meas=15:16),
             death=data.frame(person_id=pids2,d=c(0,1)))
 cdm3 <- omop_cdm_combine(cdm1, cdm2)
 #test creation of new ids when overlap
 pids21 <- 1:2
-cdm21 <- list(person=data.frame(person_id=pids21,age=91:92),
+cdm21 <- list(person=data.frame(person_id=pids21,age=91:92,care_site_id=1),
             measurement=data.frame(person_id=pids21,meas=15:16),
-            death=data.frame(person_id=pids21,d=c(0,1)))
+            death=data.frame(person_id=pids21,d=c(0,1)),
+            care_site=data.frame(care_site_id=1, care_site_name="hospital2"))
 cdm31 <- omop_cdm_combine(cdm1, cdm21)
 
 }
