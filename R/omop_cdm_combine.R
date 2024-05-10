@@ -3,6 +3,7 @@
 #'
 #' @param cdm1 list containing cdm tables
 #' @param cdm2 list containing cdm tables
+#' @param make_person_id_unique whether to check & shift person ids of cdm2, default TRUE
 # TODO re-enable these args if allowing files
 # @param lowercasenames whether to make table names lowercase, default TRUE
 # @param filetype default "parquet" option "csv"
@@ -25,30 +26,33 @@
 #'             death=data.frame(person_id=pids21,d=c(0,1)))
 #' cdm31 <- omop_cdm_combine(cdm1, cdm21)
 #'
-omop_cdm_combine <- function(cdm1, cdm2) {
+omop_cdm_combine <- function(cdm1, cdm2,
+                             make_person_id_unique = TRUE) {
                      #filetype = "parquet",
                      #lowercasenames = TRUE) {
 
-  # add an ?option to make person_id unique
-  # by adding a number greater than max in one input to the other
-  max1person <- max(cdm1$person$person_id, na.rm = TRUE)
-  min2person <- min(cdm2$person$person_id, na.rm = TRUE)
-  #if they are already separate then don't need to modify
-  if (min2person < max1person)
+  if (make_person_id_unique)
   {
-    #get nearest tens val above max1
-    addto2 <- 10^nchar(max1person)
+    # add tens value greater than max1 to cdm2
+    max1person <- max(cdm1$person$person_id, na.rm = TRUE)
+    min2person <- min(cdm2$person$person_id, na.rm = TRUE)
+    #if they are already separate then don't need to modify
+    if (min2person < max1person)
+    {
+      #get nearest tens val above max1
+      addto2 <- 10^nchar(max1person)
+
+      message("in omop_cdm_combine adding ",addto2," to all person_ids in cdm2 to make unique, you can turn off with make_person_id_unique=FALSE")
+
+      #find all person_id columns in cdm2 & add
+      cdm12 <- cdm1
+      for (name in names(cdm2)) {
+        if ("person_id" %in% names(cdm2[[name]])) {
+          cdm2[[name]]$person_id <- addto2 + cdm2[[name]]$person_id
+        }}
+    }
   }
 
-  #find all person_id columns in cdm2 & add
-  cdm12 <- cdm1
-  for (name in names(cdm2)) {
-
-    if ("person_id" %in% names(cdm2[[name]])) {
-
-      cdm2[[name]]$person_id <- addto2 + cdm2[[name]]$person_id
-
-    }}
 
   # loops version provided by Ana, just seconds on few thousand rows
   all_names <- union(names(cdm1), names(cdm2))

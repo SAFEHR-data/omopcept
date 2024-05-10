@@ -5,12 +5,14 @@
 \title{combine two omop cdm (Common Data Model) instances
 initially works on lists but TODO get it to work on folder names by calling omop_cdm_read()}
 \usage{
-omop_cdm_combine(cdm1, cdm2)
+omop_cdm_combine(cdm1, cdm2, make_person_id_unique = TRUE)
 }
 \arguments{
 \item{cdm1}{list containing cdm tables}
 
 \item{cdm2}{list containing cdm tables}
+
+\item{make_person_id_unique}{whether to check & shift person ids of cdm2, default TRUE}
 }
 \value{
 a list containing merged omop tables
