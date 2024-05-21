@@ -35,7 +35,7 @@ omop_cdm_read <- function(path,
 
   #set vector names to tablenames
   #so that list elements get named with these by map
-  filepaths <- set_names(filepaths, tablenames)
+  filepaths <- purrr::set_names(filepaths, tablenames)
 
   #read all files in folder and put each into a master list returned by the function
   if (filetype == "parquet") {
