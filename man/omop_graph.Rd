@@ -12,6 +12,9 @@ omop_graph(
   edgecolour = "grey71",
   nodecolourvar = "domain_id",
   textcolourvar = NULL,
+  nodealpha = 0.8,
+  edgealpha = 0.3,
+  edgewidth = 0.1,
   nodetxtangle = 0,
   nodetxtsize = 9,
   legendtxtsize = 18,
@@ -46,6 +49,12 @@ omop_graph(
 \item{nodecolourvar}{column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"}
 
 \item{textcolourvar}{column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"}
+
+\item{nodealpha}{node transparency, default 0.8}
+
+\item{edgealpha}{edge transparency, default 0.3, #ggraph uses underscore edge_alpha but would mess up my consistency}
+
+\item{edgewidth}{edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency}
 
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 

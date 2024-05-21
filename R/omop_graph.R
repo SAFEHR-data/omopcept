@@ -10,6 +10,10 @@
 #' @param nodecolourvar column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
 #' @param textcolourvar column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
 #'
+#' @param nodealpha node transparency, default 0.8
+#' @param edgealpha edge transparency, default 0.3, #ggraph uses underscore edge_alpha but would mess up my consistency
+#' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
+#'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
 #' @param legendtxtsize text size for legend, default=20
@@ -50,6 +54,10 @@ omop_graph <- function(dfin,
                        nodecolourvar='domain_id',
                        textcolourvar=NULL,
 
+                       nodealpha = 0.8,
+                       edgealpha = 0.3, #ggraph uses underscore adge_alpha but would mess up my consistency
+                       edgewidth = 0.1,
+
                        nodetxtangle=0,
                        nodetxtsize=9,
                        legendtxtsize=18,
@@ -75,8 +83,6 @@ omop_graph <- function(dfin,
                        plot=TRUE,
                        messages=TRUE
                        ) {
-
-  #TODO get sorted to install req packs
 
   # install required packages if not present
   required_packages <- c("igraph","tidygraph","ggraph")
@@ -145,14 +151,14 @@ omop_graph <- function(dfin,
 
   ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
     #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
-    ggraph::geom_edge_link(colour=edgecolour, edge_alpha=0.3, edge_width=0.1 ) +
+    ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
     #couldn't get colouring edges to work
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
     ggraph::geom_node_point(aes(size=connections, colour=.data[[nodecolourvar]])
     #geom_node_point(aes(size=connections, colour=domain_id)
-                    ,alpha=0.8,
+                    ,alpha=nodealpha,
                     show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     scale_fill_brewer(palette = palettebrewer) +
