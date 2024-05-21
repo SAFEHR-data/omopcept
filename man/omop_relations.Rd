@@ -14,6 +14,7 @@ omop_relations(
   standard = NULL,
   r_ids = NULL,
   itself = FALSE,
+  names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
   messages = TRUE
 )
 
@@ -26,6 +27,7 @@ orels(
   standard = NULL,
   r_ids = NULL,
   itself = FALSE,
+  names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
   messages = TRUE
 )
 }
@@ -45,6 +47,8 @@ orels(
 \item{r_ids}{one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')}
 
 \item{itself}{whether to include relations to concept itself, default=FALSE}
+
+\item{names2avoid}{concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }

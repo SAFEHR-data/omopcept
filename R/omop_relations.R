@@ -8,6 +8,7 @@
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
 #' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
 #' @param itself whether to include relations to concept itself, default=FALSE
+#' @param names2avoid concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL
 #' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
@@ -26,6 +27,7 @@ omop_relations <- function(c_id=NULL,
                                 standard=NULL,
                                 r_ids=NULL,
                                 itself=FALSE,
+                                names2avoid=c("SNOMED CT core","Defined","Primitive"),
                                 messages=TRUE) {
 
 
@@ -33,6 +35,13 @@ omop_relations <- function(c_id=NULL,
   res <- check_c_id(c_id)
   c_id <- res$c_id[1]
   name1 <- res$name1[1]
+
+  # add default avoidance of generic concepts that have huge num relations
+  if (name1 %in% names2avoid)
+  {
+    if (messages) message("not returning relations of ",name1," because lots of, you can change by setting names2avoid to NULL or subset of default")
+    return(NULL)
+  }
 
   if (messages) message("querying concept relations of: ",name1," - may take a few seconds")
 

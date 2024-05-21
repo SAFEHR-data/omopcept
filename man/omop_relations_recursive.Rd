@@ -13,6 +13,7 @@ omop_relations_recursive(
   standard = NULL,
   r_ids = NULL,
   itself = FALSE,
+  names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
   messages = TRUE,
   num_recurse = 1
 )
@@ -33,6 +34,8 @@ omop_relations_recursive(
 \item{r_ids}{one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')}
 
 \item{itself}{whether to include relations to concept itself, default=FALSE}
+
+\item{names2avoid}{concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL}
 
 \item{messages}{whether to print info messages, default=TRUE}
 

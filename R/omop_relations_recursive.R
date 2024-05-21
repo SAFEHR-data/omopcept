@@ -10,6 +10,7 @@
 #' @param standard one or more standard_concept to filter by, default NULL for all, S,C
 #' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
 #' @param itself whether to include relations to concept itself, default=FALSE
+#' @param names2avoid concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL
 #' @param messages whether to print info messages, default=TRUE
 #' @param num_recurse number of recursions to search
 #' @return a dataframe of concepts and attributes
@@ -25,6 +26,7 @@ omop_relations_recursive <- function(c_id=NULL,
                                      standard=NULL,
                                      r_ids=NULL,
                                      itself=FALSE,
+                                     names2avoid=c("SNOMED CT core","Defined","Primitive"),
                                      messages=TRUE,
                                      num_recurse=1) {
 
@@ -65,6 +67,7 @@ omop_relations_recursive <- function(c_id=NULL,
                                standard=standard,
                                r_ids=r_ids,
                                itself=itself,
+                               names2avoid=names2avoid,
                                messages=messages)
 
       dfprev <- bind_rows(dfprev,dfprev1)

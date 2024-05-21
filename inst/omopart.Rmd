@@ -587,6 +587,37 @@ cm |> count(concept_class_id, sort=TRUE)
 bc <- omop_names("breast cancer") #244
 bcs <- omop_names("breast cancer",v="SNOMED") #49
 
+labc <- omop_names("Locally advanced breast cancer")
+labcr1 <- omop_relations_recursive(labc$concept_id[1],num_recurse = 1)
+
+
+mm <- omop_names("multiple myeloma")
+#returning 53 concepts
+mms <- omop_names("multiple myeloma",exact=TRUE,d="Condition",v="SNOMED",s="S")
+#1
+mmsr1 <- omop_relations(mms$concept_id)
+#returning 50 concepts
+mmsr1 |> count(relationship_id, sort=TRUE)
+#  1 Mapped from             18
+#  2 Subsumes                11
+#  3 Due to of                7
+#  4 Concept same_as from     3
+#  5 Asso finding of          2
+#  6 Focus of                 2
+#  7 Asso with finding        1
+#  8 Concept replaces         1
+#  9 Has Module               1
+# 10 Has asso morph           1
+# 11 Has status               1
+# 12 Is a                     1
+# 13 Value mapped from        1
+#This is nice, MMyeloma at centre, 6 different domains
+omop_graph(mmsr1)
+#with newly added names2avoid defaults that avoid e.g. Primitive
+mmsr2 <- omop_relations_recursive(mms$concept_id, num_recurse=2)
+
+omop_graph(mmsr2)
+
 ```
 
 ```{r first test plot, include=FALSE, eval=TRUE}
@@ -630,7 +661,6 @@ dfin <- holsanc
 dfin <- holsrel
 
 
-
 if ("ancestor_name" %in% names(dfin)){
   
   #DESCENDANT
@@ -655,76 +685,6 @@ if ("ancestor_name" %in% names(dfin)){
 }
 
 
-#challenge to make sure get all nodes from from & to
-#to avoid Invalid (negative) vertex id
-#TODO get this to cope with relationship tables that have no vocab or domain
-#maybe I just need to allow join_name_all() to also join on vocab & domain
-nodesfrom <- dfin2 |> 
-  dplyr::select(from,vocabulary_id,domain_id) |>
-  group_by(from) |> 
-  slice_head(n=1) |> 
-  rename(name=from)
-
-nodesto <- dfin2 |> 
-  dplyr::select(to,vocabulary_id,domain_id) |>
-  group_by(to) |> 
-  slice_head(n=1) |> 
-  rename(name=to)
-
-nodes1 <- bind_rows(nodesfrom,nodesto) |> 
-  group_by(name) |> 
-  slice_head(n=1)
-
-edges1 <- dfin2 |> 
-  dplyr::select(from, to)
-  
-
-graphin <- tbl_graph(nodes=nodes1, edges=edges1)
-
-#sets node attribute of num_edges
-V(graphin)$connections <- degree(graphin)
-
-  ggr <- ggraph(graphin, layout='graphopt') +
-  #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
-    geom_edge_link(colour="grey71", edge_alpha=0.3, edge_width=0.1 ) +
-    #couldn't get colouring edges to work
-    #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +    
-    #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
-    #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    geom_node_point(aes(size=connections, colour=domain_id)
-                    ,alpha=0.9,
-                    show.legend = c(size = FALSE, colour = TRUE, alpha = FALSE)) +
-    #geom_node_point(aes(size=connections,colour=connections)) +
-    #scale_fill_brewer(palette = "Dark2") +
-    scale_fill_brewer(palette = "Set1") +
-    #this sets bg to white & other elements for good graphs
-    #theme_graph() + gives font error
-    theme(panel.background=element_blank(),
-          plot.background=element_blank(),
-          legend.position = "bottom",
-          legend.key.size = unit(3, 'cm'), 
-          #legend.key.height = unit(1, 'cm'), 
-          #legend.key.width = unit(1, 'cm'),
-          legend.key = element_rect(fill = "white"),
-          #legend.title = element_text(size=30), 
-          legend.title = element_blank(),           
-          legend.text = element_text(size=20) ) +
-    guides(colour = guide_legend(override.aes = list(size=20))) +
-    geom_node_text(aes(label=name, 
-                       # colour=domain_id, 
-                       # size=connections*3),
-                       # disabling node text size
-                       size=7,
-                       colour=domain_id),
-                   show.legend=FALSE,
-                   repel=TRUE, 
-                   check_overlap=FALSE,
-                   nudge_y=0.3, #move labels above points
-                   alpha=0.9)
-
-  #plot(ggr)
-
-ggr <- ggr + ggtitle("guerilla OMOP holidays")  
   
 #saving plots
 #naming convention
