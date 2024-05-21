@@ -150,7 +150,6 @@ omop_graph <- function(dfin,
   igraph::V(graphin)$connections <- igraph::degree(graphin)
 
   ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
-    #ggr <- ggraph(graphin,  layout = "sparse_stress", pivots=100) +
     ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
     #couldn't get colouring edges to work
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
