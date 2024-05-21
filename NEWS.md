@@ -1,7 +1,8 @@
 
 # omopcept 0.0.5.6 2024-05-10 DEV version
 
-
+* `omop_relations()` gets `names2avoid` arg
+* `omop_graph()` gets args `nodealpha` `edgealpha` `edgewidth`
 
 # omopcept 0.0.5.5 2024-05-10
 
