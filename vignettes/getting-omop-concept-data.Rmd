@@ -23,4 +23,11 @@ library(omopcept)
 
 In default operation omopcept will download these concept tables from a temporary online filestore we have created.
 
-There is also an option to process and save in `omopcept` concept tables that you have downloaded yourself from [Athena](https://athena.ohdsi.org/).
+You can also download concept tables from [Athena](https://athena.ohdsi.org/) and then use `omopcept::omop_vocabs_preprocess()` to save these in the `omopcept` package. Note that package results will depend on the subset of vocabularies that you have selected from the Ahena download page.
+
+
+### Details of vocab storage
+
+`omopcept` by default downloads a selection of vocabularies and stores them locally the first time you use it (in the recommended data location for R packages). The download does not need to be repeated unless you update the package. Vocabularies are stored as [parquet](https://parquet.apache.org/) files that can be queried in a memory-efficient manner without having to first read the data in to memory.
+
+`omopcept::omop_vocab_table_save()` is used to save parquet files into the package that we have stored online. You could also use `omop_vocab_table_save(from=*)` to save vocab parquet files from your own online location.
