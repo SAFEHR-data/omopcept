@@ -23,6 +23,7 @@ omop_graph(
   legendpos = "bottom",
   legenddir = "horizontal",
   legendcm = 3,
+  plot = TRUE,
   saveplot = TRUE,
   filetype = "pdf",
   filenameroot = "omop_graph",
@@ -33,7 +34,6 @@ omop_graph(
   titlecolour = "darkred",
   graphtitle = "omopcept graph",
   graphsubtitle = NULL,
-  plot = TRUE,
   messages = TRUE
 )
 }
@@ -72,7 +72,9 @@ omop_graph(
 
 \item{legendcm}{legend size cm, default=3}
 
-\item{saveplot}{whether to save plot, default TRUE}
+\item{plot}{whether to display plot, default TRUE, note that large plots will not display well in R graphics window but do output well to pdf}
+
+\item{saveplot}{whether to save plot, default TRUE, note that large plots will not display well in R graphics window but do output well to pdf}
 
 \item{filetype}{output image file, default='pdf'}
 
@@ -91,8 +93,6 @@ omop_graph(
 \item{graphtitle}{optional title for graph, default NULL for none}
 
 \item{graphsubtitle}{optional subtitle for graph, default NULL for none}
-
-\item{plot}{whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }

@@ -24,7 +24,8 @@
 #' @param legenddir legen direction default = 'horizontal'
 #' @param legendcm legend size cm, default=3
 #'
-#' @param saveplot whether to save plot, default TRUE
+#' @param plot whether to display plot, default TRUE, note that large plots will not display well in R graphics window but do output well to pdf
+#' @param saveplot whether to save plot, default TRUE, note that large plots will not display well in R graphics window but do output well to pdf
 #' @param filetype output image file, default='pdf'
 #' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
 #' @param filenamecustom optional filename for plot, otherwise default name is created
@@ -37,7 +38,6 @@
 #' @param graphtitle optional title for graph, default NULL for none
 #' @param graphsubtitle optional subtitle for graph, default NULL for none
 #'
-#' @param plot whether to display plot, default TRUE, but note that large plots will not display well in R graphics window but do output well to pdf
 #' @param messages whether to print info messages, default=TRUE
 #'
 #' @return ggraph object
@@ -68,6 +68,7 @@ omop_graph <- function(dfin,
                        legenddir = 'horizontal',
                        legendcm = 3,
 
+                       plot=TRUE,
                        saveplot = TRUE,
                        filetype = 'pdf',
                        filenameroot = 'omop_graph',
@@ -80,7 +81,6 @@ omop_graph <- function(dfin,
 
                        graphtitle="omopcept graph",
                        graphsubtitle=NULL,
-                       plot=TRUE,
                        messages=TRUE
                        ) {
 
