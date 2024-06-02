@@ -1,0 +1,49 @@
+---
+title: "query-and-graph-concept-hierarchies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{query-and-graph-concept-hierarchies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  fig.dpi = 96,
+  out.width = "100%",
+  out.height = "100%",
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(omopcept)
+```
+
+In this vignette we will step through the process of querying the OMOP standard vocabularies to get a list of concepts and then visualise the relationship between those concepts.
+
+By default this will use the vocabulary tables that we have saved in the cloud (see the readme). You can repeat with vocabularies that you have downloaded yourself but you may get different results if you have selected different vocabularies.
+
+
+### Example 1 - query relations of a concept and visualise
+
+Here we find a single concept, search for it's relations and the relations of those (num_recurse=2) and create a graph of the hierarchy.
+
+```{r omop_graph, message=FALSE, fig_width = 7, fig_height = 5}
+
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
+
+relations <- omop_relations_recursive(sharp$concept_id, 
+                                      r_ids=c('Is a','Subsumes'), 
+                                      num_recurse=2) 
+
+# nodetxtsize made small to make plot visible in vignette, default=9 usually fine
+omop_graph(relations, saveplot=FALSE, 
+           graphtitle=NULL, legendshow=FALSE, nodetxtsize=1)
+
+```
+
+In this case the relations were all from one domain so that is why we didn't need to show the legend.
+
