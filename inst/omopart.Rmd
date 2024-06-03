@@ -556,6 +556,20 @@ omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, wid
 
 omop_graph(ajcc_rel2, legendshow = FALSE, saveplot = TRUE, width = 100, height=100)
 
+# trying a smaller plot for the vignette 2024-06
+
+ajcc8 <- omop_names("AJCC/UICC 8th edition", exact=TRUE)
+
+ajcc_rel1 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=1)
+
+# getting recursive relations takes a few minutes
+ajcc_rel2 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=2)
+
+# plot is too big to display nicely in this vignette
+# but is auto saved in a nice to pdf
+omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width = 150, nodetxtangle = 45)
+
+
 # figo
 # interesting that figo hierarchy seems different, i.e. edition is child of stages
 
@@ -613,10 +627,52 @@ mmsr1 |> count(relationship_id, sort=TRUE)
 # 13 Value mapped from        1
 #This is nice, MMyeloma at centre, 6 different domains
 omop_graph(mmsr1)
+
+
 #with newly added names2avoid defaults that avoid e.g. Primitive
 mmsr2 <- omop_relations_recursive(mms$concept_id, num_recurse=2)
 
 omop_graph(mmsr2)
+
+#2024-06-02 ohdsi concepts workshop
+#Snomed does not think that Arthropathic psoriasis is a psoriasis !
+#ICD10 does
+
+#get one parent concept
+pso <- omop_names("Psoriasis",exact=TRUE,s="S",v="SNOMED")
+psorel2
+
+ra <- omop_names("rheumatoid arthritis",exact=TRUE,s="S",v="SNOMED")
+
+ra_rel1 <- omop_relations_recursive(ra$concept_id, num_recurse=1)
+ra_rel2 <- omop_relations_recursive(ra$concept_id, num_recurse=2)
+
+ra_rel1mapped <- ra_rel1 %>% filter(relationship_id=="Mapped from")
+ra_rel2mapped <- ra_rel2 %>% filter(relationship_id=="Mapped from")
+
+#look at hierarchy of ICD10 codes for RA
+
+m06 <- omop_codes("M06.0")
+m06_rel <- omop_relations_recursive(m06$concept_id)
+omop_graph(m06_rel)
+m06_rel2 <- omop_relations_recursive(m06$concept_id, num_recurse = 2)
+
+omop_graph(m06_rel2, ggrlayout = "tree")
+
+#to do regex &, need to serach both both one after other & other way around
+amox_clav <- omop_names("amoxicillin.*clavulanate|clavulanate.*amoxicillin")
+
+amox_clav <- omop_names("amoxicillin.*clavulanate|clavulanate.*amoxicillin",v=c("RxNorm","RxNorm Extension"))
+
+amox_clav %>% count(concept_class_id, sort=TRUE)
+
+multing <- amox_clav %>% filter(concept_class_id=="Multiple Ingredients")
+
+
+
+
+
+
 
 ```
 
