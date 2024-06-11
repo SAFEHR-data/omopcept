@@ -1,5 +1,8 @@
 
-# omopcept 0.0.5.6 2024-05-10 DEV version
+# omopcept 0.0.5.7 2024-06-11 DEV version
+
+
+# omopcept 0.0.5.6 2024-06-11
 
 * `omop_cdm_combine()` refactored to make all IDs unique that it didn't before
 * `omop_relations()` gets `names2avoid` arg
