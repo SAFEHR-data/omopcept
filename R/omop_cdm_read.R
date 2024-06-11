@@ -1,5 +1,6 @@
 #' read all omop tables from a folder containing parquet or csv files into a list
 #' advantage that you don't need to specify table names
+#' NOTE these omop_cdm* functions are for omop extracts rather than the concepts and may be best moved to another package
 #'
 #' @param path path of folder containing files
 #' @param lowercasenames whether to make table names lowercase, default TRUE

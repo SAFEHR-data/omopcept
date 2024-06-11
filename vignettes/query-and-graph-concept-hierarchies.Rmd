@@ -63,12 +63,14 @@ ajcc8 <- omop_names("AJCC/UICC 8th edition", exact=TRUE)
 
 ajcc_rel1 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=1)
 
+#TODO find a quicker example of getting more than one recurse level
+
 # getting recursive relations takes a few minutes
-ajcc_rel2 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=2)
+#ajcc_rel2 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=2)
 
 # plot is too big to display nicely in this vignette
 # but is auto saved in a nice to pdf
-omop_graph(ajcc_rel2, ggrlayout="tree", 
+omop_graph(ajcc_rel1, ggrlayout="tree", 
            legendshow = FALSE, saveplot = TRUE, 
            width = 150, nodetxtangle = 45)
 

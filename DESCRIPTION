@@ -23,8 +23,7 @@ Imports:
     stringr,
     ggplot2,
     readr,
-    lubridate,
-    here
+    lubridate
 Suggests:
     igraph,
     tidygraph,
@@ -33,6 +32,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     fs,
-    purrr
+    purrr,
+    here
 VignetteBuilder: knitr
 Config/testthat/edition: 3

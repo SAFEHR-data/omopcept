@@ -9,7 +9,9 @@
 #' #example1 should pass, because names are joined from vocab
 #' data.frame(concept_id=c(3571338L,4002075L)) |> omop_join_name() |> omop_check_names()
 #' #example2 with an incorrect name
-#' tst <- data.frame(concept_id=c(4052465L,4052465L),concept_name=c("test wrong name","Ex-pipe smoker")) |> omop_check_names()
+#' tst <- data.frame(concept_id=c(4052465L,4052465L),
+#'                   concept_name=c("test wrong name","Ex-pipe smoker")) |>
+#'            omop_check_names()
 omop_check_names <- function(df,
                              id_col_name = "concept_id",
                              name_col_name = "concept_name") {

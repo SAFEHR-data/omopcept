@@ -1,4 +1,5 @@
 #' read single omop table from parquet or csv file
+#' NOTE these omop_cdm* functions are for omop extracts rather than the concepts and may be best moved to another package
 #'
 #' @param tablename name of omop table e.g. "person"
 #' @param path file path

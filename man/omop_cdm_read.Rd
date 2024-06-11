@@ -3,7 +3,8 @@
 \name{omop_cdm_read}
 \alias{omop_cdm_read}
 \title{read all omop tables from a folder containing parquet or csv files into a list
-advantage that you don't need to specify table names}
+advantage that you don't need to specify table names
+NOTE these omop_cdm* functions are for omop extracts rather than the concepts and may be best moved to another package}
 \usage{
 omop_cdm_read(path, filetype = "parquet", lowercasenames = TRUE)
 }
@@ -20,6 +21,7 @@ a list containing omop tables
 \description{
 read all omop tables from a folder containing parquet or csv files into a list
 advantage that you don't need to specify table names
+NOTE these omop_cdm* functions are for omop extracts rather than the concepts and may be best moved to another package
 }
 \examples{
 #omop = omop_cdm_read(path,filetype="csv")

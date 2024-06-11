@@ -63,7 +63,7 @@ omop_relations <- function(c_id=NULL,
   df1 <- df1 |>
     left_join(concept_attributes, by = dplyr::join_by(concept_id_2 == concept_id)) |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    #don't need because joined above with attributes
+    #joining on names to concept ids, could make it optional & not do in recursive
     omop_join_name_all() |>
     #move name column next to id to make output more readable
     #dplyr::relocate(concept_name_2, .after=concept_id_1) |>
