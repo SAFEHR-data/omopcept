@@ -51,10 +51,13 @@ omop_cdm_combine <- function(cdm1, cdm2,
 
   if (make_ids_unique)
   {
-    # find all primary & foreign key columns (I think named ‘*_id’ but not ‘*_concept_id’)
-    # multiply by 10 and add 1 for extract1 & 2 for extract2 (care_site_id assuming just one care_site per extraction)
+    # find all primary & foreign key columns (named ‘*_id’ but not ‘*_concept_id’)
+    # multiply by 10 and add 1 for extract1 & 2 for extract2
 
     uniqueify_ids <- function(x, cdmnum) {
+
+      #to keep a record
+      changed_fields <- NULL
 
       for (i in seq_along(x)) {
         for (j in seq_along(x[[i]])) {
@@ -66,9 +69,15 @@ omop_cdm_combine <- function(cdm1, cdm2,
               col_name != "care_site_id") {
 
             x[[i]][[j]] <- as.integer(x[[i]][[j]] *10 + cdmnum)
+
+            changed_fields <- paste0(changed_fields," ",
+                                     names(x)[i],"$",col_name)
           }
         }
       }
+
+      message("uniquefied columns : ", changed_fields)
+
       return(x)
     }
 
