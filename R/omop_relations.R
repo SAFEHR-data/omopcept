@@ -9,6 +9,7 @@
 #' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
 #' @param itself whether to include relations to concept itself, default=FALSE
 #' @param names2avoid concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL
+#' @param join_names whether to join concept names onto ids, default TRUE, FALSE used by recursive to speed up
 #' @param messages whether to print info messages, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
@@ -28,6 +29,7 @@ omop_relations <- function(c_id=NULL,
                                 r_ids=NULL,
                                 itself=FALSE,
                                 names2avoid=c("SNOMED CT core","Defined","Primitive"),
+                                join_names = TRUE,
                                 messages=TRUE) {
 
 
@@ -36,7 +38,7 @@ omop_relations <- function(c_id=NULL,
   c_id <- res$c_id[1]
   name1 <- res$name1[1]
 
-  # add default avoidance of generic concepts that have huge num relations
+  # default avoidance of generic concepts that have huge num relations
   if (name1 %in% names2avoid)
   {
     if (messages) message("not returning relations of ",name1," because lots of, you can change by setting names2avoid to NULL or subset of default")
@@ -62,15 +64,21 @@ omop_relations <- function(c_id=NULL,
 
   df1 <- df1 |>
     left_join(concept_attributes, by = dplyr::join_by(concept_id_2 == concept_id)) |>
-    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
-    #joining on names to concept ids, could make it optional & not do in recursive
-    omop_join_name_all() |>
-    #move name column next to id to make output more readable
-    #dplyr::relocate(concept_name_2, .after=concept_id_1) |>
-    collect()
+    omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
+
+  #joining names to concept ids, could make it optional & not do in recursive
+  if (join_names)
+  {
+    df1 <- df1 |>  omop_join_name_all()
+  }
 
   # default option remove relations to itself
   if (itself==FALSE) df1 <- df1 |> filter(concept_id_1 != concept_id_2)
+
+  #old move name column next to id to make more readable
+  #not needed now with way names are joined
+  #dplyr::relocate(concept_name_2, .after=concept_id_1) |>
+  df1 <- df1 |> collect()
 
   if (messages) message("returning ",nrow(df1)," concepts")
 

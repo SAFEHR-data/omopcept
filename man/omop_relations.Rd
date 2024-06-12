@@ -15,6 +15,7 @@ omop_relations(
   r_ids = NULL,
   itself = FALSE,
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
+  join_names = TRUE,
   messages = TRUE
 )
 
@@ -28,6 +29,7 @@ orels(
   r_ids = NULL,
   itself = FALSE,
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
+  join_names = TRUE,
   messages = TRUE
 )
 }
@@ -49,6 +51,8 @@ orels(
 \item{itself}{whether to include relations to concept itself, default=FALSE}
 
 \item{names2avoid}{concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL}
+
+\item{join_names}{whether to join concept names onto ids, default TRUE, FALSE used by recursive to speed up}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }

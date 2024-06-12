@@ -68,7 +68,8 @@ omop_relations_recursive <- function(c_id=NULL,
                                r_ids=r_ids,
                                itself=itself,
                                names2avoid=names2avoid,
-                               messages=messages)
+                               messages=messages,
+                               join_names=FALSE)
 
       dfprev <- bind_rows(dfprev,dfprev1)
     }
@@ -76,6 +77,9 @@ omop_relations_recursive <- function(c_id=NULL,
     dfall <- bind_rows(dfall,dfprev)
 
   }
+
+  #join names onto ids only at end to make faster
+  dfall <- dfall |> omop_join_name_all()
 
   return(dfall)
 }
