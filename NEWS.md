@@ -1,6 +1,10 @@
 
-# omopcept 0.0.5.7 2024-06-11 DEV version
+# omopcept 0.0.5.8 2024-06-12 DEV version
 
+
+# omopcept 0.0.5.7 2024-06-12
+
+* `omop_cdm_combine()` outputs msg of uniquefied fields
 
 # omopcept 0.0.5.6 2024-06-11
 
