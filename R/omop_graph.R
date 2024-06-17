@@ -125,14 +125,15 @@ omop_graph <- function(dfin,
 
   #challenge to make sure get all nodes from columns from & to
   #to avoid Invalid (negative) vertex id
+  #2024-06-17 do I want to comment out the 2 selects to leave in any columns that may be needed for aesthetics ?
   nodesfrom <- dfin2 |>
-    select(from,vocabulary_id,domain_id) |>
+    #select(from,vocabulary_id,domain_id) |>
     group_by(from) |>
     slice_head(n=1) |>
     rename(name=from)
 
   nodesto <- dfin2 |>
-    select(to,vocabulary_id,domain_id) |>
+    #select(to,vocabulary_id,domain_id) |>
     group_by(to) |>
     slice_head(n=1) |>
     rename(name=to)

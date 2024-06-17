@@ -64,6 +64,39 @@ omop_graph(neor2all, plot=FALSE, filenameroot = "neoplasm2",width=80, height=110
 
 omop_graph(neor2all, plot=FALSE, filenameroot = "neoplasm2",width=80, height=110, node_colour_var = "vocabulary_id")
 
+#2024-06-17 trying vis for OHDSI global 2024
+neop_snomed <- omop_names("Malignant neoplasm",s="S",v="SNOMED",exact=TRUE)
+
+neop_snomed_r1  <- omop_relations_recursive(neop_snomed$concept_id, num_recurse = 1)
+
+neop_snomed_r1 |> count(relationship_id, sort=TRUE)
+#  1 Asso morph of         1436
+#  2 Has inherent           404
+#  3 Component of           129
+#  4 Subsumes               122
+#  5 Relative to of          83
+#  6 Dir morph of            18
+#  7 Mapped from              6
+#  8 Concept poss_eq from     2
+#  9 Concept replaces         1
+# 10 Has Module               1
+# 11 Has status               1
+# 12 Is a                     1
+# 13 Proc morph of            1
+
+#test colouring by other var
+omop_graph(neop_snomed_r1, nodecolourvar="relationship_id")
+#TODO sort problem here 
+# Error in `ggraph::geom_node_point()` at omopcept/R/omop_graph.R:152:2:
+# ! Problem while computing aesthetics.
+# ℹ Error occurred in the 2nd layer.
+# Caused by error in `.data[["relationship_id"]]`:
+# ! Column `relationship_id` not found in `.data`.
+
+
+#TODO maybe try some vis with mapped from, to. OHDSI people interested in that
+
+neop_snomed_r2  <- omop_relations_recursive(neop_snomed$concept_id, num_recurse = 2)
 
 music <- omop_names("music")
 #returning 120 concepts
