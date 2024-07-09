@@ -51,6 +51,7 @@ omop_relations <- function(c_id=NULL,
 
   if (c_id != "none") df1 <- df1 |>
     filter(concept_id_1 == c_id) #TODO check whether I want to add concept_id_2 to this filter
+    #TODO add %in% c_id to vectorise
 
   if (!is.null(r_ids)) {
     df1 <- df1 |>
