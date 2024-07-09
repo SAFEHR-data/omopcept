@@ -68,7 +68,7 @@ omop_cdm_combine <- function(cdm1, cdm2,
               !grepl("concept_id$", col_name) &
               col_name != "care_site_id") {
 
-            x[[i]][[j]] <- as.integer(x[[i]][[j]] *10 + cdmnum)
+            x[[i]][[j]] <- as.integer(x[[i]][[j]]) *10 + cdmnum
 
             changed_fields <- paste0(changed_fields," ",
                                      names(x)[i],"$",col_name)
