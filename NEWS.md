@@ -1,6 +1,11 @@
 
-# omopcept 0.0.5.8 2024-06-12 DEV version
+# omopcept 0.0.5.9 2024-07-09 DEV version
 
+
+
+# omopcept 0.0.5.8 2024-07-09
+
+* bugfix in `omop_cdm_combine()`, defend against 'non-numeric argument to binary operator'
 
 # omopcept 0.0.5.7 2024-06-12
 
