@@ -692,7 +692,7 @@ m06_rel2 <- omop_relations_recursive(m06$concept_id, num_recurse = 2)
 
 omop_graph(m06_rel2, ggrlayout = "tree")
 
-#to do regex &, need to serach both both one after other & other way around
+#to do regex &, need to search both one after other & other way around
 amox_clav <- omop_names("amoxicillin.*clavulanate|clavulanate.*amoxicillin")
 
 amox_clav <- omop_names("amoxicillin.*clavulanate|clavulanate.*amoxicillin",v=c("RxNorm","RxNorm Extension"))
@@ -701,9 +701,14 @@ amox_clav %>% count(concept_class_id, sort=TRUE)
 
 multing <- amox_clav %>% filter(concept_class_id=="Multiple Ingredients")
 
+# 2024-07-05
+# new approach finding a generic concept & just searching down (Subsumes)
+# allows a representative tree map to be produced
 
+neor2 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2,r="Subsumes")
 
-
+#this is pretty good
+omop_graph(neor2, plot=FALSE, filenameroot = "neoplasm_subsumes2",width=80, height=110)
 
 
 
@@ -735,7 +740,6 @@ dfin <- dfme3 |>
   slice_head(n=500) |> 
   ungroup()
 
-#TODO I'd like to get dlbcl or another concept at centre ??
 
 # dfin <- dfsnoblood
 # dfin <- dfsnobloodgroup
@@ -799,15 +803,7 @@ ggsave(ggr,filename="ox-s2-pset1-05m-ns.pdf",width=50,height=50,units="cm",limit
 ggsave(ggr,filename="dlbcl-s1-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)    
    
 ggsave(ggr,filename="dlbcl-s3-d7-500-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
-# ggsave(ggr,filename="dlbcl-s1-d7-500-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
 
-# ggsave(ggr,filename="snoblood-s1-d7-pdark2-m1-5-ea03.pdf",width=150,height=150,units="cm",limitsize = FALSE)
-
-# ggsave(ggr,filename="snobloodgroup-s3-d7-pdark2-m3-ea03.pdf",width=300,height=300,units="cm",limitsize = FALSE)
-
-#ggsave(ggr,filename="snobloodgroup-pset1-m2-ea03.pdf",width=200,height=200,units="cm",limitsize = FALSE)  
-  
-# ggsave(ggr,filename="loinc-bloodgroup-pset1-m03-ea03-ta09.pdf",width=30,height=30,units="cm",limitsize = FALSE)
 
 ```
 
