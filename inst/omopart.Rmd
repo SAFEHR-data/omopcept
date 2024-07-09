@@ -701,11 +701,23 @@ amox_clav %>% count(concept_class_id, sort=TRUE)
 
 multing <- amox_clav %>% filter(concept_class_id=="Multiple Ingredients")
 
+# 2024-07-03
+# looking at relationship_ids with John
+# every relationship_id has an equivalent going in other direction
+# and they have identical num rows, 
+# so sorting on the count puts them next to each other
+freq_r <- omop_concept_relationship() |> count(relationship_id, sort=TRUE) |>  collect()
+
+
 # 2024-07-05
 # new approach finding a generic concept & just searching down (Subsumes)
 # allows a representative tree map to be produced
 
 neor2 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2,r="Subsumes")
+
+omop_graph()
+
+
 
 #this is pretty good
 omop_graph(neor2, plot=FALSE, filenameroot = "neoplasm_subsumes2",width=80, height=110)
