@@ -108,6 +108,7 @@ omop_cdm_combine <- function(cdm1, cdm2,
 
   cdmboth <- list()
 
+  #if a table is in both then bind_rows, otherwise use the one table
   for (name in all_names) {
     if (name %in% names(cdm1) && name %in% names(cdm2)) {
       cdmboth[[name]] <- bind_rows(cdm1[[name]], cdm2[[name]])
