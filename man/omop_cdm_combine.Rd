@@ -49,5 +49,12 @@ cdm2 <- list(person=data.frame(person_id=pids2,age=91:92,care_site_id=2L),
             care_site=data.frame(care_site_id=1L, care_site_name="hospital2"),
             death=data.frame(person_id=pids2,d=c(0,1)))
 cdm3 <- omop_cdm_combine(cdm1, cdm2)
-
+#an example testing coping with different column classes
+#it shouldn't really happen due to omop spec
+#but does sometimes e.g. when csvs have been read in wrong
+cdmint <- list(measurement=data.frame(person_id=pids1,meas=5:7))
+cdmtime <- list(measurement=data.frame(person_id=pids1,meas=strptime("12:30:00", "\%H:\%M:\%S")))
+cdmna <- list(measurement=data.frame(person_id=pids1,meas=NA))
+cdmchar <- list(measurement=data.frame(person_id=pids1,meas="A"))
+cd3 <- omop_cdm_combine(cdmtime,cdmchar)
 }

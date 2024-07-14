@@ -27,7 +27,14 @@
 #'             care_site=data.frame(care_site_id=1L, care_site_name="hospital2"),
 #'             death=data.frame(person_id=pids2,d=c(0,1)))
 #' cdm3 <- omop_cdm_combine(cdm1, cdm2)
-#'
+#' #an example testing coping with different column classes
+#' #it shouldn't really happen due to omop spec
+#' #but does sometimes e.g. when csvs have been read in wrong
+#' cdmint <- list(measurement=data.frame(person_id=pids1,meas=5:7))
+#' cdmtime <- list(measurement=data.frame(person_id=pids1,meas=strptime("12:30:00", "%H:%M:%S")))
+#' cdmna <- list(measurement=data.frame(person_id=pids1,meas=NA))
+#' cdmchar <- list(measurement=data.frame(person_id=pids1,meas="A"))
+#' cd3 <- omop_cdm_combine(cdmtime,cdmchar)
 omop_cdm_combine <- function(cdm1, cdm2,
                              make_care_site_id_unique = TRUE,
                              make_ids_unique = TRUE,
@@ -111,6 +118,13 @@ omop_cdm_combine <- function(cdm1, cdm2,
   #if a table is in both then bind_rows, otherwise use the one table
   for (name in all_names) {
     if (name %in% names(cdm1) && name %in% names(cdm2)) {
+
+      #could check whether columns are the same class
+      #but cdm1[[name]] is the whole table ...
+      #could convert all columns to char but seems excessive
+      #maybe instead improve reading in of omop extracts
+      #that should have standardised class
+
       cdmboth[[name]] <- bind_rows(cdm1[[name]], cdm2[[name]])
     }
     else if (name %in% names(cdm1)) {
