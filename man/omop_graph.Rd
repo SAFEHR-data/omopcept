@@ -28,6 +28,7 @@ omop_graph(
   filetype = "pdf",
   filenameroot = "omop_graph",
   filenamecustom = NULL,
+  filepath = file.path("..//omopcept-plots"),
   width = 50,
   height = 30,
   units = "cm",
@@ -82,6 +83,8 @@ omop_graph(
 
 \item{filenamecustom}{optional filename for plot, otherwise default name is created}
 
+\item{filepath}{where to save image file, default=file.path("..//omopcept-plots")}
+
 \item{width}{plot width, default=50}
 
 \item{height}{plot height, default=30}
@@ -104,7 +107,5 @@ graph omop hierarchy
 accepts output from either omop_ancestors(), omop_descendants() or omop_relations
 }
 \examples{
-#pressure <- omop_names("^Blood pressure$",standard='S')
-#press_descend <- omop_descendants(pressure$concept_id[1])
-#omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
+#TODO make a quick example
 }

@@ -29,6 +29,7 @@
 #' @param filetype output image file, default='pdf'
 #' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
 #' @param filenamecustom optional filename for plot, otherwise default name is created
+#' @param filepath where to save image file, default=file.path("..//omopcept-plots")
 #'
 #' @param width plot width, default=50
 #' @param height plot height, default=30
@@ -43,9 +44,10 @@
 #' @return ggraph object
 #' @export
 #' @examples
-#' #pressure <- omop_names("^Blood pressure$",standard='S')
-#' #press_descend <- omop_descendants(pressure$concept_id[1])
-#' #omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
+#' #TODO make a quick example
+# pressure <- omop_names("^Blood pressure$",standard='S')
+# press_descend <- omop_descendants(pressure$concept_id[1])
+# omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
 omop_graph <- function(dfin,
                        ggrlayout='graphopt',
                        palettebrewer='Set1',
@@ -73,6 +75,7 @@ omop_graph <- function(dfin,
                        filetype = 'pdf',
                        filenameroot = 'omop_graph',
                        filenamecustom = NULL,
+                       filepath = file.path("..//omopcept-plots"),
 
                        width=50,
                        height=30,
@@ -221,7 +224,14 @@ omop_graph <- function(dfin,
                          "-",width,"x",height,units,
                          ".",filetype)
 
-    ggsave(ggr, filename=filename, width=width, height=height, units=units, limitsize=FALSE)
+    #if plot folder doesn't exist create it
+    #could be done with ggsave::create.dir=TRUE but only in ggplot from 2024
+    if (!dir.exists(filepath))
+        dir.create(filepath, recursive = TRUE)
+
+    ggsave(ggr, filename=here(filepath,filename),
+           width=width, height=height, units=units, limitsize=FALSE)
+           #create.dir=TRUE) #beware create.dir needs ggplot v >3.50
 
 
     if (messages) message("saved graph file as ", filename)
