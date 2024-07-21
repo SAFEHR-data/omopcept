@@ -35,6 +35,7 @@
 #' @param height plot height, default=30
 #' @param units plot size units default='cm'
 #' @param titlecolour colour for main title, default='darkred'
+#' @param backcolour colour for background
 #'
 #' @param graphtitle optional title for graph, default NULL for none
 #' @param graphsubtitle optional subtitle for graph, default NULL for none
@@ -81,6 +82,7 @@ omop_graph <- function(dfin,
                        height=30,
                        units='cm',
                        titlecolour='darkred',
+                       backcolour=NULL,
 
                        graphtitle="omopcept graph",
                        graphsubtitle=NULL,
@@ -168,7 +170,8 @@ omop_graph <- function(dfin,
     labs(title=graphtitle,subtitle=graphsubtitle) +
     #this sets bg to white & other elements for good graphs
     #theme_graph() + gives font error
-    theme(panel.background=element_blank(),
+    theme(#panel.background=element_blank(),
+          panel.background=element_rect(fill=backcolour, colour=backcolour, size=0.5),
           plot.background=element_blank(),
           legend.position = legendpos,
           legend.direction = legenddir,

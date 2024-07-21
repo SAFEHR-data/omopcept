@@ -33,6 +33,7 @@ omop_graph(
   height = 30,
   units = "cm",
   titlecolour = "darkred",
+  backcolour = NULL,
   graphtitle = "omopcept graph",
   graphsubtitle = NULL,
   messages = TRUE
@@ -92,6 +93,8 @@ omop_graph(
 \item{units}{plot size units default='cm'}
 
 \item{titlecolour}{colour for main title, default='darkred'}
+
+\item{backcolour}{colour for background}
 
 \item{graphtitle}{optional title for graph, default NULL for none}
 
