@@ -16,6 +16,8 @@
 #'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
+#' @param nodetxtnudgey nudge_y text relative to points, default 0.3
+#' @param nodetxtnudgex nudge_x text relative to points, default 0
 #' @param legendtxtsize text size for legend, default=20
 #' @param titletxtsize text size for title, default=20
 #'
@@ -63,6 +65,8 @@ omop_graph <- function(dfin,
 
                        nodetxtangle=0,
                        nodetxtsize=9,
+                       nodetxtnudgey=0.3,
+                       nodetxtnudgex=0,
                        legendtxtsize=18,
                        titletxtsize=18,
 
@@ -161,9 +165,8 @@ omop_graph <- function(dfin,
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
     #geom_node_point(aes(size=connections)) + #colour=domain_id,
-    ggraph::geom_node_point(aes(size=connections, colour=.data[[nodecolourvar]])
-    #geom_node_point(aes(size=connections, colour=domain_id)
-                    ,alpha=nodealpha,
+    ggraph::geom_node_point(aes(size=connections, colour=.data[[nodecolourvar]]),
+                    alpha=nodealpha,
                     show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     scale_fill_brewer(palette = palettebrewer) +
@@ -187,16 +190,14 @@ omop_graph <- function(dfin,
           plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
     ggraph::geom_node_text(aes(label=name,
-                       # colour=domain_id,
-                       # size=connections*4,
-                       # disabling node text size
-                       size=nodetxtsize,
-                       colour=.data[[textcolourvar]]),
+                               size=nodetxtsize,
+                               colour=.data[[textcolourvar]]),
                    angle=nodetxtangle,
                    show.legend=FALSE,
                    repel=TRUE,
                    check_overlap=FALSE,
-                   nudge_y=0.3, #move labels above points
+                   nudge_y=nodetxtnudgey, #0.3, #move labels above points
+                   nudge_x=nodetxtnudgex,
                    alpha=1)
 
   #if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)

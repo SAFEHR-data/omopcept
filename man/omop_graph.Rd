@@ -17,6 +17,8 @@ omop_graph(
   edgewidth = 0.1,
   nodetxtangle = 0,
   nodetxtsize = 9,
+  nodetxtnudgey = 0.3,
+  nodetxtnudgex = 0,
   legendtxtsize = 18,
   titletxtsize = 18,
   legendshow = TRUE,
@@ -61,6 +63,10 @@ omop_graph(
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 
 \item{nodetxtsize}{node text size, default=9}
+
+\item{nodetxtnudgey}{nudge_y text relative to points, default 0.3}
+
+\item{nodetxtnudgex}{nudge_x text relative to points, default 0}
 
 \item{legendtxtsize}{text size for legend, default=20}
 
