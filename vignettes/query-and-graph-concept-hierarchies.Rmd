@@ -70,9 +70,9 @@ ajcc_rel1 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=1)
 
 # plot is too big to display nicely in this vignette
 # but is auto saved in a nice to pdf
-omop_graph(ajcc_rel1, ggrlayout="tree", 
-           legendshow = FALSE, saveplot = TRUE, 
-           width = 150, nodetxtangle = 45)
+# omop_graph(ajcc_rel1, ggrlayout="tree", 
+#            legendshow = FALSE, saveplot = TRUE, 
+#            width = 150, nodetxtangle = 45)
 
 ```
 

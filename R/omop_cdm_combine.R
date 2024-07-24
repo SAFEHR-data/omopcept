@@ -34,7 +34,8 @@
 #' cdmtime <- list(measurement=data.frame(person_id=pids1,meas=strptime("12:30:00", "%H:%M:%S")))
 #' cdmna <- list(measurement=data.frame(person_id=pids1,meas=NA))
 #' cdmchar <- list(measurement=data.frame(person_id=pids1,meas="A"))
-#' cd3 <- omop_cdm_combine(cdmtime,cdmchar)
+#' #TODO this causes an error because I couldn't work an easy way to fix
+#' #cd3 <- omop_cdm_combine(cdmtime,cdmchar)
 omop_cdm_combine <- function(cdm1, cdm2,
                              make_care_site_id_unique = TRUE,
                              make_ids_unique = TRUE,

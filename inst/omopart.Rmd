@@ -715,14 +715,273 @@ freq_r <- omop_concept_relationship() |> count(relationship_id, sort=TRUE) |>  c
 
 neor2 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2,r="Subsumes")
 
-omop_graph()
-
-
 
 #this is pretty good
 omop_graph(neor2, plot=FALSE, filenameroot = "neoplasm_subsumes2",width=80, height=110)
 
+# 2024-07-15
+pleasure <- omop_names("pleasure")
+returning 36 concepts
+pain <- omop_names("pain")
+returning 9278 concepts
+painstandard <- omop_names("pain",s="S")
+returning 5041 concepts
+#too many
+painstandard |> count(domain_id,sort=TRUE)
+ 1 Drug          2668
+ 2 Condition      967
+ 3 Observation    929
+ 4 Meas Value     207
+ 5 Measurement    152
+ 6 Procedure       49
+ 7 Note            37
+ 8 Device          21
 
+ 
+# BLACK & WHITE 
+ 
+black <- omop_names("black")
+#returning 19680 concepts
+white <- omop_names("white")
+#returning 8793 concepts
+
+# filter out concepts with long names
+#613
+black30 <- black |> filter(stringr::str_length(concept_name) <= 30)
+#808
+white30 <- white |> filter(stringr::str_length(concept_name) <= 30)
+
+#285
+black20 <- black |> filter(stringr::str_length(concept_name) <= 20)
+#330
+white20 <- white |> filter(stringr::str_length(concept_name) <= 20)
+ 	
+#relations1 of all concepts
+#black20r1test <- black20$concept_id[1:3] |> omop_relations_multiple()
+
+black20r1 <- black20$concept_id |> omop_relations_multiple() #1526
+white20r1 <- white20$concept_id |> omop_relations_multiple() #2821
+
+#removing some boring concepts, e.g. pharma companies
+black20r1a <- black20r1 |> filter(!str_detect(concept_name_2,"Blackmores") & !str_detect(concept_name_1,"Blackmores")) #1421 
+
+white20r1a <- white20r1 |> filter(!str_detect(concept_name_2,"White Chemists") & !str_detect(concept_name_1,"White Chemists")) #1804  
+
+filter_rship_concept_namelengths <- function(df, namelength=100)
+{
+  df |> filter(stringr::str_length(concept_name_1) <= namelength &
+               stringr::str_length(concept_name_2) <= namelength)
+}
+
+black20r1b <- black20r1a |> 
+  filter_rship_concept_namelengths(120) |>  #1305
+  mutate(bw="black")
+white20r1b <- white20r1a |> 
+  filter_rship_concept_namelengths(120) |>  #1748
+  mutate(bw="white")
+
+bwb <- bind_rows(black20r1b,white20r1b) #3053
+
+write_csv(black20r1,file=here("..","omopcept-plots","data","black20r1.csv"))
+write_csv(white20r1,file=here("..","omopcept-plots","data","white20r1.csv"))
+
+omop_graph(white20r1a, filenameroot="white20r1a", width=150, height=150)
+omop_graph(black20r1, filenameroot="black20r1", width=150, height=150)
+
+omop_graph(bwb, filenameroot="bwb", width=150, height=150)
+omop_graph(bwb, filenameroot="bwb", width=150, height=150,textcolourvar ="bw",nodecolourvar="bw")
+
+# omop_graph, have text (& symbols ?) in black & white
+# try a grey background so both texts can show up
+#theme(panel.background=element_rect(fill="lightgray", colour="lightgray", size=0.5)
+
+
+# TODO bigger snomed accident hierarchy
+# + can I pair accidents with something about treatment
+# maybe similarly
+# accidents: recursive relations of a single concept
+# treatment: snomed procedure
+# Emergency procedure [25 children]
+# Procedure on wound [105 children]
+# bandages, plaster, stitches ...
+# title demand v supply :-)
+
+#note there are SNOMED concepts that start [X] maybe they need to be filtered out
+#I should offer option to filter & maybe doso by default
+#That’s a historical artefact. In the Read vocabulary, [X] meant concept derived from ICD-10. When SNOMED-RT and Read were merged, these were all poured into the new SNOMED-CT, and then later sequestered into the SNOMED UK-Version (which we implemented because of the Read codes in CPRD and THIN). SNOMED is phasing them out. Sooner or later they will be gone entirely.
+# Same is true for [V] and [Q] (observations and qualifiers from ICD-9), [SO] (anatomical sites from OPCS) and [M] (morphology terms from ICD-O).
+# Don’t use them, just ignore them.
+#https://forums.ohdsi.org/t/what-does-x-mean-in-concept-name/4531/4
+
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
+acc <- omop_names("Accident", exact=TRUE, standard="S", v_ids="SNOMED")
+
+sharpr2 <- omop_relations_recursive(sharp$concept_id, 
+                                      r_ids=c('Is a','Subsumes'), 
+                                      num_recurse=2) 
+sharpr_upr5 <- omop_relations_recursive(sharp$concept_id, 
+                                      r_ids=c('Is a'), 
+                                      num_recurse=5) 
+#this takes many hours 
+#(note would be interesting to see if just filtering relationship table 
+# for str_detect("accident") has similar result & would be much quicker
+# could also check on this which rows wouldn't be caught by that)
+#4059 rows
+acc_downr7r <- omop_relations_recursive(acc$concept_id, 
+                                      r_ids=c('Subsumes'), 
+                                      num_recurse=7) 
+write_csv(acc_downr7r,file=here("..","omopcept-plots","data","acc_downr7r.csv"))
+
+filter_rship_names <- function(df, stringremove)
+{
+  df |> filter(!stringr::str_detect(concept_name_1,stringremove) &
+               !stringr::str_detect(concept_name_2,stringremove) )
+}
+
+#3158
+acc_downr7rb <- acc_downr7r |> filter_rship_names("[X]")
+
+#A0 84x119cm
+omop_graph(acc_downr7, filenameroot="acc_downr7", width=84, height=119)
+
+omop_graph(acc_downr7b, filenameroot="acc_downr7b", width=150, height=150) #,textcolourvar ="bw",nodecolourvar="bw")
+
+##########################
+## GOOD, Getting there !!!
+omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
+           width=170, height=170, 
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "YlOrRd",
+           legendshow = FALSE,
+           graphtitle = "Be careful !",
+           titletxtsize = 200,
+           titlecolour = "darkred")
+
+## Oooo this is nice with a black background
+omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
+           width=170, height=170, 
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "YlOrRd",
+           legendshow = FALSE,
+           graphtitle = "Be careful !",
+           titletxtsize = 200,
+           backcolour="black",
+           titlecolour = "darkred",
+           edgecolour="yellow",
+           nodetxtsize=11)
+#reversing palettedirection, increase nodetextsize
+omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
+           width=170, height=170, 
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "YlOrRd",
+           palettedirection = -1,
+           legendshow = FALSE,
+           graphtitle = "Be careful !",
+           titletxtsize = 200,
+           backcolour="black",
+           titlecolour = "darkred",
+           edgecolour="yellow",
+           nodetxtsize=12)
+#####***GOOD ONE*** edge red & reversed YlOrRed recurselevel
+#edgecolour red
+omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
+           width=180, height=180, 
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "YlOrRd",
+           palettedirection = -1,
+           legendshow = FALSE,
+           graphtitle = "Be careful !",
+           titletxtsize = 200,
+           backcolour="black",
+           titlecolour = "darkred",
+           edgecolour="red",
+           nodetxtsize=12)
+
+
+#TODO for the accident one I could use string search to classify & then colour by
+# car, bus, train, motorbike, bicycle, aircraft, boat, other
+
+acc_downr7c <- acc_downr7b |> 
+  mutate(
+    # Replace some, but not all, of the species
+    accident_type = case_when(
+      str_detect(concept_name_2,"aircraft") ~ "aircraft",
+      str_detect(concept_name_2,"boat") ~ "boat",      
+      str_detect(concept_name_2,"motor vehicle") ~ "car",
+      str_detect(concept_name_2,"bus") ~ "bus",
+      str_detect(concept_name_2,"train") ~ "train",
+      str_detect(concept_name_2,"cycle") ~ "cycle",
+      str_detect(concept_name_2,"burn") ~ "burn",      
+      .default = "other"
+    ))
+
+omop_graph(acc_downr7c, filenameroot="acc_downr7c",
+           textcolourvar="accident_type", 
+           nodecolourvar="accident_type",
+           nodetxtnudgey = 0.7,
+           width=150, height=150)
+
+procwound <- omop_names("Procedure on wound", exact=TRUE, standard="S", v_ids="SNOMED")
+
+procemerg <- omop_names("Emergency procedure", exact=TRUE, standard="S", v_ids="SNOMED")
+
+#373 (only) rows
+procwound_downr7 <- omop_relations_recursive(procwound$concept_id, 
+                                      r_ids=c('Subsumes'), 
+                                      num_recurse=7) 
+write_csv(procwound_downr7,file=here("..","omopcept-plots","data","procwound_downr7.csv"))
+
+
+procemerg_downr7b <- omop_relations_recursive(procemerg$concept_id,
+                                      r_ids=c('Subsumes'), 
+                                      num_recurse=7)
+
+write_csv(procemerg_downr7b,file=here("..","omopcept-plots","data","procemerg_downr7b.csv"))
+
+omop_graph(procwound_downr7, filenameroot="procwound_downr7", width=84, height=119)
+
+#trying to colour by recurse level
+omop_graph(procemerg_downr7b, filenameroot="procemerg_downr7b",
+           textcolourvar="recurse_level", 
+           nodecolourvar="recurse_level",
+           nodetxtnudgey = 0.7,
+           width=84, height=119)
+
+procs_downr7 <- bind_rows(procemerg_downr7, procwound_downr7)
+
+omop_graph(procs_downr7, filenameroot="procs_downr7", width=84, height=119)
+
+accprocs_downr7 <- bind_rows(acc_downr7b, procs_downr7)
+
+omop_graph(accprocs_downr7, filenameroot="accprocs_downr7",
+           #textcolourvar="accident_type", 
+           #nodecolourvar="accident_type",
+           #nodetxtnudgey = 0.7,
+           width=170, height=170)
+
+# BIRTH v DEATH
+#
+#Pregnancy, childbirth and puerperium finding [19 children]
+#Death [37 children]
+
+
+# cancer treatment
+
+ctr1 <- omop_relations_recursive("Cancer treatment", num_recurse = 1)
+ctr2 <- omop_relations_recursive("Cancer treatment", num_recurse = 2)
+#returning 13 concepts
+#but then doing 3 got massive
+
+#mooning
+glut <- omop_names("gluteus")
+returning 47 concepts
+glutr1 <- omop_relations_multiple(glut$concept_id)
+#248
+omop_graph(glutr1)
 
 ```
 

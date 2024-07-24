@@ -9,6 +9,7 @@ omop_graph(
   dfin,
   ggrlayout = "graphopt",
   palettebrewer = "Set1",
+  palettedirection = 1,
   edgecolour = "grey71",
   nodecolourvar = "domain_id",
   textcolourvar = NULL,
@@ -21,6 +22,7 @@ omop_graph(
   nodetxtnudgex = 0,
   legendtxtsize = 18,
   titletxtsize = 18,
+  titlejust = "centre",
   legendshow = TRUE,
   legendpos = "bottom",
   legenddir = "horizontal",
@@ -35,7 +37,7 @@ omop_graph(
   height = 30,
   units = "cm",
   titlecolour = "darkred",
-  backcolour = NULL,
+  backcolour = "white",
   graphtitle = "omopcept graph",
   graphsubtitle = NULL,
   messages = TRUE
@@ -46,7 +48,9 @@ omop_graph(
 
 \item{ggrlayout}{ggraph layout, default = 'graphopt'}
 
-\item{palettebrewer}{colour brewer pallette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
+\item{palettebrewer}{colour brewer palette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
+
+\item{palettedirection}{palette direction, default=1, -1 for reversed}
 
 \item{edgecolour}{colour for lines joining nodes}
 
@@ -71,6 +75,8 @@ omop_graph(
 \item{legendtxtsize}{text size for legend, default=20}
 
 \item{titletxtsize}{text size for title, default=20}
+
+\item{titlejust}{title justification, "left","right", default "centre"}
 
 \item{legendshow}{whether to show legend, default TRUE}
 

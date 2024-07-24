@@ -1,5 +1,6 @@
 #' recursively extract omop concept relations of one passed - immediate relations with indication of relationship
 #'
+# TODO could add recurse_level column for colouring plots
 # TODO I could rename this to omop_relations() & rename that to omop_rel1() and not export it
 # num_recurse==1 is same as what omop_relations is currently so can just have that as default
 #' @param c_id single omop concept_id or exact concept_name to get relations of, default NULL returns all
@@ -13,6 +14,7 @@
 #' @param names2avoid concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL
 #' @param messages whether to print info messages, default=TRUE
 #' @param num_recurse number of recursions to search
+#' @param add_recurse_column whether to add column with recurse level, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
@@ -28,7 +30,8 @@ omop_relations_recursive <- function(c_id=NULL,
                                      itself=FALSE,
                                      names2avoid=c("SNOMED CT core","Defined","Primitive"),
                                      messages=TRUE,
-                                     num_recurse=1) {
+                                     num_recurse=1,
+                                     add_recurse_column=TRUE) {
 
 
   #checks c_id and gets name (ALL if c_id==NULL)
@@ -71,6 +74,10 @@ omop_relations_recursive <- function(c_id=NULL,
                                messages=messages,
                                join_names=FALSE)
 
+      if (add_recurse_column)
+        dfprev1 <- dfprev1 |> mutate(recurse_level=recurse)
+
+      #TODO could add recurse_level column for colouring plots
       dfprev <- bind_rows(dfprev,dfprev1)
     }
 
