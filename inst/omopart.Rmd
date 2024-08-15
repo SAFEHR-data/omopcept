@@ -846,8 +846,7 @@ omop_graph(acc_downr7, filenameroot="acc_downr7", width=84, height=119)
 
 omop_graph(acc_downr7b, filenameroot="acc_downr7b", width=150, height=150) #,textcolourvar ="bw",nodecolourvar="bw")
 
-##########################
-## GOOD, Getting there !!!
+## Getting there !!!
 omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
            width=170, height=170, 
            textcolourvar ="recurse_level",
@@ -885,9 +884,14 @@ omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
            titlecolour = "darkred",
            edgecolour="yellow",
            nodetxtsize=12)
+
+
+############################################################
 #####***GOOD ONE*** edge red & reversed YlOrRed recurselevel
 #edgecolour red
-omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
+caption <- "Shown here are the standard names, used by the NHS, for all accidents. They are all concepts with a numeric code defined in a terminology called SNOMED CT. Using standards like this makes patient care and research much more efficient. UCLH stores data like this and translates it to something called the OMOP Common Data Model to enable comparison between hospitals. Plot made by Andy South using R, ggplot2 & omopcept."
+
+omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse_caption",
            width=180, height=180, 
            textcolourvar ="recurse_level",
            nodecolourvar="recurse_level",
@@ -899,8 +903,11 @@ omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse",
            backcolour="black",
            titlecolour = "darkred",
            edgecolour="red",
-           nodetxtsize=12)
+           nodetxtsize=12,
+           caption=caption,
+           captiontxtsize=24)
 
+##end of good one
 
 #TODO for the accident one I could use string search to classify & then colour by
 # car, bus, train, motorbike, bicycle, aircraft, boat, other
@@ -963,6 +970,45 @@ omop_graph(accprocs_downr7, filenameroot="accprocs_downr7",
            #nodetxtnudgey = 0.7,
            width=170, height=170)
 
+# ANESTHESIA
+
+#1
+anes <- omop_names("Administration of anesthesia",exact=TRUE,v="SNOMED")
+
+anes_downr7 <- omop_relations_recursive(anes$concept_id,
+                                      r_ids=c('Subsumes'), 
+                                      num_recurse=7)
+
+write_csv(anes_downr7,file=here("..","omopcept-plots","data","anes_downr7.csv"))
+
+############################################################
+#####***GOOD ONE***
+caption <- "Standardised names for anesthesia procedures used in the NHS (concepts with a numeric code defined in SNOMED CT). Standards make patient care and research more efficient. \nUCLH stores data in SNOMED and translates it to another standard (the OMOP Common Data Model) to enable comparison between hospitals. Plot made by Andy South using R, ggplot2 & omopcept."
+
+#hack to try to avoid lightest colours
+#add a few rows with lower values
+anes_downr7b <- bind_rows(anes_downr7,data.frame(recurse_level=c(-1,0),concept_name_1="egg",concept_name_2="egg")) |> 
+  mutate(recurse_level = recurse_level+2)
+#anes_downr7b |> count(recurse_level)
+
+omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
+           width=84, height=119, 
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "Greens",
+           palettedirection = 1,
+           legendshow = FALSE,
+           graphtitle = "Rock-a-bye-Baby",
+           titletxtsize = 130,
+           backcolour="white",
+           titlecolour = "darkred",
+           edgecolour="burlywood",
+           nodetxtsize=18,
+           caption=caption,
+           captionjust="centre",
+           captiontxtsize=18)
+
+
 # BIRTH v DEATH
 #
 #Pregnancy, childbirth and puerperium finding [19 children]
@@ -982,6 +1028,54 @@ returning 47 concepts
 glutr1 <- omop_relations_multiple(glut$concept_id)
 #248
 omop_graph(glutr1)
+
+#looking for all antibiotics in dm+d for Tim & Alan
+
+#there is 'antibiotic' in snomed, but hierarchy poor prob because non-standard
+antibds <- omop_names("antibiotic",exact=TRUE,d="Drug",v="SNOMED")
+#1
+#7 concepts not much use
+antibds_r1 <- omop_relations_recursive(antibds$concept_id)
+
+#try dm+d direct
+antibdmd <- omop_names("antibiotic",v="dm+d")
+#24 concepts, nothing very useful
+
+#maybe see if can get generic from RXNorm Extension
+antibrxe <- omop_names("antibiotic",v="RXNorm extension")
+#179
+
+#amoxi in dm+d has single relation that is in RxNorm
+amovtm <- omop_names("Amoxicillin",cc="VTM")
+amovtm_r1 <- omop_relations_recursive(amovtm$concept_id)
+#amoxi in RxNorm has 1034 relations
+amovtm_r2 <- omop_relations_recursive(amovtm$concept_id,num_recurse = 2)
+amovtm_r2 |> count(relationship_id,sort=TRUE)
+
+#    relationship_id          n
+#  1 Has brand name         609
+#  2 RxNorm ing of          206
+#  3 Mapped from            136
+#  4 RxNorm - ATC sec up     44
+#  5 RxNorm - ATC sec lat    12
+#  6 RxNorm - ATC pr up       7
+#  7 RxNorm - Source eq       4
+#  8 Has form                 3
+#  9 Rx antineopl of          3
+# 10 Rx support med of        3
+# 11 Is a                     2
+# 12 RxNorm - ATC pr lat      2
+# 13 RxNorm - SNOMED eq       2
+# 14 Source - RxNorm eq       1
+# 15 Value mapped from        1
+
+amo_rx_isa <- amovtm_r2 |> filter(relationship_id=="Is a")
+amo_rx_isa |> select(concept_name_2,concept_class_id,domain_id,vocabulary_id)
+
+#   concept_name_2                        concept_class_id domain_id vocabulary_id
+# 1 WHO Essential Anti-infective Medicine Component Class  Drug      HemOnc       
+# 2 Penicillin                            Component Class  Drug      HemOnc   
+
 
 ```
 
