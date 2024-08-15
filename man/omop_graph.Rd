@@ -40,6 +40,10 @@ omop_graph(
   backcolour = "white",
   graphtitle = "omopcept graph",
   graphsubtitle = NULL,
+  caption = NULL,
+  captiontxtsize = 18,
+  captionjust = "left",
+  captioncolour = "black",
   messages = TRUE
 )
 }
@@ -111,6 +115,14 @@ omop_graph(
 \item{graphtitle}{optional title for graph, default NULL for none}
 
 \item{graphsubtitle}{optional subtitle for graph, default NULL for none}
+
+\item{caption}{optional text below plot, default=NULL}
+
+\item{captiontxtsize}{caption text size default=18,}
+
+\item{captionjust}{caption justification default="left",}
+
+\item{captioncolour}{caption text colour default="black",}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }

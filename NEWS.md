@@ -1,13 +1,13 @@
 
-# omopcept 0.0.6.0 2024-07-09 DEV version
+# omopcept 0.0.6.0 2024-07-24 DEV version
 
-
+* `omop_graph()` gets args `caption` `captionsize` `captionjust` `captioncolour`
 
 # omopcept 0.0.5.9 2024-07-24
 
 * `omop_graph()` gets args `palettedirection` `nodetxtnudgex` `nodetxtnudgey` `titlejust` `backcolour`
 
-* `omop_relations_recursive()` gets arg `add_recurse_column` to add a column with recurse_level that can be used to colour graphs
+* `omop_relations_recursive()` gets arg `add_recurse_column` to add a column with recurse_level that can be used to colour
 
 # omopcept 0.0.5.8 2024-07-09
 

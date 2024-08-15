@@ -44,6 +44,11 @@
 #' @param graphtitle optional title for graph, default NULL for none
 #' @param graphsubtitle optional subtitle for graph, default NULL for none
 #'
+#' @param caption optional text below plot, default=NULL
+#' @param captiontxtsize caption text size default=18,
+#' @param captionjust caption justification default="left",
+#' @param captioncolour caption text colour default="black",
+#'
 #' @param messages whether to print info messages, default=TRUE
 #'
 #' @return ggraph object
@@ -94,6 +99,10 @@ omop_graph <- function(dfin,
 
                        graphtitle="omopcept graph",
                        graphsubtitle=NULL,
+                       caption=NULL,
+                       captiontxtsize=18,
+                       captionjust="left",
+                       captioncolour="black",
                        messages=TRUE
                        ) {
 
@@ -111,12 +120,16 @@ omop_graph <- function(dfin,
   #set node & text colour same by default, but user can change
   if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
 
-  hjust <- dplyr::case_match(titlejust,
+  titlehjust <- dplyr::case_match(titlejust,
               c("centre","center") ~ 0.5,
               "left" ~ 0,
               "right" ~ 1,
               .default = 0)
-
+  captionhjust <- dplyr::case_match(captionjust,
+                                  c("centre","center") ~ 0.5,
+                                  "left" ~ 0,
+                                  "right" ~ 1,
+                                  .default = 0)
 
   # to detect input type from presence of specific column names
   # then create a table containing 2 columns named 'from' and 'to'
@@ -184,7 +197,8 @@ omop_graph <- function(dfin,
                     show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
     #geom_node_point(aes(size=connections,colour=connections)) +
     scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
-    labs(title=graphtitle,subtitle=graphsubtitle) +
+    labs(title=graphtitle,subtitle=graphsubtitle,
+         caption=caption) +
     theme(#panel.background=element_blank(),
           panel.background=element_rect(fill=backcolour, colour=backcolour, size=0.5),
           plot.background=element_blank(),
@@ -200,7 +214,10 @@ omop_graph <- function(dfin,
           #hjust=0.5 to make centred
           plot.title = element_text(size=titletxtsize,
                                colour=titlecolour,
-                               hjust=0.5),
+                               hjust=titlehjust),
+          plot.caption = element_text(size=captiontxtsize,
+                                      colour=captioncolour,
+                                      hjust=captionhjust),
           plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
     guides(colour = guide_legend(override.aes = list(size=20))) +
     ggraph::geom_node_text(aes(label=name,
