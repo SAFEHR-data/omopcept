@@ -46,7 +46,7 @@ relations <- omop_relations_recursive(sharp$concept_id,
 
 # nodetxtsize made small to make plot visible in vignette, default=9 fine outside
 omop_graph(relations, saveplot=FALSE, 
-           graphtitle=NULL, legendshow=FALSE, nodetxtsize=1)
+           graphtitle=NULL, legendshow=FALSE, nodetxtsize=1, textcolourvar="recurse_level")
 
 ```
 

@@ -226,7 +226,9 @@ data.frame(concept_id=(c(3571338L,3655355L)),
 
 ``` r
 
-relations <- omop_relations_recursive(4055049L, 
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
+
+relations <- omop_relations_recursive(sharp$concept_id, 
                                       r_ids=c('Is a','Subsumes'), 
                                       num_recurse=2) 
 
