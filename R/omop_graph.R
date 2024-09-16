@@ -152,8 +152,9 @@ omop_graph <- function(dfin,
 
     #RELATION
     dfin2 <- dfin |>
-      rename(from = concept_name_1,
-               to = concept_name_2)
+      #2024-09-16 changed order of these to resolve text colouring issue
+      rename(from = concept_name_2,
+               to = concept_name_1)
   }
 
   #challenge to make sure get all nodes from columns from & to

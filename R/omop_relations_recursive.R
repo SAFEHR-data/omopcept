@@ -36,7 +36,7 @@ omop_relations_recursive <- function(c_id=NULL,
 
   #checks c_id and gets name (ALL if c_id==NULL)
   res <- check_c_id(c_id)
-  c_id <- res$c_id[1]
+  c_id0 <- res$c_id[1]
   name1 <- res$name1[1]
 
   if (messages) message("recursively querying concept relations of: ",name1," - may take more than a few seconds")
@@ -49,10 +49,8 @@ omop_relations_recursive <- function(c_id=NULL,
     if (messages) message("recurse level ",recurse," of ",num_recurse)
 
     # get relations of each concept from the previous level
-    # TODO maybe avoid or filter at end duplicate concept_id_1, concept_id_2, relationship_id
-
     if (recurse == 1) {
-      prev_c_ids <- c_id
+      prev_c_ids <- c_id0
     } else {
       prev_c_ids <- unique(dfprev$concept_id_2)
     }
@@ -74,10 +72,33 @@ omop_relations_recursive <- function(c_id=NULL,
                                messages=messages,
                                join_names=FALSE)
 
+      #add recurse_level column that can be used in plot colouring
       if (add_recurse_column)
+      {
         dfprev1 <- dfprev1 |> mutate(recurse_level=recurse)
+        #need a relation to itself to get colouring right
+        #in some options standard one gets filtered elsewhere
+        #'Is' is a non standard relationship_id
+        if (recurse == 1)
+        {
+          r_to_itself <- dfprev1 |>
+            head(1) |>
+            mutate( concept_id_1=c_id0,
+                    concept_id_2=c_id0,
+                    relationship_id="Is",
+                    recurse_level=0)
 
-      #TODO could add recurse_level column for colouring plots
+            # data.frame(concept_id_1=c_id0,
+            #                    concept_id_2=c_id0,
+            #                    relationship_id="Is",
+            #                    recurse_level=0)
+          dfprev1 <- bind_rows(r_to_itself, dfprev1)
+          # dfprev1 <- dfprev1 |>
+          #   #duplicates first row
+          #   uncount(weights=c(2,rep(1,nrow(dfprev1)-1))) |>
+          #   mutate
+        }
+      }
       dfprev <- bind_rows(dfprev,dfprev1)
     }
 
