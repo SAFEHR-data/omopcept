@@ -230,7 +230,8 @@ relations <- omop_relations_recursive(4055049L,
                                       r_ids=c('Is a','Subsumes'), 
                                       num_recurse=2) 
 
-omop_graph(relations, saveplot=FALSE, graphtitle=NULL, legendshow=FALSE, nodetxtsize=5)
+omop_graph(relations, saveplot=FALSE, graphtitle=NULL, 
+           legendshow=FALSE, nodetxtsize=5, textcolourvar="recurse_level")
 ```
 
 <img src="man/figures/README-omop_graph-1.png" width="100%" />
