@@ -15,6 +15,8 @@
 #' @param edgealpha edge transparency, default 0.3, #ggraph uses underscore edge_alpha but would mess up my consistency
 #' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
 #'
+#' @param nodesize node size, default="connections", or set to numeric value
+#'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
 #' @param nodetxtnudgey nudge_y text relative to points, default 0.3
@@ -70,6 +72,8 @@ omop_graph <- function(dfin,
                        nodealpha = 0.8,
                        edgealpha = 0.3, #ggraph uses underscore adge_alpha but would mess up my consistency
                        edgewidth = 0.1,
+
+                       nodesize = "connections",
 
                        nodetxtangle=0,
                        nodetxtsize=9,
@@ -179,15 +183,19 @@ omop_graph <- function(dfin,
 
   graphin <- tidygraph::tbl_graph(nodes=nodes1, edges=edges1)
 
-  #sets node attribute of num_edges
-  igraph::V(graphin)$connections <- igraph::degree(graphin)
+  #sets node attribute of num_edges to allow node sizing
+  #or set nodesize to constant
+  #TODO allow nodesize to be set by a column in the data
+  if (nodesize=="connections")
+      igraph::V(graphin)$connections <- igraph::degree(graphin)
+  else
+      igraph::V(graphin)$connections <- nodesize
 
   ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
     ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
     #couldn't get colouring edges to work
     #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
     #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
-    #geom_node_point(aes(size=connections)) + #colour=domain_id,
     #as.factor gets colours to work if numeric
     ggraph::geom_node_point(aes(size=connections,
                                 #colour=.data[[nodecolourvar]]),
@@ -249,7 +257,8 @@ omop_graph <- function(dfin,
 
   if (saveplot)
   {
-    if (!is.null(filenamecustom)) filename <- filenamecustom
+    if (!is.null(filenamecustom))
+      filename <- filenamecustom
     else
       filename <- paste0(filenameroot,
                          "-",ggrlayout,
@@ -260,8 +269,9 @@ omop_graph <- function(dfin,
                          "-n",nodecolourvar,
                          "-b",backcolour,
                          "-e",edgecolour,
-                         "-",width,"x",height,units,
-                         ".",filetype)
+                         "-",width,"x",height,units)
+    #add extension
+    filename <- paste0(filename,".",filetype)
 
     #if plot folder doesn't exist create it
     #could be done with ggsave::create.dir=TRUE but only in ggplot from 2024

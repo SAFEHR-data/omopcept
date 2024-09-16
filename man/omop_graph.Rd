@@ -16,6 +16,7 @@ omop_graph(
   nodealpha = 0.8,
   edgealpha = 0.3,
   edgewidth = 0.1,
+  nodesize = "connections",
   nodetxtangle = 0,
   nodetxtsize = 9,
   nodetxtnudgey = 0.3,
@@ -67,6 +68,8 @@ omop_graph(
 \item{edgealpha}{edge transparency, default 0.3, #ggraph uses underscore edge_alpha but would mess up my consistency}
 
 \item{edgewidth}{edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency}
+
+\item{nodesize}{node size, default="connections", or set to numeric value}
 
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 

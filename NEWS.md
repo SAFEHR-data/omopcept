@@ -4,6 +4,7 @@
 * `omop_graph()` gets args `caption` `captionsize` `captionjust` `captioncolour`
 * repository moved from `andysouth` to `SAFEHR-data`
 * issue fixed in `omop_relations` & `omop_graph()` with colouring plots by `recurse_level`
+* `omop_grap()` gets `nodesize` arg
 
 # omopcept 0.0.5.9 2024-07-24
 
