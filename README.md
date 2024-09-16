@@ -265,6 +265,5 @@ ggplot(concept_summary,aes(y=reorder(vocabulary_id,n),x=n,col=vocabulary_id)) +
 
 ### Acknowledgements
 
-Development of `omopcept` has been partly supported by the \[UCLH
-Biomedical Research Centre\]
-(<https://www.uclhospitals.brc.nihr.ac.uk/>).
+Development of `omopcept` has been partly supported by the [UCLH
+Biomedical Research Centre](https://www.uclhospitals.brc.nihr.ac.uk/).
