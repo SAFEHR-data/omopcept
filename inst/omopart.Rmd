@@ -1024,7 +1024,7 @@ ctr2 <- omop_relations_recursive("Cancer treatment", num_recurse = 2)
 
 #mooning
 glut <- omop_names("gluteus")
-returning 47 concepts
+#returning 47 concepts
 glutr1 <- omop_relations_multiple(glut$concept_id)
 #248
 omop_graph(glutr1)
@@ -1075,6 +1075,122 @@ amo_rx_isa |> select(concept_name_2,concept_class_id,domain_id,vocabulary_id)
 #   concept_name_2                        concept_class_id domain_id vocabulary_id
 # 1 WHO Essential Anti-infective Medicine Component Class  Drug      HemOnc       
 # 2 Penicillin                            Component Class  Drug      HemOnc   
+
+#2024-09-04 leaving gift for Tim
+tim <- omop_names("tim")
+
+timstrt <- omop_names("tim",exact="start")
+#returning 3229 concepts
+tim_strt <- omop_names("tim ",exact="start")
+#returning 0 concepts
+timothy <- omop_names("timothy")
+#returning 800 concepts
+timothystrt <- omop_names("timothy",exact="start")
+#returning 398 concepts
+
+#ooo this is cool how can pipe & pull
+timsynr1 <- omop_names("Timothy syndrome",exact=TRUE) |> pull(concept_id) |> omop_relations_recursive()
+
+#Aha thinking about it
+#what I could do is just filter the relations table
+#for rows where concept1 &/or concept2 contain a string
+#and maybe I should develop a function to do that
+#phaps called omop_relations_names()
+#can use omop_concept_relationship() that exists already
+
+#have started the function, but just trying without the func here
+#
+timr1 <- omop_concept_relationship() |>
+    #join name for ID1 & other concept columns
+    left_join(omop_concept(),
+    #left_join( select(omop_concept(),concept_id,concept_name),
+               by=c("concept_id_1"="concept_id")) |>
+    rename(concept_name_1=concept_name) |>
+    #join name for ID2
+    left_join( select(omop_concept(),concept_id,concept_name),
+               by=c("concept_id_2"="concept_id")) |>
+    rename(concept_name_2=concept_name) |>  
+    filter(str_detect(concept_name_1,"^Tim")) |> 
+    collect()
+
+freqr <- timr1 |> count(relationship_id, sort=TRUE)
+
+freqr |> filter(relationship_id %in% c("Is a","Subsumes"))
+#1 Is a              669
+#2 Subsumes          488
+
+timr1is <- timr1 |> filter(relationship_id %in% c("Is a"))
+timr1subs <- timr1 |> filter(relationship_id %in% c("Subsumes"))
+
+freqrd <- timr1is |> count(domain_id, sort=TRUE)
+
+timr1is2 <- timr1is |> filter(domain_id %in% c("Observation","Measurement","Drug","Condition","Procedure","Device"))
+timr1subs2 <- timr1subs |> filter(domain_id %in% c("Observation","Measurement","Drug","Condition","Procedure","Device"))
+
+caption <- "Tim, thank you for being a great boss and your inspiring work on OMOP at UCLH. We will miss you.\nPlot shows OMOP concepts starting with 'Tim' and their immediate parents."
+
+omop_graph(timr1is2, filenameroot="timr1is",
+           width=70, height=70,
+           graphtitle="Tim in OMOP",
+           caption=caption,
+           captionjust="centre",
+           captiontxtsize=18)
+#A2
+omop_graph(timr1is2, filenameroot="timr1is",
+           width=42, height=59.4,
+           graphtitle="Tim in OMOP",
+           caption=caption,
+           captionjust="centre",
+           captiontxtsize=18)
+
+#A2 subs
+caption <- "Tim, thank you for being a great boss and your inspiring work on OMOP at UCLH. We will miss you.\nPlot shows OMOP concepts starting with 'Tim' and their immediate children."
+omop_graph(timr1subs2, filenameroot="timr1subs",
+           width=42, height=59.4,
+           palettebrewer = "Dark2", palettedirection = 1, #1=default,-1=reverse
+           graphtitle="Tim in OMOP", titletxtsize = 30,
+           caption=caption,
+           captionjust="centre",
+           captiontxtsize=18)
+
+#2024-09-15 plots for OHDSI UK lighning talk
+#try producing pngs at a resolution that can be inserted directly to slides
+#web search says 1920x1080 pixels is optimal
+
+#this example is good for testing
+#r_ids=c('Subsumes'), #gets just 7 concepts
+#r_ids=c('Is a','Subsumes') #more concepts
+#r_ids=c('Subsumes','Maps to'),#trying to get itself
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
+relations <- omop_relations_recursive(sharp$concept_id, 
+                                      r_ids=c('Subsumes'), 
+                                      #itself=TRUE,
+                                      num_recurse=2) 
+itself <- data.frame(concept_name_1="Accident caused by sharp-edged object",
+                     concept_name_2="Accident caused by sharp-edged object",
+                     relationship_id="Is",
+                     domain_id="Observation",
+                     recurse_level=0)
+r2 <- bind_rows(relations, itself)
+
+#aha! maybe problem is that from & to are the wrong way around for colours
+#HURRAH! that worked
+r3 <- r2 |> 
+  rename(concept_name_1=concept_name_2,
+         concept_name_2=concept_name_1)
+
+#textcolourvar="recurse_level" reveals issues with colouring
+#tin can should be recurse1, but gets 2
+#also may need to add realtion to itself to get it to work
+omop_graph(r3,
+           graphtitle=NULL, legendshow=FALSE, 
+           width=1920, height=1080, units="px",
+           nodetxtsize=2, #default=9
+           edgewidth=0.5,#default=0.1
+           textcolourvar="recurse_level",
+           filenamecustom="ohdsi-uk-24-snomed-sharp-injuries.png",
+           filetype="png"
+           )
 
 
 ```
@@ -1142,7 +1258,6 @@ if ("ancestor_name" %in% names(dfin)){
   
 }
 
-
   
 #saving plots
 #naming convention
@@ -1155,20 +1270,6 @@ if ("ancestor_name" %in% names(dfin)){
 #nts node text size
 #d? domains
   
-ggsave(ggr,filename="holidaysrel-pset1-05m-ns.pdf",width=50,height=30,units="cm",limitsize = FALSE)
-
-ggsave(ggr,filename="critical1-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
-    
-ggsave(ggr,filename="accident-vehicle-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
-    
-ggsave(ggr,filename="oxa-s1-pset1-06x03m-ns-nts7.pdf",width=60,height=30,units="cm",limitsize = FALSE)
-  
-ggsave(ggr,filename="ox-s2-pset1-05m-ns.pdf",width=50,height=50,units="cm",limitsize = FALSE)
-   
-ggsave(ggr,filename="dlbcl-s1-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)    
-   
-ggsave(ggr,filename="dlbcl-s3-d7-500-pset1-15m-ns.pdf",width=150,height=150,units="cm",limitsize = FALSE)  
-
 
 ```
 

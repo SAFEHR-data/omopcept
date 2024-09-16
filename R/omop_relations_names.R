@@ -16,23 +16,22 @@
 #' @param messages whether to print info messages, default=TRUE
 #' @export
 #' @examples
-#' omop_names("AJCC/UICC Stage")
-#' #omop_names("chemotherapy", v_ids="LOINC")
-#' #omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
+#' omop_relations_names("AJCC/UICC Stage")
+#' #omop_relations_names("chemotherapy", v_ids="LOINC")
+#' #omop_relations_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 #' #set the findstring to "" to get all rows satisfying the other conditions
-#' #omop_names("", v_ids="Gender")
-#' #omop_names("", d_ids="Type Concept", standard="S")
-#' #exact= options
-#' #t1 <- onames("tobacco")
-#' #returning 616 concepts
-#' #t2 <- onames("tobacco",exact=TRUE)
-#' #returning 2 concepts
-#' #t3 <- onames("tobacco",exact="start")
-#' #returning 229 concepts
-#' #t4 <- onames("tobacco",exact="end")
-#' #returning 54 concepts
+#' #omop_relations_names("", v_ids="Gender")
+#' #omop_relations_names("", d_ids="Type Concept", standard="S")
 
-omop_names <- function(#df1 = NULL,
+#TODO add option to filter by CONCEPT_NAME_1 & CONCEPT_NAME_2
+#(remember will need to join to concept table to get them)
+#
+#TODO may want to remove some of filtering options because
+#would have to implement them for ID1 & 2, not sure they are useful (but maybe)
+#
+#TODO avoid duplication from reciprocal relationships
+
+omop_relations_names <- function(#df1 = NULL,
   findstring,
   ignore_case = TRUE,
   exact = FALSE,
@@ -57,14 +56,15 @@ omop_names <- function(#df1 = NULL,
   if (exact == TRUE | exact == "end" )
     findstring <- paste0(findstring, "$")
 
-  df1 <- omopcept::omop_concept() |>
+  df1 <- omopcept::omop_concept_relationship() |>
+
+    #join twice for ID1 & ID2
+    left_join( select(omopcept::omop_concept(),CONCEPT_ID,CONCEPT_NAME),
+               join_by(CONCEPT_ID_1,CONCEPT_ID)) |>
+    rename(CONCEPT_NAME_1=CONCEPT_NAME) |>
 
     filter(grepl(findstring, concept_name, ignore.case = ignore_case, fixed = fixed)) |>
 
-    #old way, see below about arrow_match_substring_regex
-    # filter(arrow_match_substring_regex(concept_name,
-    #                                    options=list(pattern=findstring,
-    #                                                 ignore_case=ignore_case))) |>
 
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
 
@@ -77,7 +77,7 @@ omop_names <- function(#df1 = NULL,
   return(df1)
 
   # this allowed passing dataframe instead of concepts
-  # but caused confusing behaviour when omop_names("test")
+  # but caused confusing behaviour when omop_relations_names("test")
   # if (is.null(df1)) df1 <- concept
   #
   # if (!is.null(findstring))
@@ -90,18 +90,18 @@ omop_names <- function(#df1 = NULL,
 }
 
 
-#' super short name func to search concepts by concept_name
-#' @rdname omop_names
+#' super short name func to search relations by concept_name
+#' @rdname omop_relations_names
 #' @export
 #' @examples
-#' # onames("chemotherapy", v_ids="LOINC")
+#' # ornames("chemotherapy", v_ids="LOINC")
 #' # because of R argument matching, you can just use the first unique letters of
 #' # arguments e.g. v for v_ids, cc for cc_ids
 #' # to get all clinical drugs starting with A
-#' onames("^a", d="DRUG", v="SNOMED", cc="Clinical Drug")
+#' ornames("^a", d="DRUG", v="SNOMED", cc="Clinical Drug")
 #' # to get all 'chop' cancer regimens
-#' #chops <- onames("chop", d="Regimen")
-onames <- omop_names
+#' #chops <- ornames("chop", d="Regimen")
+ornames <- omop_relations_names
 
 
 
