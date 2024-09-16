@@ -4,7 +4,7 @@
 #' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
 #'
 #' @param ggrlayout ggraph layout, default = "graphopt", also "tree" works well, more directional
-#' @param palettebrewer colour brewer palette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
+#' @param palettebrewer colour brewer palette, default='Dark2', other options e.g. 'Set1' see RColorBrewer::brewer.pal.info
 #' @param palettedirection palette direction, default=1, -1 for reversed
 #'
 #' @param edgecolour colour for lines joining nodes
@@ -54,13 +54,13 @@
 #' @return ggraph object
 #' @export
 #' @examples
-#' #TODO make a quick example
+#' #TODO need a more flexible palette solution than brewer (that limits num cats)
 # pressure <- omop_names("^Blood pressure$",standard='S')
 # press_descend <- omop_descendants(pressure$concept_id[1])
 # omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
 omop_graph <- function(dfin,
                        ggrlayout='graphopt',
-                       palettebrewer='Set1',
+                       palettebrewer='Dark2',
                        palettedirection=1,
 
                        edgecolour='grey71',
@@ -203,7 +203,7 @@ omop_graph <- function(dfin,
           plot.background=element_blank(),
           legend.position = legendpos,
           legend.direction = legenddir,
-          legend.key.size = unit(legendcm, 'cm'),
+          legend.key.size = unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
           #legend.key.height = unit(1, 'cm'),
           #legend.key.width = unit(1, 'cm'),
           legend.key = element_rect(fill = "white"),
@@ -218,7 +218,8 @@ omop_graph <- function(dfin,
                                       colour=captioncolour,
                                       hjust=captionhjust),
           plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
-    guides(colour = guide_legend(override.aes = list(size=20))) +
+    #allows legend key symbols to be bigger, not sure if required
+    guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
     ggraph::geom_node_text(aes(label=name,
                                size=nodetxtsize,
                                #colour=.data[[textcolourvar]]),

@@ -8,7 +8,7 @@ accepts output from either omop_ancestors(), omop_descendants() or omop_relation
 omop_graph(
   dfin,
   ggrlayout = "graphopt",
-  palettebrewer = "Set1",
+  palettebrewer = "Dark2",
   palettedirection = 1,
   edgecolour = "grey71",
   nodecolourvar = "domain_id",
@@ -52,7 +52,7 @@ omop_graph(
 
 \item{ggrlayout}{ggraph layout, default = "graphopt", also "tree" works well, more directional}
 
-\item{palettebrewer}{colour brewer palette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
+\item{palettebrewer}{colour brewer palette, default='Dark2', other options e.g. 'Set1' see RColorBrewer::brewer.pal.info}
 
 \item{palettedirection}{palette direction, default=1, -1 for reversed}
 
@@ -134,5 +134,5 @@ graph omop hierarchy
 accepts output from either omop_ancestors(), omop_descendants() or omop_relations
 }
 \examples{
-#TODO make a quick example
+#TODO need a more flexible palette solution than brewer (that limits num cats)
 }
