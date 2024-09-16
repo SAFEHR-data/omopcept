@@ -26,7 +26,7 @@ Later additions allow exploration and visualisation of OMOP hierarchies.
 **omopcept** includes concise named copies of functions designed for
 interactive use e.g. `oid()` and `onames()` to search concept ids and
 names respectively. For example the line below can be used to return all
-\~ 1000 OMOP ids for SNOMED codes for clinical drugs starting with A.
+~ 1000 OMOP ids for SNOMED codes for clinical drugs starting with A.
 
     onames("^a",d="DRUG",v="SNOMED",cc="Clinical Drug")
 
@@ -150,35 +150,35 @@ omop_names("chemotherapy", v_ids="LOINC")
 #> # A tibble: 71 × 10
 #>    concept_id concept_name              domain_id vocabulary_id concept_class_id
 #>         <int> <chr>                     <chr>     <chr>         <chr>           
-#>  1    3010410 Chemotherapy records      Observat… LOINC         Clinical Observ…
-#>  2    3002377 Chemotherapy treatment a… Measurem… LOINC         Clinical Observ…
-#>  3    3011998 Date 1st chemotherapy tr… Observat… LOINC         Clinical Observ…
-#>  4    3003037 Chemotherapy treatment C… Measurem… LOINC         Clinical Observ…
-#>  5    3000897 Reason for no chemothera… Measurem… LOINC         Clinical Observ…
-#>  6    3014397 Chemotherapy Cancer       Measurem… LOINC         Clinical Observ…
-#>  7    3027104 Chemotherapy treatment C… Measurem… LOINC         Clinical Observ…
-#>  8    3037369 2nd course chemotherapy … Measurem… LOINC         Clinical Observ…
-#>  9    3032293 3rd course chemotherapy … Measurem… LOINC         Clinical Observ…
-#> 10    3028808 4th course chemotherapy … Measurem… LOINC         Clinical Observ…
+#>  1   45882419 A proper value is applic… Meas Val… LOINC         Answer          
+#>  2   45882273 Information is not avail… Meas Val… LOINC         Answer          
+#>  3   45884441 No information whatsoeve… Meas Val… LOINC         Answer          
+#>  4   45884440 No proper value is appli… Meas Val… LOINC         Answer          
+#>  5   45881771 Received cancer chemothe… Meas Val… LOINC         Answer          
+#>  6   45884510 Chemotherapy/medication … Meas Val… LOINC         Answer          
+#>  7   36309148 Currently receiving chem… Meas Val… LOINC         Answer          
+#>  8    1035179 Chemotherapy - IV         Meas Val… LOINC         Answer          
+#>  9    1035159 Chemotherapy - Oral       Meas Val… LOINC         Answer          
+#> 10    1035128 Chemotherapy - Other      Meas Val… LOINC         Answer          
 #> # ℹ 61 more rows
 #> # ℹ 5 more variables: standard_concept <chr>, concept_code <chr>,
 #> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
 
 omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
-#> # A tibble: 297 × 10
+#> # A tibble: 316 × 10
 #>    concept_id concept_name              domain_id vocabulary_id concept_class_id
 #>         <int> <chr>                     <chr>     <chr>         <chr>           
-#>  1    3010410 Chemotherapy records      Observat… LOINC         Clinical Observ…
-#>  2    3011998 Date 1st chemotherapy tr… Observat… LOINC         Clinical Observ…
-#>  3    3046488 Chemotherapy [Minimum Da… Observat… LOINC         Survey          
-#>  4   40758122 Chemotherapy in last 14 … Observat… LOINC         Survey          
-#>  5   40758123 Chemotherapy in last 14 … Observat… LOINC         Survey          
-#>  6   40766658 Type of chemotherapy [Ph… Observat… LOINC         Clinical Observ…
-#>  7   40768860 Cancer chemotherapy rece… Observat… LOINC         Clinical Observ…
-#>  8   40770073 Have you been treated wi… Observat… LOINC         Clinical Observ…
-#>  9   40770096 History of Chemotherapy … Observat… LOINC         Clinical Observ…
-#> 10   36305649 Chemotherapy infusion st… Observat… LOINC         Clinical Observ…
-#> # ℹ 287 more rows
+#>  1    3046488 Chemotherapy [Minimum Da… Observat… LOINC         Survey          
+#>  2   40768860 Cancer chemotherapy rece… Observat… LOINC         Clinical Observ…
+#>  3   36303659 Guidance for chemoemboli… Procedure LOINC         Clinical Observ…
+#>  4    1024644 Guidance for chemoemboli… Observat… LOINC         LOINC Component 
+#>  5    1030274 Chemotherapy              Observat… LOINC         LOINC Component 
+#>  6    1034150 Chemotherapy in last 14 … Observat… LOINC         LOINC Component 
+#>  7    1034151 Chemotherapy in last 14 … Observat… LOINC         LOINC Component 
+#>  8    3010410 Chemotherapy records      Observat… LOINC         Clinical Observ…
+#>  9    3011998 Date 1st chemotherapy tr… Observat… LOINC         Clinical Observ…
+#> 10   40758122 Chemotherapy in last 14 … Observat… LOINC         Survey          
+#> # ℹ 306 more rows
 #> # ℹ 5 more variables: standard_concept <chr>, concept_code <chr>,
 #> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
 ```
@@ -216,10 +216,10 @@ data.frame(concept_id=(c(3571338L,3655355L)),
             drug_concept_id=(c(4000794L,35628998L))) |>
             omop_join_name_all()
 #> # A tibble: 2 × 4
-#>   concept_id concept_name         drug_concept_id drug_concept_name
-#>        <int> <chr>                          <int> <chr>            
-#> 1    3571338 Problem behaviour            4000794 BUZZ OFF         
-#> 2    3655355 Erectile dysfunction        35628998 Viagra
+#>   concept_id concept_name         drug_concept_id drug_concept_name             
+#>        <int> <chr>                          <int> <chr>                         
+#> 1    3571338 Problem behaviour            4000794 BUZZ OFF                      
+#> 2    3655355 Erectile dysfunction        35628998 Retired SNOMED UK Drug extens…
 ```
 
 ## `omop_graph()`: starting to visualise OMOP hierarchies
@@ -262,3 +262,9 @@ ggplot(concept_summary,aes(y=reorder(vocabulary_id,n),x=n,col=vocabulary_id)) +
 ```
 
 <img src="man/figures/README-conceptplot-1.png" width="100%" />
+
+### Acknowledgements
+
+Development of `omopcept` has been partly supported by the \[UCLH
+Biomedical Research Centre\]
+(<https://www.uclhospitals.brc.nihr.ac.uk/>).
