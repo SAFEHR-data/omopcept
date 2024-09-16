@@ -50,7 +50,3 @@ a dataframe of concepts and attributes
 \description{
 recursively extract omop concept relations of one passed - immediate relations with indication of relationship
 }
-\examples{
-r1 <- omop_relations_recursive("Non-invasive blood pressure", num_recurse=1)
-#omop_relations_recursive("Non-invasive blood pressure", r_ids=c('Is a','Subsumes'), num_recurse=2)
-}

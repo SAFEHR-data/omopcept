@@ -84,6 +84,9 @@ neop_snomed_r1 |> count(relationship_id, sort=TRUE)
 # 12 Is a                     1
 # 13 Proc morph of            1
 
+neop_snomed_r1s  <- omop_relations_recursive(neop_snomed$concept_id, num_recurse = 1,
+                                             r_ids="Subsumes")
+
 #test colouring by other var
 omop_graph(neop_snomed_r1, nodecolourvar="relationship_id")
 #TODO sort problem here 
@@ -1173,15 +1176,8 @@ itself <- data.frame(concept_name_1="Accident caused by sharp-edged object",
                      recurse_level=0)
 r2 <- bind_rows(relations, itself)
 
-#aha! maybe problem is that from & to are the wrong way around for colours
-#HURRAH! that worked
-r3 <- r2 |> 
-  rename(concept_name_1=concept_name_2,
-         concept_name_2=concept_name_1)
 
 #textcolourvar="recurse_level" reveals issues with colouring
-#tin can should be recurse1, but gets 2
-#also may need to add realtion to itself to get it to work
 omop_graph(r3,
            graphtitle=NULL, legendshow=FALSE, 
            width=1920, height=1080, units="px",
@@ -1192,6 +1188,78 @@ omop_graph(r3,
            filetype="png"
            )
 
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
+relations <- omop_relations_recursive(sharp$concept_id, 
+                                      r_ids=c('Subsumes'), 
+                                      #itself=TRUE,
+                                      num_recurse=2) 
+
+dlbcls <- omop_names("Diffuse large B-cell lymphoma", exact=TRUE, v_ids = ("SNOMED"))
+
+dlbclr2 <- omop_relations_recursive(dlbcls$concept_id, 
+                                    r_ids=c('Is a'), 
+                                    num_recurse=2)
+
+#going up hierarchy with just 'Is a' creates manageable results
+#if you include "Subsumes" you can get thousands
+dlbclr5 <- omop_relations_recursive(dlbcls$concept_id, 
+                                    r_ids=c('Is a'), 
+                                    num_recurse=5) 
+
+dlbclr7 <- omop_relations_recursive(dlbcls$concept_id, 
+                                    r_ids=c('Is a'), 
+                                    num_recurse=7) 
+
+#Good going up from DLBCL to Neoplastic disease, only a few concepts, but doesn't look great on slide
+dlbclr7 |> omop_graph(ggrlayout = "tree",
+                      saveplot=FALSE, graphtitle=NULL, 
+                      palettebrewer = "Set1",
+                      legendshow=FALSE, nodetxtsize=5, 
+                      textcolourvar="recurse_level", nodecolourvar = "recurse_level")
+
+#Multiple Myeloma Subsumes 11 Is a 1
+mms <- omop_names("multiple myeloma",exact=TRUE,d="Condition",v="SNOMED",s="S")
+#1
+mmsr1 <- omop_relations(mms$concept_id)
+#mmsr1 <- omop_relations(mms$concept_id, r_ids=c('Is a','Subsumes'), v="SNOMED")
+#returning 14
+mmsr1 |> count(relationship_id, sort=TRUE)
+
+# mmsr1 |> 
+#   filter(vocabulary_id %in% c("SNOMED")) |> 
+#   filter(relationship_id %in% c('Is a','Subsumes')) |>   
+#   omop_graph(mmsr1)
+
+mmappedfrom <- mmsr1 |> 
+  #filter(vocabulary_id %in% c("SNOMED")) |> 
+  filter(relationship_id %in% c('Mapped from'))
+
+mmappedfrom |> count(vocabulary_id, sort=TRUE)
+# 1 ICDO3             5
+# 2 Read              5
+# 3 OXMIS             4
+# 4 SNOMED            4
+# 5 HCPCS             3
+# 6 ICD10             2
+# 7 HemOnc            1
+# 8 OncoTree          1
+# 9 UK Biobank        1
+
+#This will be good with some tweaking
+#and I could make a function to do this for any concept
+#(advantage for display that it is quicker than recursive ones) 
+mmappedfrom |>
+  omop_graph(graphtitle="Multiple myeloma mapped from",titletxtsize = 7, 
+             palettebrewer = "Set1",
+             legendshow=TRUE, legendtxtsize=6, legendcm=0.5,
+             textcolourvar="vocabulary_id", nodecolourvar="vocabulary_id",
+             width=960, height=1080, units="px", #1920
+             nodetxtsize=1.5, #default=9
+             edgewidth=0.5,#default=0.1
+             filenamecustom="ohdsi-uk-24-myeloma-mapping.png",
+             filetype="png")
+  
+  
 
 ```
 

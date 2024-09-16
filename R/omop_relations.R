@@ -45,7 +45,8 @@ omop_relations <- function(c_id=NULL,
     return(NULL)
   }
 
-  if (messages) message("querying concept relations of: ",name1," - may take a few seconds")
+  #spaces before make it clearer when running recursively
+  if (messages) message("   querying concept relations of: ",name1," - may take a few seconds")
 
   df1 <- omopcept::omop_concept_relationship()
 

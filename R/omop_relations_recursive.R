@@ -1,6 +1,6 @@
 #' recursively extract omop concept relations of one passed - immediate relations with indication of relationship
 #'
-# TODO could add recurse_level column for colouring plots
+# TODO need to sort repeated rows ...
 # TODO I could rename this to omop_relations() & rename that to omop_rel1() and not export it
 # num_recurse==1 is same as what omop_relations is currently so can just have that as default
 #' @param c_id single omop concept_id or exact concept_name to get relations of, default NULL returns all
@@ -19,7 +19,7 @@
 #' @export
 #' @examples
 #' r1 <- omop_relations_recursive("Non-invasive blood pressure", num_recurse=1)
-#' #omop_relations_recursive("Non-invasive blood pressure", r_ids=c('Is a','Subsumes'), num_recurse=2)
+#' #omop_relations_recursive("Non-invasive blood pressure", r_ids=c("Is a","Subsumes"), num_recurse=2)
 omop_relations_recursive <- function(c_id=NULL,
                                      c_ids=NULL,
                                      d_ids=NULL,
@@ -88,15 +88,7 @@ omop_relations_recursive <- function(c_id=NULL,
                     relationship_id="Is",
                     recurse_level=0)
 
-            # data.frame(concept_id_1=c_id0,
-            #                    concept_id_2=c_id0,
-            #                    relationship_id="Is",
-            #                    recurse_level=0)
           dfprev1 <- bind_rows(r_to_itself, dfprev1)
-          # dfprev1 <- dfprev1 |>
-          #   #duplicates first row
-          #   uncount(weights=c(2,rep(1,nrow(dfprev1)-1))) |>
-          #   mutate
         }
       }
       dfprev <- bind_rows(dfprev,dfprev1)
