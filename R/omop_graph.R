@@ -3,7 +3,7 @@
 #'
 #' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
 #'
-#' @param ggrlayout ggraph layout, default = 'graphopt'
+#' @param ggrlayout ggraph layout, default = "graphopt", also "tree" works well, more directional
 #' @param palettebrewer colour brewer palette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info
 #' @param palettedirection palette direction, default=1, -1 for reversed
 #'

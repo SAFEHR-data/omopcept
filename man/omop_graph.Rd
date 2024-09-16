@@ -50,7 +50,7 @@ omop_graph(
 \arguments{
 \item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
 
-\item{ggrlayout}{ggraph layout, default = 'graphopt'}
+\item{ggrlayout}{ggraph layout, default = "graphopt", also "tree" works well, more directional}
 
 \item{palettebrewer}{colour brewer palette, default='Set1', other options e.g. 'Dark2' see RColorBrewer::brewer.pal.info}
 
