@@ -33,7 +33,7 @@ knitr::opts_chunk$set(echo = FALSE,
 ```{r install github packages, include=FALSE, eval=TRUE}
 
 # library(remotes) #for install_github
-# remotes::install_github("andysouth/omopcept")
+# remotes::install_github("SAFEHR-data/omopcept")
 library(omopcept)
 
 ```
@@ -114,7 +114,7 @@ music_rel <- read_csv("inst/extdata/music-relations.csv")
 
 omop_graph(music_rel, plot=FALSE, filenameroot = "music",width=80, height=110)
 
-omop_graph(music_rel, plot=FALSE, filenameroot = "music-titled",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "If music be the food of ... OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(music_rel, plot=FALSE, filenameroot = "music-titled",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "If music be the food of ... OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 #but the music plot didn't look great
 
@@ -127,7 +127,7 @@ bloodgroupcomponent <- bloodgroup |> filter(concept_class_id=="LOINC component")
 
 bloodgrouprels <- omop_relations_multiple(bloodgroupcomponent$concept_id)
 
-omop_graph(bloodgrouprels, plot=FALSE, filenameroot = "bloodgroup",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "There will be blood ... in OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(bloodgrouprels, plot=FALSE, filenameroot = "bloodgroup",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "There will be blood ... in OMOP ...",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 #try instead to subset relations table by just those starting with R
 #should be quick
@@ -157,7 +157,7 @@ rrel_is_sub <- rrelations2 |>
 #123k rows - maybe too much
 
 # this takes ages
-#omop_graph(rrel_is_sub, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+#omop_graph(rrel_is_sub, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 rrelicd10 <- rrel_is_sub |> 
   filter(vocabulary_id == "ICD10") |> 
@@ -218,7 +218,7 @@ rrel_is_sub3 <- rrel_is_sub2 |>
 rrel_is_sub3 <- bind_rows(rrel_is_sub3,rrelicd10)
 
 # FINAL PLOT FOR OHDSI GLOBAL POSTER
-omop_graph(rrel_is_sub3, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(rrel_is_sub3, plot=FALSE, filenameroot = "rrelations",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "OMOP ART #1 : R relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 # try some cancer plots
 cancer_rel <- omop_concept_relationship() |>
@@ -245,7 +245,7 @@ freq_cancer_rel_vocab <- cancer_rel |> count(vocabulary_id, sort=TRUE)
 
 cancer_rel_hemonc <- cancer_rel |> filter(vocabulary_id=="HemOnc")
 
-omop_graph(cancer_rel_hemonc, plot=FALSE, filenameroot = "cancer_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cancer relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(cancer_rel_hemonc, plot=FALSE, filenameroot = "cancer_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cancer relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 #what happens if just subset HemOnc
 
@@ -273,20 +273,20 @@ freq_hemonc_rel_rship <- hemonc_rel |> count(relationship_id, sort=TRUE)
 hemonc_rel_chemo <- hemonc_rel |> filter(relationship_id=="Cytotoxic chemo of")
 #3.8k rows
 
-omop_graph(hemonc_rel_chemo, plot=FALSE, filenameroot = "chemo_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(hemonc_rel_chemo, plot=FALSE, filenameroot = "chemo_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 #I expected the above to have links from cancers to treatments - but it didn't
 
 hemonc_rel_has_chemo <- hemonc_rel |> filter(relationship_id=="Has cytotoxic chemo")
 #3.8k rows
 
-omop_graph(hemonc_rel_has_chemo, plot=FALSE, filenameroot = "chemo_has_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(hemonc_rel_has_chemo, plot=FALSE, filenameroot = "chemo_has_hemonc",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
 hemonc_rel_accepted_chemo <- hemonc_rel |> filter(relationship_id=="Accepted use of")
 #3.8k rows
 
-omop_graph(hemonc_rel_accepted_chemo, plot=FALSE, filenameroot = "chemo_hemonc_accepted",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(hemonc_rel_accepted_chemo, plot=FALSE, filenameroot = "chemo_hemonc_accepted",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Cytotoxic chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 # try filtering lung cancer
 
@@ -295,7 +295,7 @@ hemonc_rel_lung <- hemonc_rel |>
 
 # only has conditions
 
-omop_graph(hemonc_rel_lung, plot=FALSE, filenameroot = "chemo_hemonc_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(hemonc_rel_lung, plot=FALSE, filenameroot = "chemo_hemonc_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung chemo relations from HemOnc",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
 cancer_lung_rel <- omop_concept_relationship() |>
@@ -306,7 +306,7 @@ cancer_lung_rel <- omop_concept_relationship() |>
 
 # only has conditions
 
-omop_graph(cancer_lung_rel, plot=FALSE, filenameroot = "cancer_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung cancer relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(cancer_lung_rel, plot=FALSE, filenameroot = "cancer_lung",width=36, height=48, units="in", node_txtsize = 14, graphtitle = "Lung cancer relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
 # pregnancy
@@ -340,7 +340,7 @@ preg_rel_preg <- preg_rel |>
     filter(grepl("pregnan",concept_name_2, ignore.case=TRUE)) 
 #15k
 
-omop_graph(preg_rel_isa, plot=FALSE, filenameroot = "preg_isa",width=100, height=60, units="in", node_txtsize = 14, graphtitle = "Pregnancy 'Is a' relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(preg_rel_isa, plot=FALSE, filenameroot = "preg_isa",width=100, height=60, units="in", node_txtsize = 14, graphtitle = "Pregnancy 'Is a' relations",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 pregnames <- omop_names("pregnan")
 #4381 rows
@@ -372,7 +372,7 @@ clb <- omop_names("certificate of live birth")
 
 cert_live_birth_rel <- omop_relations_recursive(1012231, num_recurse = 1)
 
-omop_graph(cert_live_birth_rel, plot=FALSE, filenameroot = "cert_live_birth",width=30, height=20, units="in", node_txtsize = 18, graphtitle = "Certificate of live birth",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept  Commisions welcome! southandy@gmail.com" )
+omop_graph(cert_live_birth_rel, plot=FALSE, filenameroot = "cert_live_birth",width=30, height=20, units="in", node_txtsize = 18, graphtitle = "Certificate of live birth",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
 
 #omopmas 2023
@@ -391,9 +391,9 @@ omop_graph(rei_rel)
 chr_rei_rel <- bind_rows(chr_rel,rei_rel)
 
 #A4 title text over-runs
-omop_graph(chr_rel, filenameroot = "omopmas", graphtitle = "Happy OMOPmas !",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/andysouth/omopcept",width=210, height=297, units="mm", node_txtsize = 24)
+omop_graph(chr_rel, filenameroot = "omopmas", graphtitle = "Happy OMOPmas !",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept",width=210, height=297, units="mm", node_txtsize = 24)
 #A3
-omop_graph(chr_rel, filenameroot = "omopmas", graphtitle = "Happy OMOPmas !",graphsubtitle = "made by @southmapr 2023 using OMOP, R & https://github.com/andysouth/omopcept",width=297, height=420, units="mm", node_txtsize = 24)
+omop_graph(chr_rel, filenameroot = "omopmas", graphtitle = "Happy OMOPmas !",graphsubtitle = "made by @southmapr 2023 using OMOP, R & https://github.com/SAFEHR-data/omopcept",width=297, height=420, units="mm", node_txtsize = 24)
 
 
 ```

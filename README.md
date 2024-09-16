@@ -37,7 +37,7 @@ Install the development version of omopcept with:
 ``` r
 # install.packages("remotes")
 
-remotes::install_github("andysouth/omopcept")
+remotes::install_github("SAFEHR-data/omopcept")
 ```
 
 ## OMOP vocabularies data

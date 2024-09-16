@@ -11,8 +11,8 @@ Access to OMOP Common Data Model medical vocabularies and flexible tidyverse com
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/andysouth/omopcept}
-  \item Report bugs at \url{https://github.com/andysouth/omopcept/issues}
+  \item \url{https://github.com/SAFEHR-data/omopcept}
+  \item Report bugs at \url{https://github.com/SAFEHR-data/omopcept/issues}
 }
 
 }

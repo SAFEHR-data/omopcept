@@ -13,7 +13,7 @@
 library(here)
 library(tidyverse)
 
-#remotes::install_github("andysouth/omopcept")
+#remotes::install_github("SAFEHR-data/omopcept")
 library(omopcept)
 
 #101 myeloma concepts
