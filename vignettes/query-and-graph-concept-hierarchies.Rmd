@@ -34,19 +34,19 @@ library(omopcept)
 
 ### Example 1 - query relations of a concept and visualise
 
-Here we find a single SNOMED concept, search for it's relations and the relations of those (num_recurse=2) and create a graph of the hierarchy.
+Here we find a single SNOMED concept, search for it's relations and the relations of those (nsteps=2) and create a graph of the hierarchy.
 
 ```{r omop_graph, message=FALSE}
 
 sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
 
-relations <- omop_relations_recursive(sharp$concept_id, 
-                                      r_ids=c('Is a','Subsumes'), 
-                                      num_recurse=2) 
+relations <- omop_relations(sharp$concept_id, 
+                            r_ids=c('Is a','Subsumes'), 
+                            nsteps=2) 
 
 # nodetxtsize made small to make plot visible in vignette, default=9 fine outside
 omop_graph(relations, saveplot=FALSE, 
-           graphtitle=NULL, legendshow=FALSE, nodetxtsize=1, textcolourvar="recurse_level")
+           graphtitle=NULL, legendshow=FALSE, nodetxtsize=1, textcolourvar="step")
 
 ```
 
@@ -61,12 +61,12 @@ AJCC (American Joint Committee on Cancer) has a hierarchical staging classificat
 
 ajcc8 <- omop_names("AJCC/UICC 8th edition", exact=TRUE)
 
-ajcc_rel1 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=1)
+ajcc_rel1 <- omop_relations(ajcc8$concept_id, nsteps=1)
 
-#TODO find a quicker example of getting more than one recurse level
+#TODO find a quicker example of getting more than one relations step
 
 # getting recursive relations takes a few minutes
-#ajcc_rel2 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=2)
+#ajcc_rel2 <- omop_relations(ajcc8$concept_id, nsteps=2)
 
 # plot is too big to display nicely in this vignette
 # but is auto saved in a nice to pdf

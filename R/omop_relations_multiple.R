@@ -68,15 +68,15 @@ for(c_id in mc_ids)
       if (!c_id %in% dfall$concept_id_1) {
 
         # get immediate relations
-        dfprev1 <- omop_relations(c_id=c_id,
-                                 c_ids=c_ids,
-                                 d_ids=d_ids,
-                                 v_ids=v_ids,
-                                 cc_ids=cc_ids,
-                                 standard=standard,
-                                 r_ids=r_ids,
-                                 itself=itself,
-                                 messages=messages)
+        dfprev1 <- omop_relations1step(c_id=c_id,
+                                       c_ids=c_ids,
+                                       d_ids=d_ids,
+                                       v_ids=v_ids,
+                                       cc_ids=cc_ids,
+                                       standard=standard,
+                                       r_ids=r_ids,
+                                       itself=itself,
+                                       messages=messages)
 
         dfprev <- bind_rows(dfprev,dfprev1)
       }

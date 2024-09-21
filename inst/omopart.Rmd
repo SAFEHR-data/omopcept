@@ -45,7 +45,7 @@ library(omopcept)
 cancer <- omop_names("cancer")
 #returning 3340 concepts
 
-neor2 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2,r="Subsumes")
+neor2 <- omop_relations("Malignant neoplasms",nsteps = 2,r="Subsumes")
 
 #this is pretty good
 omop_graph(neor2, plot=FALSE, filenameroot = "neoplasm_subsumes2",width=80, height=110)
@@ -56,9 +56,9 @@ omop_graph(neor2, plot=FALSE, filenameroot = "neoplasm_subsumes2",width=80, heig
 
 #that is all ICD10, if I include 'maps to' or similar relations 
 # first check what relations there are
-neor1 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 1) #,r="Subsumes")
+neor1 <- omop_relations("Malignant neoplasms",nsteps = 1) #,r="Subsumes")
 #they are only is a or subsumes
-neor2all <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2)
+neor2all <- omop_relations("Malignant neoplasms",nsteps = 2)
 
 omop_graph(neor2all, plot=FALSE, filenameroot = "neoplasm2",width=80, height=110)
 
@@ -67,7 +67,7 @@ omop_graph(neor2all, plot=FALSE, filenameroot = "neoplasm2",width=80, height=110
 #2024-06-17 trying vis for OHDSI global 2024
 neop_snomed <- omop_names("Malignant neoplasm",s="S",v="SNOMED",exact=TRUE)
 
-neop_snomed_r1  <- omop_relations_recursive(neop_snomed$concept_id, num_recurse = 1)
+neop_snomed_r1  <- omop_relations(neop_snomed$concept_id, nsteps = 1)
 
 neop_snomed_r1 |> count(relationship_id, sort=TRUE)
 #  1 Asso morph of         1436
@@ -84,7 +84,7 @@ neop_snomed_r1 |> count(relationship_id, sort=TRUE)
 # 12 Is a                     1
 # 13 Proc morph of            1
 
-neop_snomed_r1s  <- omop_relations_recursive(neop_snomed$concept_id, num_recurse = 1,
+neop_snomed_r1s  <- omop_relations(neop_snomed$concept_id, nsteps = 1,
                                              r_ids="Subsumes")
 
 #test colouring by other var
@@ -99,7 +99,7 @@ omop_graph(neop_snomed_r1, nodecolourvar="relationship_id")
 
 #TODO maybe try some vis with mapped from, to. OHDSI people interested in that
 
-neop_snomed_r2  <- omop_relations_recursive(neop_snomed$concept_id, num_recurse = 2)
+neop_snomed_r2  <- omop_relations(neop_snomed$concept_id, nsteps = 2)
 
 music <- omop_names("music")
 #returning 120 concepts
@@ -373,7 +373,7 @@ cesariannames <- omop_names("cesarian")
 clb <- omop_names("certificate of live birth")
 #26
 
-cert_live_birth_rel <- omop_relations_recursive(1012231, num_recurse = 1)
+cert_live_birth_rel <- omop_relations(1012231, nsteps = 1)
 
 omop_graph(cert_live_birth_rel, plot=FALSE, filenameroot = "cert_live_birth",width=30, height=20, units="in", node_txtsize = 18, graphtitle = "Certificate of live birth",graphsubtitle = "made by @southmapr using OMOP, R & https://github.com/SAFEHR-data/omopcept  Commisions welcome! southandy@gmail.com" )
 
@@ -562,10 +562,10 @@ for(i in 1:nrow(holidays))
 #1 concept
 ajccfinding <- omop_names("AJCC/UICC finding", fixed=TRUE)
 
-ajcc_rel1 <- omop_relations_recursive(734320, num_recurse=1)
-ajcc_rel2 <- omop_relations_recursive(734320, num_recurse=2)
+ajcc_rel1 <- omop_relations(734320, nsteps=1)
+ajcc_rel2 <- omop_relations(734320, nsteps=2)
 #does it make it quicker if I filter by vocab ? not hugely it seems
-ajcc_rel2quick <- omop_relations_recursive(734320, num_recurse=2, v_ids = "Cancer Modifier")
+ajcc_rel2quick <- omop_relations(734320, nsteps=2, v_ids = "Cancer Modifier")
 
 #good first tree plot (although lots of nodes don't get labelled)
 omop_graph(ajcc_rel2, ggrlayout="tree", legendshow = FALSE)
@@ -596,10 +596,10 @@ omop_graph(ajcc_rel2, legendshow = FALSE, saveplot = TRUE, width = 100, height=1
 
 ajcc8 <- omop_names("AJCC/UICC 8th edition", exact=TRUE)
 
-ajcc_rel1 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=1)
+ajcc_rel1 <- omop_relations(ajcc8$concept_id, nsteps=1)
 
 # getting recursive relations takes a few minutes
-ajcc_rel2 <- omop_relations_recursive(ajcc8$concept_id, num_recurse=2)
+ajcc_rel2 <- omop_relations(ajcc8$concept_id, nsteps=2)
 
 # plot is too big to display nicely in this vignette
 # but is auto saved in a nice to pdf
@@ -613,8 +613,8 @@ figofind <- omop_names("figo finding")
 
 figofind[1,]$concept_id 
 
-figo_rel1 <- omop_relations_recursive(734316, num_recurse=1)
-figo_rel2 <- omop_relations_recursive(734316, num_recurse=2)
+figo_rel1 <- omop_relations(734316, nsteps=1)
+figo_rel2 <- omop_relations(734316, nsteps=2)
 
 omop_graph(figo_rel2, ggrlayout="tree", legendshow = FALSE, saveplot = TRUE, width = 50, nodetxtangle = 45)
 
@@ -638,7 +638,7 @@ bc <- omop_names("breast cancer") #244
 bcs <- omop_names("breast cancer",v="SNOMED") #49
 
 labc <- omop_names("Locally advanced breast cancer")
-labcr1 <- omop_relations_recursive(labc$concept_id[1],num_recurse = 1)
+labcr1 <- omop_relations(labc$concept_id[1],nsteps = 1)
 
 
 mm <- omop_names("multiple myeloma")
@@ -666,7 +666,7 @@ omop_graph(mmsr1)
 
 
 #with newly added names2avoid defaults that avoid e.g. Primitive
-mmsr2 <- omop_relations_recursive(mms$concept_id, num_recurse=2)
+mmsr2 <- omop_relations(mms$concept_id, nsteps=2)
 
 omop_graph(mmsr2)
 
@@ -680,8 +680,8 @@ psorel2
 
 ra <- omop_names("rheumatoid arthritis",exact=TRUE,s="S",v="SNOMED")
 
-ra_rel1 <- omop_relations_recursive(ra$concept_id, num_recurse=1)
-ra_rel2 <- omop_relations_recursive(ra$concept_id, num_recurse=2)
+ra_rel1 <- omop_relations(ra$concept_id, nsteps=1)
+ra_rel2 <- omop_relations(ra$concept_id, nsteps=2)
 
 ra_rel1mapped <- ra_rel1 %>% filter(relationship_id=="Mapped from")
 ra_rel2mapped <- ra_rel2 %>% filter(relationship_id=="Mapped from")
@@ -689,9 +689,9 @@ ra_rel2mapped <- ra_rel2 %>% filter(relationship_id=="Mapped from")
 #look at hierarchy of ICD10 codes for RA
 
 m06 <- omop_codes("M06.0")
-m06_rel <- omop_relations_recursive(m06$concept_id)
+m06_rel <- omop_relations(m06$concept_id)
 omop_graph(m06_rel)
-m06_rel2 <- omop_relations_recursive(m06$concept_id, num_recurse = 2)
+m06_rel2 <- omop_relations(m06$concept_id, nsteps = 2)
 
 omop_graph(m06_rel2, ggrlayout = "tree")
 
@@ -716,7 +716,7 @@ freq_r <- omop_concept_relationship() |> count(relationship_id, sort=TRUE) |>  c
 # new approach finding a generic concept & just searching down (Subsumes)
 # allows a representative tree map to be produced
 
-neor2 <- omop_relations_recursive("Malignant neoplasms",num_recurse = 2,r="Subsumes")
+neor2 <- omop_relations("Malignant neoplasms",nsteps = 2,r="Subsumes")
 
 
 #this is pretty good
@@ -819,20 +819,20 @@ omop_graph(bwb, filenameroot="bwb", width=150, height=150,textcolourvar ="bw",no
 sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
 acc <- omop_names("Accident", exact=TRUE, standard="S", v_ids="SNOMED")
 
-sharpr2 <- omop_relations_recursive(sharp$concept_id, 
+sharpr2 <- omop_relations(sharp$concept_id, 
                                       r_ids=c('Is a','Subsumes'), 
-                                      num_recurse=2) 
-sharpr_upr5 <- omop_relations_recursive(sharp$concept_id, 
+                                      nsteps=2) 
+sharpr_upr5 <- omop_relations(sharp$concept_id, 
                                       r_ids=c('Is a'), 
-                                      num_recurse=5) 
+                                      nsteps=5) 
 #this takes many hours 
 #(note would be interesting to see if just filtering relationship table 
 # for str_detect("accident") has similar result & would be much quicker
 # could also check on this which rows wouldn't be caught by that)
 #4059 rows
-acc_downr7r <- omop_relations_recursive(acc$concept_id, 
+acc_downr7r <- omop_relations(acc$concept_id, 
                                       r_ids=c('Subsumes'), 
-                                      num_recurse=7) 
+                                      nsteps=7) 
 write_csv(acc_downr7r,file=here("..","omopcept-plots","data","acc_downr7r.csv"))
 
 filter_rship_names <- function(df, stringremove)
@@ -940,15 +940,15 @@ procwound <- omop_names("Procedure on wound", exact=TRUE, standard="S", v_ids="S
 procemerg <- omop_names("Emergency procedure", exact=TRUE, standard="S", v_ids="SNOMED")
 
 #373 (only) rows
-procwound_downr7 <- omop_relations_recursive(procwound$concept_id, 
+procwound_downr7 <- omop_relations(procwound$concept_id, 
                                       r_ids=c('Subsumes'), 
-                                      num_recurse=7) 
+                                      nsteps=7) 
 write_csv(procwound_downr7,file=here("..","omopcept-plots","data","procwound_downr7.csv"))
 
 
-procemerg_downr7b <- omop_relations_recursive(procemerg$concept_id,
+procemerg_downr7b <- omop_relations(procemerg$concept_id,
                                       r_ids=c('Subsumes'), 
-                                      num_recurse=7)
+                                      nsteps=7)
 
 write_csv(procemerg_downr7b,file=here("..","omopcept-plots","data","procemerg_downr7b.csv"))
 
@@ -978,9 +978,9 @@ omop_graph(accprocs_downr7, filenameroot="accprocs_downr7",
 #1
 anes <- omop_names("Administration of anesthesia",exact=TRUE,v="SNOMED")
 
-anes_downr7 <- omop_relations_recursive(anes$concept_id,
+anes_downr7 <- omop_relations(anes$concept_id,
                                       r_ids=c('Subsumes'), 
-                                      num_recurse=7)
+                                      nsteps=7)
 
 write_csv(anes_downr7,file=here("..","omopcept-plots","data","anes_downr7.csv"))
 
@@ -1020,8 +1020,8 @@ omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
 
 # cancer treatment
 
-ctr1 <- omop_relations_recursive("Cancer treatment", num_recurse = 1)
-ctr2 <- omop_relations_recursive("Cancer treatment", num_recurse = 2)
+ctr1 <- omop_relations("Cancer treatment", nsteps = 1)
+ctr2 <- omop_relations("Cancer treatment", nsteps = 2)
 #returning 13 concepts
 #but then doing 3 got massive
 
@@ -1038,7 +1038,7 @@ omop_graph(glutr1)
 antibds <- omop_names("antibiotic",exact=TRUE,d="Drug",v="SNOMED")
 #1
 #7 concepts not much use
-antibds_r1 <- omop_relations_recursive(antibds$concept_id)
+antibds_r1 <- omop_relations(antibds$concept_id)
 
 #try dm+d direct
 antibdmd <- omop_names("antibiotic",v="dm+d")
@@ -1050,9 +1050,9 @@ antibrxe <- omop_names("antibiotic",v="RXNorm extension")
 
 #amoxi in dm+d has single relation that is in RxNorm
 amovtm <- omop_names("Amoxicillin",cc="VTM")
-amovtm_r1 <- omop_relations_recursive(amovtm$concept_id)
+amovtm_r1 <- omop_relations(amovtm$concept_id)
 #amoxi in RxNorm has 1034 relations
-amovtm_r2 <- omop_relations_recursive(amovtm$concept_id,num_recurse = 2)
+amovtm_r2 <- omop_relations(amovtm$concept_id,nsteps = 2)
 amovtm_r2 |> count(relationship_id,sort=TRUE)
 
 #    relationship_id          n
@@ -1092,7 +1092,7 @@ timothystrt <- omop_names("timothy",exact="start")
 #returning 398 concepts
 
 #ooo this is cool how can pipe & pull
-timsynr1 <- omop_names("Timothy syndrome",exact=TRUE) |> pull(concept_id) |> omop_relations_recursive()
+timsynr1 <- omop_names("Timothy syndrome",exact=TRUE) |> pull(concept_id) |> omop_relations()
 
 #Aha thinking about it
 #what I could do is just filter the relations table
@@ -1186,9 +1186,9 @@ dlbcls <- omop_names("Diffuse large B-cell lymphoma",
 
 #going up hierarchy with just 'Is a' creates manageable results
 #if you include "Subsumes" you can get thousands
-dlbclr7 <- omop_relations_recursive(dlbcls$concept_id, 
+dlbclr7 <- omop_relations(dlbcls$concept_id, 
                                     r_ids=c('Is a'), 
-                                    num_recurse=7) 
+                                    nsteps=7) 
 
 dlbclr7 |> omop_graph(ggrlayout = "tree",
                       graphtitle="relationship_id 'Is a' to go up hierarchy",titletxtsize = 10,
@@ -1207,9 +1207,9 @@ dlbclr7 |> omop_graph(ggrlayout = "tree",
 
 sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
 
-relations <- omop_relations_recursive(sharp$concept_id, 
+relations <- omop_relations(sharp$concept_id, 
                                       r_ids=c('Is a','Subsumes'), 
-                                      num_recurse=2) 
+                                      nsteps=2) 
 
 omop_graph(relations,
            graphtitle="relationship_id 'Subsumes' to go down a hierarchy", titletxtsize = 10,

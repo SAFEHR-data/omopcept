@@ -3,6 +3,7 @@
 
 ### BREAKING CHANGES
 * `omop_relations_recursive()` arg `num_recurse` changed to `nsteps`
+* `omop_relations_recursive()` renamed to `omop_relations()` which in turn renamed to `omop_relations1step()`
 
 ### non-breaking changes
 * `omop_graph()` gets args `caption` `captionsize` `captionjust` `captioncolour`

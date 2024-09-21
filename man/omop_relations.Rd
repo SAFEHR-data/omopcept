@@ -3,7 +3,7 @@
 \name{omop_relations}
 \alias{omop_relations}
 \alias{orels}
-\title{find omop concept relations of one passed - immediate relations with indication of relationship}
+\title{recursively extract omop concept relations of one passed - immediate relations with indication of relationship}
 \usage{
 omop_relations(
   c_id = NULL,
@@ -15,8 +15,9 @@ omop_relations(
   r_ids = NULL,
   itself = FALSE,
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
-  join_names = TRUE,
-  messages = TRUE
+  messages = TRUE,
+  nsteps = 1,
+  add_step_column = TRUE
 )
 
 orels(
@@ -29,8 +30,9 @@ orels(
   r_ids = NULL,
   itself = FALSE,
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
-  join_names = TRUE,
-  messages = TRUE
+  messages = TRUE,
+  nsteps = 1,
+  add_step_column = TRUE
 )
 }
 \arguments{
@@ -52,25 +54,19 @@ orels(
 
 \item{names2avoid}{concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL}
 
-\item{join_names}{whether to join concept names onto ids, default TRUE, FALSE used by recursive to speed up}
-
 \item{messages}{whether to print info messages, default=TRUE}
+
+\item{nsteps}{number of recursions to search}
+
+\item{add_step_column}{whether to add column with step level, default=TRUE}
 }
 \value{
 a dataframe of concepts and attributes
 }
 \description{
-find omop concept relations of one passed - immediate relations with indication of relationship
-
-super short name func to find relations
+TODO need to sort repeated rows
 }
 \examples{
-omop_relations("Non-invasive blood pressure")
-omop_relations("Non-invasive blood pressure",r_ids=c('Is a','Subsumes'))
-#omop_relations("lenalidomide")
-#omop_relations(1633308)
-#chemodrugs <- omop_relations("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
-#cmde <- omop_relations(v_ids="Cancer Modifier")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
 chemodrugs <- orels("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
