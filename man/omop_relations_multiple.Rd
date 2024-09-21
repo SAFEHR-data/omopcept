@@ -14,7 +14,7 @@ omop_relations_multiple(
   r_ids = NULL,
   itself = FALSE,
   messages = TRUE,
-  num_recurse = 1
+  nsteps = 1
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ omop_relations_multiple(
 
 \item{messages}{whether to print info messages, default=TRUE}
 
-\item{num_recurse}{number of recursions to search}
+\item{nsteps}{number of recursions to search}
 }
 \value{
 a dataframe of concepts and attributes
@@ -45,6 +45,6 @@ a dataframe of concepts and attributes
 extract omop concept relations of a vector of concept_ids - immediate relations with indication of relationship
 }
 \examples{
-orm <- omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=1)
-#omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=2)
+orm <- omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), nsteps=1)
+#omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), nsteps=2)
 }

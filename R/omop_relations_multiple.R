@@ -9,12 +9,12 @@
 #' @param r_ids one or more relationship_id to filter by, default NULL for all, e.g c('Is a','Subsumes')
 #' @param itself whether to include relations to concept itself, default=FALSE
 #' @param messages whether to print info messages, default=TRUE
-#' @param num_recurse number of recursions to search
+#' @param nsteps number of recursions to search
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
-#' orm <- omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=1)
-#' #omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), num_recurse=2)
+#' orm <- omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), nsteps=1)
+#' #omop_relations_multiple(c(3571338L,3655355L), r_ids=c('Is a','Subsumes'), nsteps=2)
 omop_relations_multiple <- function(mc_ids,
                                      c_ids=NULL,
                                      d_ids=NULL,
@@ -24,7 +24,7 @@ omop_relations_multiple <- function(mc_ids,
                                      r_ids=NULL,
                                      itself=FALSE,
                                      messages=TRUE,
-                                     num_recurse=1) {
+                                     nsteps=1) {
 
 #DEVNOTE from NY first go at dev of multiple
 #just by copying recursive and adding a c_id loop at start
@@ -46,14 +46,14 @@ for(c_id in mc_ids)
 
   if (messages) message("recursively querying relations of: ",name1," ",cnum,"/",length(mc_ids))
 
-  for(recurse in 1:num_recurse)
+  for(step in 1:nsteps)
   {
 
-    if (messages) message("recurse level ",recurse," of ",num_recurse)
+    if (messages) message("step ",step," of ",nsteps)
 
     # get relations of each concept from the previous level
 
-    if (recurse == 1) {
+    if (step == 1) {
       prev_c_ids <- c_id
     } else {
       prev_c_ids <- unique(dfprev$concept_id_2)

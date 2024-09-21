@@ -15,8 +15,8 @@ omop_relations_recursive(
   itself = FALSE,
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
   messages = TRUE,
-  num_recurse = 1,
-  add_recurse_column = TRUE
+  nsteps = 1,
+  add_step_column = TRUE
 )
 }
 \arguments{
@@ -40,9 +40,9 @@ omop_relations_recursive(
 
 \item{messages}{whether to print info messages, default=TRUE}
 
-\item{num_recurse}{number of recursions to search}
+\item{nsteps}{number of recursions to search}
 
-\item{add_recurse_column}{whether to add column with recurse level, default=TRUE}
+\item{add_step_column}{whether to add column with step level, default=TRUE}
 }
 \value{
 a dataframe of concepts and attributes

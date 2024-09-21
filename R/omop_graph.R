@@ -57,6 +57,7 @@
 #' @export
 #' @examples
 #' #TODO need a more flexible palette solution than brewer (that limits num cats)
+#' #TODO try to sort being able to size nodes AND use a variable
 # pressure <- omop_names("^Blood pressure$",standard='S')
 # press_descend <- omop_descendants(pressure$concept_id[1])
 # omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
@@ -200,10 +201,16 @@ omop_graph <- function(dfin,
     ggraph::geom_node_point(aes(size=connections,
                                 #colour=.data[[nodecolourvar]]),
                                 colour=as.factor(.data[[nodecolourvar]])),
+                    #TODO re-enable this when worked out how to get it to cope with "connections"
+                    #size=nodesize,
                     alpha=nodealpha,
                     show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
-    #geom_node_point(aes(size=connections,colour=connections)) +
+
+    #distiller should cope with larger num cats by interpolation ?
+    #no gives Discrete values supplied to continuous scale
+    #scale_color_distiller(palette=palettebrewer, direction=palettedirection) +
     scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
+
     labs(title=graphtitle,subtitle=graphsubtitle,
          caption=caption) +
     theme(#panel.background=element_blank(),
@@ -229,9 +236,9 @@ omop_graph <- function(dfin,
     #allows legend key symbols to be bigger, not sure if required
     guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
     ggraph::geom_node_text(aes(label=name,
-                               size=nodetxtsize,
                                #colour=.data[[textcolourvar]]),
                                colour=as.factor(.data[[textcolourvar]])),
+                   size=nodetxtsize,
                    angle=nodetxtangle,
                    show.legend=FALSE,
                    repel=TRUE,

@@ -1159,34 +1159,30 @@ omop_graph(timr1subs2, filenameroot="timr1subs",
 #2024-09-15 plots for OHDSI UK lighning talk
 #try producing pngs at a resolution that can be inserted directly to slides
 #web search says 1920x1080 pixels is optimal
+#sometimes pngs have weird white bozes in black bg, then pdf & screenshot 
 
-#this example is good for testing
-#r_ids=c('Subsumes'), #gets just 7 concepts
-#r_ids=c('Is a','Subsumes') #more concepts
-#r_ids=c('Subsumes','Maps to'),#trying to get itself
-sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
-relations <- omop_relations_recursive(sharp$concept_id, 
-                                      r_ids=c('Subsumes'), 
-                                      num_recurse=2) 
+# 1. Multiple Myeloma 'Mapped from'
+mms <- omop_names("multiple myeloma",exact=TRUE,v="SNOMED",s="S")
 
-omop_graph(relations,
-           graphtitle="SNOMED hierarchies", titletxtsize = 10,
-           legendshow=FALSE, 
-           width=960, height=1080, units="px",
-           nodetxtsize=2, #default=9
-           edgewidth=0.5,#default=0.1
-           textcolourvar="recurse_level", nodecolourvar="recurse_level",
-           filenamecustom="ohdsi-uk-24-snomed-sharp-injuries",
-           filetype="png"
-           )
+mmsr1m <- omop_relations(mms$concept_id, r_ids=c('Mapped from'))
 
-sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
-relations <- omop_relations_recursive(sharp$concept_id, 
-                                      r_ids=c('Subsumes'), 
-                                      #itself=TRUE,
-                                      num_recurse=2) 
+mmsr1m |>
+  omop_graph(graphtitle="relationship_id 'Mapped from'",titletxtsize = 10, 
+             palettebrewer = "Set1",
+             legendshow=TRUE, legendtxtsize=6, legendcm=0.5,
+             textcolourvar="vocabulary_id", nodecolourvar="vocabulary_id",
+             width=960, height=1080, units="px", #1920
+             nodetxtsize=1.3, #default=9
+             nodesize = 0.7,
+             edgewidth=0.3,#default=0.1
+             filenamecustom="ohdsi-uk-24-myeloma-mapping",
+             filetype="pdf")
 
-dlbcls <- omop_names("Diffuse large B-cell lymphoma", exact=TRUE, v_ids = ("SNOMED"))
+
+# 2. Lymphoma, up hierarchy
+dlbcls <- omop_names("Diffuse large B-cell lymphoma", 
+                     exact=TRUE, 
+                     v_ids = ("SNOMED"))
 
 #going up hierarchy with just 'Is a' creates manageable results
 #if you include "Subsumes" you can get thousands
@@ -1194,138 +1190,43 @@ dlbclr7 <- omop_relations_recursive(dlbcls$concept_id,
                                     r_ids=c('Is a'), 
                                     num_recurse=7) 
 
-#Good going up from DLBCL to Neoplastic disease, only a few concepts, but doesn't look great on slide
 dlbclr7 |> omop_graph(ggrlayout = "tree",
-                      graphtitle="Up a hierarchy, tree layout",titletxtsize = 10,
-                      #saveplot=FALSE, graphtitle=NULL, 
+                      graphtitle="relationship_id 'Is a' to go up hierarchy",titletxtsize = 10,
                       palettebrewer = "Set1",
                       legendshow=FALSE, 
                       textcolourvar="recurse_level", nodecolourvar = "recurse_level",
                       width=960, height=1080, units="px", #1920
-             nodetxtsize=1, #default=9
+             nodetxtsize=2.5, #default=9
              nodesize=0.5, #default="connections"
-             edgewidth=0.5,#default=0.1
+             edgewidth=0.2,#default=0.1
              filenamecustom="ohdsi-uk-24-lymphoma-tree",
              filetype="pdf")
 
 
-#Multiple Myeloma Subsumes 11 Is a 1
-mms <- omop_names("multiple myeloma",exact=TRUE,d="Condition",v="SNOMED",s="S")
-#1
-mmsr1 <- omop_relations(mms$concept_id)
-#mmsr1 <- omop_relations(mms$concept_id, r_ids=c('Is a','Subsumes'), v="SNOMED")
-#returning 14
-mmsr1 |> count(relationship_id, sort=TRUE)
+# 2. Sharp injuries, down hierarchy
 
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
 
-mmappedfrom <- mmsr1 |> 
-  #filter(vocabulary_id %in% c("SNOMED")) |> 
-  filter(relationship_id %in% c('Mapped from'))
+relations <- omop_relations_recursive(sharp$concept_id, 
+                                      r_ids=c('Is a','Subsumes'), 
+                                      num_recurse=2) 
 
-mmappedfrom |> count(vocabulary_id, sort=TRUE)
-# 1 ICDO3             5
-# 2 Read              5
-# 3 OXMIS             4
-# 4 SNOMED            4
-# 5 HCPCS             3
-# 6 ICD10             2
-# 7 HemOnc            1
-# 8 OncoTree          1
-# 9 UK Biobank        1
+omop_graph(relations,
+           graphtitle="relationship_id 'Subsumes' to go down a hierarchy", titletxtsize = 10,
+           legendshow=FALSE,
+           width=960, height=1080, units="px",
+           nodetxtsize=2.2, #default=9
+           nodealpha=0.5,
+           edgewidth=0.2,#default=0.1
+           textcolourvar="recurse_level", nodecolourvar="recurse_level",
+           filenamecustom="ohdsi-uk-24-snomed-sharp-injuries",
+           filetype="pdf"
+           )
 
-#This will be good with some tweaking
-#and I could make a function to do this for any concept
-#(advantage for display that it is quicker than recursive ones) 
-mmappedfrom |>
-  omop_graph(graphtitle="Multiple myeloma mapped from",titletxtsize = 10, 
-             palettebrewer = "Set1",
-             legendshow=TRUE, legendtxtsize=6, legendcm=0.5,
-             textcolourvar="vocabulary_id", nodecolourvar="vocabulary_id",
-             width=960, height=1080, units="px", #1920
-             nodetxtsize=1.2, #default=9
-             edgewidth=0.5,#default=0.1
-             filenamecustom="ohdsi-uk-24-myeloma-mapping",
-             filetype="pdf")
   
   
 
 ```
-
-```{r first test plot, include=FALSE, eval=TRUE}
-
-# If you want to go beyond ~20k nodes, then you may want to switch to layout_with_pmds() or layout_with_sparse_stress() which are optimized to work with large graphs.
-
-
-#selecting data to plot
-#challenge to get down to a small enough number
-dfin <- dffigo
-dfin <- dfme3
-dfin <- dfme3 |> head(2000)
-
-dfin <- dfme1
-
-#MAYBE SAVE ONE OF OMOP DATA OBJECTS IN PACKAGE TO SPEED PLOT PRODUCTION
-
-#try filtering an equal number of domains
-dfin <- dfme3 |> 
-#post submission perhaps I want to start from just direct connections, separation1
-#but the plot didn't look as good! not sure which is best
-#dfin <- dfme1 |>   
-  filter(domain_id %in% freq_domain_id$domain_id[1:7]) |> 
-  group_by(domain_id) |> 
-  #top x rows for each group
-  slice_head(n=500) |> 
-  ungroup()
-
-
-# dfin <- dfsnoblood
-# dfin <- dfsnobloodgroup
-# dfin <- dfloincblood
-# dfin <- dfloincbloodgroup
-
-dfin <- dfnews2d
-dfin <- dfoxa1
-dfin <- vehicle_accident_descendants
-dfin <- critical1
-dfin <- holsanc
-dfin <- holsrel
-
-
-if ("ancestor_name" %in% names(dfin)){
-  
-  #DESCENDANT
-  dfin2 <- dfin |> 
-    dplyr::rename(from = ancestor_name,
-                  to = concept_name)    
-  
-} else if ("descendant_concept_name" %in% names(dfin)){
-  
-  #ANCESTOR
-  dfin2 <- dfin |>
-   dplyr::rename(from = descendant_concept_name,
-                 to = concept_name)
-  
-} else if ("concept_name_1" %in% names(dfin)){
-  
-  #RELATION
-  dfin2 <- dfin |>
-   dplyr::rename(from = concept_name_1,
-                 to = concept_name_2)
-  
-}
-
-  
-#saving plots
-#naming convention
-#s  separation min
-#m  plot metres
-#ea edge alpha
-#ta text alpha  
-#pdark2 palette color brewer
-#ns node sized
-#nts node text size
-#d? domains
   
 
-```
 

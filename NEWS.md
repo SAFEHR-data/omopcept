@@ -1,6 +1,10 @@
 
 # omopcept 0.0.6.0 2024-07-24 DEV version
 
+### BREAKING CHANGES
+* `omop_relations_recursive()` arg `num_recurse` changed to `nsteps`
+
+### non-breaking changes
 * `omop_graph()` gets args `caption` `captionsize` `captionjust` `captioncolour`
 * repository moved from `andysouth` to `SAFEHR-data`
 * issue fixed in `omop_relations` & `omop_graph()` with colouring plots by `recurse_level`

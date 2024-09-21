@@ -2,7 +2,7 @@
 #'
 # TODO need to sort repeated rows ...
 # TODO I could rename this to omop_relations() & rename that to omop_rel1() and not export it
-# num_recurse==1 is same as what omop_relations is currently so can just have that as default
+# nsteps==1 is same as what omop_relations is currently so can just have that as default
 #' @param c_id single omop concept_id or exact concept_name to get relations of, default NULL returns all
 #' @param c_ids one or more concept_id to filter by, default NULL for all
 #' @param d_ids one or more domain_id to filter by, default NULL for all
@@ -13,13 +13,13 @@
 #' @param itself whether to include relations to concept itself, default=FALSE
 #' @param names2avoid concept names to avoid, defaults to generic concepts with lots relations, can be set to NULL
 #' @param messages whether to print info messages, default=TRUE
-#' @param num_recurse number of recursions to search
-#' @param add_recurse_column whether to add column with recurse level, default=TRUE
+#' @param nsteps number of recursions to search
+#' @param add_step_column whether to add column with step level, default=TRUE
 #' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
-#' r1 <- omop_relations_recursive("Non-invasive blood pressure", num_recurse=1)
-#' #omop_relations_recursive("Non-invasive blood pressure", r_ids=c("Is a","Subsumes"), num_recurse=2)
+#' #r1 <- omop_relations_recursive("Non-invasive blood pressure", nsteps=1)
+#' r2 <- omop_relations_recursive("Non-invasive blood pressure", r_ids=c("Is a","Subsumes"), nsteps=2)
 omop_relations_recursive <- function(c_id=NULL,
                                      c_ids=NULL,
                                      d_ids=NULL,
@@ -30,8 +30,8 @@ omop_relations_recursive <- function(c_id=NULL,
                                      itself=FALSE,
                                      names2avoid=c("SNOMED CT core","Defined","Primitive"),
                                      messages=TRUE,
-                                     num_recurse=1,
-                                     add_recurse_column=TRUE) {
+                                     nsteps=1,
+                                     add_step_column=TRUE) {
 
 
   #checks c_id and gets name (ALL if c_id==NULL)
@@ -43,13 +43,13 @@ omop_relations_recursive <- function(c_id=NULL,
 
   dfall <- NULL
 
-  for(recurse in 1:num_recurse)
+  for(step in 1:nsteps)
   {
 
-    if (messages) message("recurse level ",recurse," of ",num_recurse)
+    if (messages) message("step ",step," of ",nsteps)
 
     # get relations of each concept from the previous level
-    if (recurse == 1) {
+    if (step == 1) {
       prev_c_ids <- c_id0
     } else {
       prev_c_ids <- unique(dfprev$concept_id_2)
@@ -72,21 +72,21 @@ omop_relations_recursive <- function(c_id=NULL,
                                messages=messages,
                                join_names=FALSE)
 
-      #add recurse_level column that can be used in plot colouring
-      if (add_recurse_column)
+      #add step column that can be used in plot colouring
+      if (add_step_column)
       {
-        dfprev1 <- dfprev1 |> mutate(recurse_level=recurse)
+        dfprev1 <- dfprev1 |> mutate(step=step)
         #need a relation to itself to get colouring right
         #in some options standard one gets filtered elsewhere
         #'Is' is a non standard relationship_id
-        if (recurse == 1)
+        if (step == 1)
         {
           r_to_itself <- dfprev1 |>
             head(1) |>
             mutate( concept_id_1=c_id0,
                     concept_id_2=c_id0,
                     relationship_id="Is",
-                    recurse_level=0)
+                    step=0)
 
           dfprev1 <- bind_rows(r_to_itself, dfprev1)
         }

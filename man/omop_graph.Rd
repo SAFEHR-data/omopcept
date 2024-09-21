@@ -138,4 +138,5 @@ accepts output from either omop_ancestors(), omop_descendants() or omop_relation
 }
 \examples{
 #TODO need a more flexible palette solution than brewer (that limits num cats)
+#TODO try to sort being able to size nodes AND use a variable
 }

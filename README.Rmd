@@ -89,7 +89,7 @@ omop_concept() |>
 | `omop_ancestors()` | `oance()` | return ancestors of a concept |
 | `omop_descendants()` | `odesc()` | return descendants of a concept |
 | `omop_relations()` | `orels()` | return (immediate) relations of a concept including the nature of the relationship e.g. 'Is a'|
-| `omop_relations_recursive()` | - | return (immediate) relations of a concept and the relations of those up to `num_recurse`
+| `omop_relations_recursive()` | - | return (immediate) relations of a concept and the relations of those up to `nsteps`
 | `omop_graph()` | - | graph omop relationships (experimental) |
 ||||
 | `omop_concept()` | `oc()` | return reference to concept table (for use in dplyr pipelines) |
@@ -183,10 +183,10 @@ sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
 
 relations <- omop_relations_recursive(sharp$concept_id, 
                                       r_ids=c('Is a','Subsumes'), 
-                                      num_recurse=2) 
+                                      nsteps=2) 
 
 omop_graph(relations, saveplot=FALSE, graphtitle=NULL, 
-           legendshow=FALSE, nodetxtsize=5, textcolourvar="recurse_level")
+           legendshow=FALSE, nodetxtsize=5, textcolourvar="step")
 
 ```
 
