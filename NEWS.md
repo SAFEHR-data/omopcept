@@ -2,6 +2,7 @@
 # omopcept 0.0.6.0 2024-07-24 DEV version
 
 ### BREAKING CHANGES
+To make use of `omop_relations()` easier and more intuitive
 * `omop_relations_recursive()` arg `num_recurse` changed to `nsteps`
 * `omop_relations_recursive()` renamed to `omop_relations()` which in turn renamed to `omop_relations1step()`
 

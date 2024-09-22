@@ -14,15 +14,14 @@
 #' @param messages whether to print info messages, default=TRUE
 #' @param nsteps number of recursions to search
 #' @param add_step_column whether to add column with step level, default=TRUE
-#' @return a dataframe of concepts and attributes
 #' @export
 #' @examples
 #' omop_relations("Non-invasive blood pressure")
 #' omop_relations("Non-invasive blood pressure",nsteps=2,r_ids=c('Is a','Subsumes'))
 #' #omop_relations("lenalidomide")
 #' #omop_relations(1633308)
-#' #chemodrugs <- omop_relations("Cytotoxic chemotherapeutic",v_ids="HemOnc",d_ids="Regimen")
 #' #cmde <- omop_relations(v_ids="Cancer Modifier")
+#' @return a dataframe of concepts and attributes
 omop_relations <- function(c_id=NULL,
                            c_ids=NULL,
                            d_ids=NULL,

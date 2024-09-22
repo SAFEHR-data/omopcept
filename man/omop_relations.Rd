@@ -62,11 +62,17 @@ orels(
 }
 \value{
 a dataframe of concepts and attributes
+Is' is a non standard relationship_id
 }
 \description{
 TODO need to sort repeated rows
 }
 \examples{
+omop_relations("Non-invasive blood pressure")
+omop_relations("Non-invasive blood pressure",nsteps=2,r_ids=c('Is a','Subsumes'))
+#omop_relations("lenalidomide")
+#omop_relations(1633308)
+#cmde <- omop_relations(v_ids="Cancer Modifier")
 # because of R argument matching, you can just use the first unique letters of
 # arguments e.g. v for v_ids, cc for cc_ids
 chemodrugs <- orels("Cytotoxic chemotherapeutic", v="HemOnc", d="Regimen")
