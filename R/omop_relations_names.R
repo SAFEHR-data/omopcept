@@ -59,9 +59,9 @@ omop_relations_names <- function(#df1 = NULL,
   df1 <- omopcept::omop_concept_relationship() |>
 
     #join twice for ID1 & ID2
-    left_join( select(omopcept::omop_concept(),CONCEPT_ID,CONCEPT_NAME),
-               join_by(CONCEPT_ID_1,CONCEPT_ID)) |>
-    rename(CONCEPT_NAME_1=CONCEPT_NAME) |>
+    left_join( select(omopcept::omop_concept(),concept_id,concept_name),
+               join_by(concept_1,concept_id)) |>
+    rename(concept_name_1=concept_name) |>
 
     filter(grepl(findstring, concept_name, ignore.case = ignore_case, fixed = fixed)) |>
 
