@@ -53,20 +53,15 @@ ornames(
 \item{messages}{whether to print info messages, default=TRUE}
 }
 \description{
+a different (and quicker) way of finding relationships than omop_relations() that gets relations of a specified concept
 note that names are not contained in CONCEPT_RELATIONSHIP so the function joins to CONCEPT to query
 }
 \examples{
-omop_relations_names("AJCC/UICC Stage")
+orn <- omop_relations_names("diffuse large B cell lymphoma")
+#omop_relations_names("AJCC/UICC Stage")
 #omop_relations_names("chemotherapy", v_ids="LOINC")
 #omop_relations_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 #set the findstring to "" to get all rows satisfying the other conditions
 #omop_relations_names("", v_ids="Gender")
 #omop_relations_names("", d_ids="Type Concept", standard="S")
-# ornames("chemotherapy", v_ids="LOINC")
-# because of R argument matching, you can just use the first unique letters of
-# arguments e.g. v for v_ids, cc for cc_ids
-# to get all clinical drugs starting with A
-ornames("^a", d="DRUG", v="SNOMED", cc="Clinical Drug")
-# to get all 'chop' cancer regimens
-#chops <- ornames("chop", d="Regimen")
 }

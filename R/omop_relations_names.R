@@ -1,5 +1,6 @@
 #' string search of concepts by name in the CONCEPT_RELATIONSHIP table
 #'
+#' a different (and quicker) way of finding relationships than omop_relations() that gets relations of a specified concept
 #' note that names are not contained in CONCEPT_RELATIONSHIP so the function joins to CONCEPT to query
 #'
 # @param df1 dataframe containing concept_name field, if null uses concept
@@ -16,7 +17,8 @@
 #' @param messages whether to print info messages, default=TRUE
 #' @export
 #' @examples
-#' omop_relations_names("AJCC/UICC Stage")
+#' orn <- omop_relations_names("diffuse large B cell lymphoma")
+#' #omop_relations_names("AJCC/UICC Stage")
 #' #omop_relations_names("chemotherapy", v_ids="LOINC")
 #' #omop_relations_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Procedure"))
 #' #set the findstring to "" to get all rows satisfying the other conditions
@@ -60,11 +62,14 @@ omop_relations_names <- function(#df1 = NULL,
 
     #join twice for ID1 & ID2
     left_join( select(omopcept::omop_concept(),concept_id,concept_name),
-               join_by(concept_1,concept_id)) |>
+               join_by(concept_id_1 == concept_id)) |>
     rename(concept_name_1=concept_name) |>
+    left_join( select(omopcept::omop_concept(),concept_id,concept_name),
+               join_by(concept_id_2 == concept_id)) |>
+    rename(concept_name_2=concept_name) |>
 
-    filter(grepl(findstring, concept_name, ignore.case = ignore_case, fixed = fixed)) |>
-
+    #find rows with concept_name_1 that satisfies string search
+    filter(grepl(findstring, concept_name_1, ignore.case = ignore_case, fixed = fixed)) |>
 
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard) |>
 
@@ -76,16 +81,6 @@ omop_relations_names <- function(#df1 = NULL,
 
   return(df1)
 
-  # this allowed passing dataframe instead of concepts
-  # but caused confusing behaviour when omop_relations_names("test")
-  # if (is.null(df1)) df1 <- concept
-  #
-  # if (!is.null(findstring))
-  # {
-  #   df1 <- df1 |>
-  #     filter(str_detect(concept_name, findstring)) |>
-  #     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
-  # }
 
 }
 
@@ -93,25 +88,6 @@ omop_relations_names <- function(#df1 = NULL,
 #' super short name func to search relations by concept_name
 #' @rdname omop_relations_names
 #' @export
-#' @examples
-#' # ornames("chemotherapy", v_ids="LOINC")
-#' # because of R argument matching, you can just use the first unique letters of
-#' # arguments e.g. v for v_ids, cc for cc_ids
-#' # to get all clinical drugs starting with A
-#' ornames("^a", d="DRUG", v="SNOMED", cc="Clinical Drug")
-#' # to get all 'chop' cancer regimens
-#' #chops <- ornames("chop", d="Regimen")
 ornames <- omop_relations_names
 
-
-
-#old issue couldn't pass a string varible within a function - its not recognised by arrow
-#seems to be OK now
-#https://arrow.apache.org/docs/r/articles/developers/writing_bindings.html
-#apache arrow R cookbook is good on this with list of C++ functions
-#https://arrow.apache.org/cookbook/r/manipulating-data---tables.html#use-r-functions-in-dplyr-verbs-in-arrow
-#list_compute_functions() gives list of C++ functions
-#C++ func doc : https://arrow.apache.org/docs/cpp/compute.html#available-functions
-#looking at the output without collect() shows the C++ code
-#omop_concept() |> filter(str_detect(str_to_lower(concept_name),str_to_lower(stringvar)))
 
