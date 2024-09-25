@@ -37,6 +37,7 @@
 #' @param filenamecustom optional filename for plot, otherwise default name is created
 #' @param filepath where to save image file, default=file.path("..//omopcept-plots")
 #'
+#' @param canvas some plot setups that override width,height,units "A4" "A4landscape" etc.
 #' @param width plot width, default=50
 #' @param height plot height, default=30
 #' @param units plot size units default='cm'
@@ -96,6 +97,7 @@ omop_graph <- function(dfin,
                        filenamecustom = NULL,
                        filepath = file.path("..//omopcept-plots"),
 
+                       canvas=NULL,
                        width=50,
                        height=30,
                        units='cm',
@@ -264,9 +266,20 @@ omop_graph <- function(dfin,
 
   if (saveplot)
   {
+    if (!is.null(canvas))
+    {
+      canvas_specs <- get_plot_dims(canvas)
+      width <- canvas_specs$width
+      height <- canvas_specs$height
+      units <- canvas_specs$units
+    }
+
+    cat("plot dims: w",width," h",height," u:",units,"\n")
+
     if (!is.null(filenamecustom))
       filename <- filenamecustom
     else
+    {
       filename <- paste0(filenameroot,
                          "-",ggrlayout,
                          "-p",palettedirection,palettebrewer,
@@ -275,8 +288,13 @@ omop_graph <- function(dfin,
                          "-nta",nodetxtangle,
                          "-n",nodecolourvar,
                          "-b",backcolour,
-                         "-e",edgecolour,
-                         "-",width,"x",height,units)
+                         "-e",edgecolour)
+    }
+
+    #add these even if custom filename
+    if (!is.null(canvas)) filename <- paste0(filename,"-",canvas)
+    else                  filename <- paste0(filename,"-",width,"x",height,units)
+
     #add extension
     filename <- paste0(filename,".",filetype)
 
@@ -284,6 +302,8 @@ omop_graph <- function(dfin,
     #could be done with ggsave::create.dir=TRUE but only in ggplot from 2024
     if (!dir.exists(filepath))
         dir.create(filepath, recursive = TRUE)
+
+
 
     ggsave(ggr, filename=file.path(filepath,filename),
            width=width, height=height, units=units, limitsize=FALSE)

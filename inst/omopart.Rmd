@@ -830,10 +830,11 @@ sharpr_upr5 <- omop_relations(sharp$concept_id,
 # for str_detect("accident") has similar result & would be much quicker
 # could also check on this which rows wouldn't be caught by that)
 #4059 rows
-acc_downr7r <- omop_relations(acc$concept_id, 
-                                      r_ids=c('Subsumes'), 
-                                      nsteps=7) 
-write_csv(acc_downr7r,file=here("..","omopcept-plots","data","acc_downr7r.csv"))
+# acc_downr7r <- omop_relations(acc$concept_id, 
+#                                       r_ids=c('Subsumes'), 
+#                                       nsteps=7) 
+#write_csv(acc_downr7r,file=here("..","omopcept-plots","data","acc_downr7r.csv"))
+acc_downr7r <- read_csv(here("..","omopcept-plots","data","acc_downr7r.csv"))
 
 filter_rship_names <- function(df, stringremove)
 {
@@ -911,6 +912,75 @@ omop_graph(acc_downr7rb, filenameroot="acc_downr7rb_recurse_caption",
            captiontxtsize=24)
 
 ##end of good one
+
+#MAKE AN A4 version with fewer concepts
+#may have to rerun relations query
+
+sharp <- omop_names("Accident caused by sharp-edged object", standard="S")
+
+sharpr3 <- omop_relations(sharp$concept_id, 
+                                      r_ids=c('Is a','Subsumes'), 
+                                      nsteps=3) 
+sharpr4 <- omop_relations(sharp$concept_id, 
+                                      r_ids=c('Is a','Subsumes'), 
+                                      nsteps=4) 
+
+caption <- "SNOMED sharp accidents from OMOP. Plot made by Andy South using R, ggplot2 & omopcept. 2024-09-26."
+
+#GOOD for A4 (not sure about plot & text sizing)
+omop_graph( sharpr3,
+            graphtitle="accidents with omopcept", titletxtsize = 20,
+           canvas="A1",
+           palettebrewer = "YlOrRd",
+           palettedirection = -1,
+           legendshow = FALSE,
+           backcolour="black",
+           titlecolour = "darkred",
+           edgecolour="red",
+           nodetxtsize=10,
+           caption=caption,
+           captiontxtsize=20,
+           captionjust="centre",
+           textcolourvar="step", nodecolourvar="step",
+           filenamecustom="ohdsi-uk-24-snomed-sharp",
+           filetype="pdf"
+           )
+
+#OK 260 obs
+omop_graph( sharpr4,
+           graphtitle="Tree of accidents", titletxtsize = 40,
+           canvas="A1",
+           palettebrewer = "Set1",
+           palettedirection = -1,
+           legendshow = FALSE,
+           backcolour="white",
+           titlecolour = "darkred",
+           edgecolour="brown",
+           nodetxtsize=10,
+           caption=caption,
+           captiontxtsize=20,
+           captionjust="centre",
+           textcolourvar="step", nodecolourvar="step",
+           filenamecustom="ohdsi-uk-24-sharp-accidents4-treecolours",
+           filetype="pdf"
+           )
+
+
+acc_trans <- omop_names("transport accident", exact=TRUE)
+acc_trans_r4 <- omop_relations(acc_trans$concept_id, 
+                             r_ids=c('Is a','Subsumes'), 
+                             nsteps=4) 
+#remove [X] names
+acc_trans_r4x <- acc_trans_r4 |> filter(!(str_detect(.data$concept_name_1,"[X]") |
+                                          str_detect(.data$concept_name_2,"[X]")))
+
+acc_trans_r3x <- acc_trans_r4x |> filter(step < 4)
+
+acc_air <- omop_names("aircraft accident", exact=TRUE)
+acc_air_r3 <- omop_relations(sharp$concept_id, 
+                             r_ids=c('Is a','Subsumes'), 
+                             nsteps=3) 
+
 
 #TODO for the accident one I could use string search to classify & then colour by
 # car, bus, train, motorbike, bicycle, aircraft, boat, other

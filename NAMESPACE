@@ -2,6 +2,7 @@
 
 export(check_c_id)
 export(dynamic_by)
+export(get_plot_dims)
 export(oance)
 export(oc)
 export(oca)

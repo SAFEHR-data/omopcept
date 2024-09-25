@@ -34,6 +34,7 @@ omop_graph(
   filenameroot = "omop_graph",
   filenamecustom = NULL,
   filepath = file.path("..//omopcept-plots"),
+  canvas = NULL,
   width = 50,
   height = 30,
   units = "cm",
@@ -104,6 +105,8 @@ omop_graph(
 \item{filenamecustom}{optional filename for plot, otherwise default name is created}
 
 \item{filepath}{where to save image file, default=file.path("..//omopcept-plots")}
+
+\item{canvas}{some plot setups that override width,height,units "A4" "A4landscape" etc.}
 
 \item{width}{plot width, default=50}
 
