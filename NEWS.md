@@ -1,16 +1,20 @@
 
-# omopcept 0.0.6.0 2024-07-24 DEV version
+# omopcept 0.0.6.1 2024-07-24 DEV version
+
+# omopcept 0.0.6.0 2024-09-26
 
 ### BREAKING CHANGES
 To make use of `omop_relations()` easier and more intuitive
 * `omop_relations_recursive()` arg `num_recurse` changed to `nsteps`
 * `omop_relations_recursive()` renamed to `omop_relations()` which in turn renamed to `omop_relations1step()`
+* `omop_relations()` now optionally adds column `step` for plot colouring, replacing `recurse_level`
 
 ### non-breaking changes
 * `omop_graph()` gets args `caption` `captionsize` `captionjust` `captioncolour`
 * repository moved from `andysouth` to `SAFEHR-data`
 * issue fixed in `omop_relations` & `omop_graph()` with colouring plots by `recurse_level`
-* `omop_grap()` gets `nodesize` arg
+* `omop_grap()` gets `nodesize` arg (NOT functioning yet)
+* `omop_grap()` gets `canvas` arg to set plot size, one of "A4","A4l","A3","A3l","A2","A2l","A1","A1l","A0","A0l","slide","slidehalf"
 
 # omopcept 0.0.5.9 2024-07-24
 
