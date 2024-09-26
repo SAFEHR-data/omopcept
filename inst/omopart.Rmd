@@ -925,11 +925,13 @@ sharpr4 <- omop_relations(sharp$concept_id,
                                       r_ids=c('Is a','Subsumes'), 
                                       nsteps=4) 
 
-caption <- "SNOMED sharp accidents from OMOP. Plot made by Andy South using R, ggplot2 & omopcept. 2024-09-26."
+caption <- 'sharp <- omop_names("Accident caused by sharp-edged object", standard="S")\n
+            sharpr3 <- omop_relations(sharp$concept_id, r_ids=c("Is a","Subsumes"), nsteps=3)\n
+            omop_graph( sharpr3 )'
 
-#GOOD for A4 (not sure about plot & text sizing)
+#4POSTER GOOD for A4 (not sure about plot & text sizing)
 omop_graph( sharpr3,
-            graphtitle="accidents with omopcept", titletxtsize = 20,
+            graphtitle="example SNOMED hierarchy", titletxtsize = 40,
            canvas="A1",
            palettebrewer = "YlOrRd",
            palettedirection = -1,
@@ -939,11 +941,12 @@ omop_graph( sharpr3,
            edgecolour="red",
            nodetxtsize=10,
            caption=caption,
-           captiontxtsize=20,
+           captiontxtsize=12,
            captionjust="centre",
            textcolourvar="step", nodecolourvar="step",
            filenamecustom="ohdsi-uk-24-snomed-sharp",
-           filetype="pdf"
+           filetype="png"
+           #filetype="pdf"           
            )
 
 #OK 260 obs
@@ -1048,11 +1051,12 @@ omop_graph(accprocs_downr7, filenameroot="accprocs_downr7",
 #1
 anes <- omop_names("Administration of anesthesia",exact=TRUE,v="SNOMED")
 
-anes_downr7 <- omop_relations(anes$concept_id,
-                                      r_ids=c('Subsumes'), 
-                                      nsteps=7)
-
-write_csv(anes_downr7,file=here("..","omopcept-plots","data","anes_downr7.csv"))
+# anes_downr7 <- omop_relations(anes$concept_id,
+#                                       r_ids=c('Subsumes'), 
+#                                       nsteps=7)
+# 
+# write_csv(anes_downr7,file=here("..","omopcept-plots","data","anes_downr7.csv"))
+anes_downr7 <- read_csv(here("..","omopcept-plots","data","anes_downr7.csv"))
 
 ############################################################
 #####***GOOD ONE***
@@ -1293,8 +1297,219 @@ omop_graph(relations,
            filetype="pdf"
            )
 
+# drugs for poster
+
+vin <- omop_names("vincristine", exact=TRUE)
+#4 from diff vocabs, incl. Rxnorm & dm+d
+vins <- omop_names("vincristine", exact=TRUE, v="SNOMED")   
   
-  
+vinsr2 <- omop_relations(vins$concept_id, steps=2)
+freqvr <- vinsr2 |> count(relationship_id, sort=TRUE)
+#  1 Cytotox chemo RX of   301
+#  2 Is a                   59
+#  3 Subsumes               46
+#  4 Causative agent of     26
+#  5 Has Module             23
+#  6 Has status             23
+#  7 Active ing of          22
+#  8 Has brand name         21
+#  9 Mapped from            20
+# 10 RxNorm ing of          18
+# # ℹ 34 more rows
+vinsr2 |> count(step, sort=TRUE)
+# 1     2   653
+# 2     1    25
+
+#filter just relations that have a freq between 59 & 18 to get 9 cats
+rsb <- freqvr |> filter(n<60 & n>17) |> pull(relationship_id)
+vinsr2b <- vinsr2 |> filter(relationship_id %in% rsb)
+#258
+#
+caption <- "Vincristine - a chemo drug (to which I owe my life) derived from a plant, the Madagascar Periwinkle.\n Here two relationship steps from the SNOMED concept, excluding 'Cytotox chemo RX of'. Plot made by Andy South using R, ggplot2 & omopcept. 2024-09-26."
+#4poster GOOD
+omop_graph( vinsr2b,
+           graphtitle="example drug relationships", titletxtsize = 40,
+           canvas="A1",
+           palettebrewer = "Set1",
+           palettedirection = -1,
+           legendshow = TRUE,
+           backcolour="white",
+           titlecolour = "darkred",
+           edgecolour="grey",
+           edgewidth = 0.4,
+           nodetxtsize=9,
+           caption=caption,
+           captiontxtsize=12,
+           captionjust="centre",
+           nodecolourvar="relationship_id",
+           filenamecustom="ohdsi-uk-24-vincristine",
+           #filetype="pdf"
+           filetype="png"           
+           )
+
+# Try a bigger tree for poster
+# perhaps just subsumes from Malignant Lymphoma
+
+ml <- omop_names("malignant lymphoma", exact=TRUE, d="Condition", v="SNOMED")   
+
+mlr2 <- omop_relations(ml$concept_id, nsteps=2, r="Subsumes")
+#eek step1 has 384 rows
+#3020 concepts
+
+nonhodgr1 <- mlr2 |> filter(concept_name_1=="Non-Hodgkin's lymphoma (clinical)")
+
+# need to use fixed=TRUE because the punctuation messes with regex
+# maybe fixed=TRUE should be default ??
+nonhodg <- omop_names("Non-Hodgkin's lymphoma (clinical)", fixed=TRUE)
+
+nonhodgr2 <- omop_relations(nonhodg$concept_id, nsteps=2, r="Subsumes")
+#wow 4706 rows
+#B-cell lymphoma (clinical) has 1183 children !
+bcl <- omop_names("B-cell lymphoma (clinical)", fixed=TRUE)
+bclr2 <- omop_relations(bcl$concept_id, nsteps=2, r="Subsumes")
+#took forever, gave up
+
+#doh! this one only has 5 !!
+dfnhl <- omop_names("Diffuse non-Hodgkin's lymphoma, large cell (clinical)", fixed=TRUE)
+dfnhlr2 <- omop_relations(dfnhl$concept_id, nsteps=2, r="Subsumes")
+
+#back to exact
+dfnhl <- omop_names("Diffuse non-Hodgkin's lymphoma", exact=TRUE)
+dfnhlr2 <- omop_relations(dfnhl$concept_id, nsteps=2, r="Subsumes")
+#eek 7k children of one step1
+dfnhlr2b <- dfnhlr2 |> filter(concept_name_1 != "Diffuse non-Hodgkin's lymphoma of extranodal site")
+
+#still far too many concepts
+dfnhlr2b |> omop_graph(ggrlayout = "tree",
+                      graphtitle="children of Diffuse non-Hodgkin's lymphoma",titletxtsize = 10,
+                      canvas="A1",
+                      palettebrewer = "Set1",
+                      legendshow=FALSE, 
+                      nodecolourvar = "step",
+                      width=960, height=1080, units="px", #1920
+             nodetxtsize=2.5, #default=9
+             nodesize=0.5, #default="connections"
+             edgewidth=0.2,#default=0.1
+             filenamecustom="ohdsi-uk-24-poster-lymphoma-tree",
+             filetype="pdf")
+
+
+#FINAL POSTER PLOTS COPIED FROM ABOVE
+
+caption <- "Vincristine - a chemo drug (to which I owe my life) derived from a plant, the Madagascar Periwinkle.\n Here two relationship steps from the SNOMED concept, excluding 'Cytotox chemo RX of'. Plot made by Andy South using R, ggplot2 & omopcept. 2024-09-26."
+#4poster GOOD
+omop_graph( vinsr2b,
+           graphtitle="example drug relationships", titletxtsize = 40,
+           canvas="A2",
+           palettebrewer = "Set1",
+           palettedirection = -1,
+           legendshow = TRUE,
+           backcolour="white",
+           titlecolour = "darkred",
+           edgecolour="grey",
+           edgewidth = 0.4,
+           nodetxtsize=9,
+           caption=caption,
+           captiontxtsize=12,
+           captionjust="centre",
+           nodecolourvar="relationship_id",
+           filenamecustom="ohdsi-uk-24-vincristine",
+           filetype="pdf"
+           #filetype="png"           
+           )
+
+
+caption <- 'sharp <- omop_names("Accident caused by sharp-edged object", standard="S")\n
+            sharpr3 <- omop_relations(sharp$concept_id, r_ids=c("Is a","Subsumes"), nsteps=3)\n
+            omop_graph( sharpr3 )'
+
+#4POSTER GOOD for A4 (not sure about plot & text sizing)
+omop_graph( sharpr3,
+            graphtitle="example SNOMED hierarchy", titletxtsize = 40,
+           canvas="A2",
+           #width=320, height=594, units="mm",
+           palettebrewer = "YlOrRd",
+           palettedirection = -1,
+           legendshow = FALSE,
+           backcolour="black",
+           titlecolour = "darkred",
+           edgecolour="red",
+           edgewidth = 0.7,
+           nodetxtsize=10,
+           caption=caption,
+           captiontxtsize=12,
+           captionjust="centre",
+           textcolourvar="step", nodecolourvar="step",
+           filenamecustom="ohdsi-uk-24-snomed-sharp",
+           #filetype="png"
+           filetype="pdf"           
+           )
+
+omop_graph(ajcc_rel2, 
+           ggrlayout="tree", legendshow = FALSE, 
+           saveplot = TRUE, 
+           canvas="A2",
+           nodetxtangle = 45,
+           nodetxtsize=10,
+           caption=caption,
+           captiontxtsize=12,
+           captionjust="centre",
+           textcolourvar="step", nodecolourvar="step",
+           filenamecustom="ohdsi-uk-24-poster-ajcc",
+           filetype="png"
+           #filetype="pdf"           
+           )
+
+#can't quiet get trees to work ...
+neor2 <- omop_relations("Malignant neoplasms",nsteps = 2,r="Subsumes")
+neor2b <- neor2 |> filter(relationship_id != "Is")
+
+omop_graph(neor2b, plot=FALSE, 
+           ggrlayout="tree", legendshow = FALSE, 
+           canvas="A2",
+           nodetxtangle = 90,
+           nodetxtsize=5,
+           filenamecustom="ohdsi-uk-24-poster-neoplasms",
+           filetype="png"
+           #filetype="pdf"           
+           )
+
+anes_downr7 <- read_csv(here("..","omopcept-plots","data","anes_downr7.csv"))
+
+#anes_downr7 |> count(domain_id, sort=TRUE)
+
+############################################################
+#####***GOOD ONE***
+caption <- "SNOMED Anaesthesia procedures. Plot made by Andy South using R, ggplot2 & omopcept."
+
+#hack to try to avoid lightest colours
+#add a few rows with lower values
+anes_downr7b <- bind_rows(anes_downr7,data.frame(recurse_level=c(-1,0),concept_name_1="egg",concept_name_2="egg")) |> 
+  mutate(recurse_level = recurse_level+2)
+anes_downr7b |> count(recurse_level)
+
+omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
+           canvas="A2",
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "Greens",
+           palettedirection = 1,
+           legendshow = FALSE,
+           graphtitle = "example SNOMED procedures",
+           titletxtsize = 40,
+           backcolour="white",
+           titlecolour = "darkred",
+           edgecolour="burlywood",
+           edgewidth = 0.7,
+           nodetxtsize=3,
+           caption=caption,
+           captiontxtsize=12,
+           captionjust="centre",
+           filenamecustom="ohdsi-uk-24-poster-anaesthesia",
+           filetype="png"
+           #filetype="pdf"           
+           )
+           
 
 ```
   

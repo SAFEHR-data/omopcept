@@ -305,7 +305,6 @@ omop_graph <- function(dfin,
         dir.create(filepath, recursive = TRUE)
 
 
-
     ggsave(ggr, filename=file.path(filepath,filename),
            width=width, height=height, units=units, limitsize=FALSE)
            #create.dir=TRUE) #beware create.dir needs ggplot v >3.50
