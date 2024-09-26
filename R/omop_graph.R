@@ -126,6 +126,7 @@ omop_graph <- function(dfin,
 
   #set node & text colour same by default, but user can change
   if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
+  if (is.null(nodecolourvar)) nodecolourvar <- textcolourvar
 
   titlehjust <- dplyr::case_match(titlejust,
               c("centre","center") ~ 0.5,
