@@ -74,26 +74,30 @@ omop_relations <- function(c_id=NULL,
                                messages=messages,
                                join_names=FALSE)
 
-      #add step column that can be used in plot colouring
-      if (add_step_column)
-      {
-        dfprev1 <- dfprev1 |> mutate(step=step)
-        #need a relation to itself to get colouring right
-        #in some options standard one gets filtered elsewhere
-        #'Is' is a non standard relationship_id
-        if (step == 1)
-        {
-          r_to_itself <- dfprev1 |>
-            head(1) |>
-            mutate( concept_id_1=c_id0,
-                    concept_id_2=c_id0,
-                    relationship_id="Is",
-                    step=0)
+      if (!is.null(dfprev1)) {
 
-          dfprev1 <- bind_rows(r_to_itself, dfprev1)
+        #add step column that can be used in plot colouring
+        if (add_step_column)
+        {
+          dfprev1 <- dfprev1 |> mutate(step=step)
+          #need a relation to itself to get colouring right
+          #in some options standard one gets filtered elsewhere
+          #'Is' is a non standard relationship_id
+          if (step == 1)
+          {
+            r_to_itself <- dfprev1 |>
+              head(1) |>
+              mutate( concept_id_1=c_id0,
+                      concept_id_2=c_id0,
+                      relationship_id="Is",
+                      step=0)
+
+            dfprev1 <- bind_rows(r_to_itself, dfprev1)
+          }
         }
-      }
-      dfprev <- bind_rows(dfprev,dfprev1)
+        dfprev <- bind_rows(dfprev,dfprev1)
+
+      }  #end of (!is.null(dfprev1))
     }
 
     dfall <- bind_rows(dfall,dfprev)
