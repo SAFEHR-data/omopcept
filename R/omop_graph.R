@@ -16,6 +16,12 @@
 #' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
 #'
 #' @param nodesize node size, default="connections", or set to numeric value
+# TODO replace nodesize with
+# together with splitting out the calculation & rendering code
+# this should allow user to size nodes with their own data
+# @param nodesizevar column to set node size, default="connections", uses num connections to a node
+# @param nodesizemodify modify node size, numeric value, not sure scale yet.
+# Will work to modify size whether a sizing variable is used or not
 #'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
@@ -139,53 +145,15 @@ omop_graph <- function(dfin,
                                   "right" ~ 1,
                                   .default = 0)
 
-  # to detect input type from presence of specific column names
-  # then create a table containing 2 columns named 'from' and 'to'
-  # from,to table required by ggraph
-  if ("ancestor_name" %in% names(dfin)) {
 
-    #DESCENDANT
-    dfin2 <- dfin |>
-      rename(from = ancestor_name,
-               to = concept_name)
+  #graph calc split into its own function
+  graphlist <- omop_graph_calc(dfin)
 
-  } else if ("descendant_concept_name" %in% names(dfin)) {
+  #put all the rest (vis stuff) into its own function too - including from above
+  #need to pass all args from main func, will this work ?
+  #omop_graph_vis(graphlist, ...)
 
-    #ANCESTOR
-    dfin2 <- dfin |>
-      rename(from = descendant_concept_name,
-               to = concept_name)
-
-  } else if ("concept_name_1" %in% names(dfin)) {
-
-    #RELATION
-    dfin2 <- dfin |>
-      #2024-09-16 changed order of these to resolve text colouring issue
-      rename(from = concept_name_2,
-               to = concept_name_1)
-  }
-
-  #challenge to make sure get all nodes from columns from & to
-  #to avoid Invalid (negative) vertex id
-  nodesfrom <- dfin2 |>
-    #select(from,vocabulary_id,domain_id) |>
-    group_by(from) |>
-    slice_head(n=1) |>
-    rename(name=from)
-
-  nodesto <- dfin2 |>
-    group_by(to) |>
-    slice_head(n=1) |>
-    rename(name=to)
-
-  nodes1 <- bind_rows(nodesfrom,nodesto) |>
-    group_by(name) |>
-    slice_head(n=1)
-
-  edges1 <- dfin2 |>
-    select(from, to)
-
-  graphin <- tidygraph::tbl_graph(nodes=nodes1, edges=edges1)
+  graphin <- tidygraph::tbl_graph(nodes=graphlist$nodes, edges=graphlist$edges)
 
   #sets node attribute of num_edges to allow node sizing
   #or set nodesize to constant
@@ -325,4 +293,72 @@ omop_graph <- function(dfin,
 #' # because of R argument matching, you can just use the first unique letters of
 #' # arguments e.g. v for v_ids, cc for cc_ids
 #omgr <- omop_graph
+
+
+
+
+#' calculate nodes and edges from omop hierarchy
+#' accepts output from either omop_ancestors(), omop_descendants() or omop_relations
+#' used by omop_graph(), you are only likely to want to use on it's own to
+#'  a) separate calculation & visualisation so that you can join attributes for visualisation
+#'  b) pass the nodes and edges to a different graph rendering package
+#'
+#' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
+#'
+#' @return list containing edges & nodes tables
+#' @export
+#' @examples
+#' bp <- omop_relations("Non-invasive blood pressure")
+#' listedges_nodes <- omop_graph_calc(bp)
+omop_graph_calc <- function(dfin) {
+
+  # to detect input type from presence of specific column names
+  # then create a table containing 2 columns named 'from' and 'to'
+  # from,to table required by ggraph
+  if ("ancestor_name" %in% names(dfin)) {
+
+    #DESCENDANT
+    dfin2 <- dfin |>
+      rename(from = ancestor_name,
+             to = concept_name)
+
+  } else if ("descendant_concept_name" %in% names(dfin)) {
+
+    #ANCESTOR
+    dfin2 <- dfin |>
+      rename(from = descendant_concept_name,
+             to = concept_name)
+
+  } else if ("concept_name_1" %in% names(dfin)) {
+
+    #RELATION
+    dfin2 <- dfin |>
+      #2024-09-16 changed order of these to resolve text colouring issue
+      rename(from = concept_name_2,
+             to = concept_name_1)
+  }
+
+  #challenge to make sure get all nodes from columns from & to
+  #to avoid Invalid (negative) vertex id
+  nodesfrom <- dfin2 |>
+    #select(from,vocabulary_id,domain_id) |>
+    group_by(from) |>
+    slice_head(n=1) |>
+    rename(name=from)
+
+  nodesto <- dfin2 |>
+    group_by(to) |>
+    slice_head(n=1) |>
+    rename(name=to)
+
+  nodes <- bind_rows(nodesfrom,nodesto) |>
+    group_by(name) |>
+    slice_head(n=1)
+
+  edges <- dfin2 |>
+    select(from, to)
+
+  list(nodes=nodes, edges=edges)
+
+}
 

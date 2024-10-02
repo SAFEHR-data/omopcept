@@ -2,6 +2,7 @@
 % Please edit documentation in R/omop_graph.R
 \name{omop_graph}
 \alias{omop_graph}
+\alias{omop_graph_calc}
 \title{graph omop hierarchy
 accepts output from either omop_ancestors(), omop_descendants() or omop_relations}
 \usage{
@@ -48,6 +49,8 @@ omop_graph(
   captioncolour = "black",
   messages = TRUE
 )
+
+omop_graph_calc(dfin)
 }
 \arguments{
 \item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
@@ -134,12 +137,18 @@ omop_graph(
 }
 \value{
 ggraph object
+
+list containing edges & nodes tables
 }
 \description{
 graph omop hierarchy
 accepts output from either omop_ancestors(), omop_descendants() or omop_relations
+
+super short name graph func
 }
 \examples{
 #TODO need a more flexible palette solution than brewer (that limits num cats)
 #TODO try to sort being able to size nodes AND use a variable
+bp <- omop_relations("Non-invasive blood pressure")
+listedges_nodes <- omop_graph_calc(bp)
 }
