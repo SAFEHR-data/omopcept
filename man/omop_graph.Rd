@@ -2,7 +2,7 @@
 % Please edit documentation in R/omop_graph.R
 \name{omop_graph}
 \alias{omop_graph}
-\alias{omop_graph_calc}
+\alias{omgr}
 \title{graph omop hierarchy
 accepts output from either omop_ancestors(), omop_descendants() or omop_relations}
 \usage{
@@ -17,7 +17,8 @@ omop_graph(
   nodealpha = 0.8,
   edgealpha = 0.3,
   edgewidth = 0.1,
-  nodesize = "connections",
+  nodesizevar = "connections",
+  nodesize = 1,
   nodetxtangle = 0,
   nodetxtsize = 9,
   nodetxtnudgey = 0.3,
@@ -50,7 +51,50 @@ omop_graph(
   messages = TRUE
 )
 
-omop_graph_calc(dfin)
+omgr(
+  dfin,
+  ggrlayout = "graphopt",
+  palettebrewer = "Dark2",
+  palettedirection = 1,
+  edgecolour = "grey71",
+  nodecolourvar = "domain_id",
+  textcolourvar = NULL,
+  nodealpha = 0.8,
+  edgealpha = 0.3,
+  edgewidth = 0.1,
+  nodesizevar = "connections",
+  nodesize = 1,
+  nodetxtangle = 0,
+  nodetxtsize = 9,
+  nodetxtnudgey = 0.3,
+  nodetxtnudgex = 0,
+  legendtxtsize = 18,
+  titletxtsize = 18,
+  titlejust = "centre",
+  legendshow = TRUE,
+  legendpos = "bottom",
+  legenddir = "horizontal",
+  legendcm = 3,
+  plot = TRUE,
+  saveplot = TRUE,
+  filetype = "pdf",
+  filenameroot = "omop_graph",
+  filenamecustom = NULL,
+  filepath = file.path("..//omopcept-plots"),
+  canvas = NULL,
+  width = 50,
+  height = 30,
+  units = "cm",
+  titlecolour = "darkred",
+  backcolour = "white",
+  graphtitle = "omopcept graph",
+  graphsubtitle = NULL,
+  caption = NULL,
+  captiontxtsize = 18,
+  captionjust = "left",
+  captioncolour = "black",
+  messages = TRUE
+)
 }
 \arguments{
 \item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
@@ -73,7 +117,9 @@ omop_graph_calc(dfin)
 
 \item{edgewidth}{edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency}
 
-\item{nodesize}{node size, default="connections", or set to numeric value}
+\item{nodesizevar}{column to set node size, default="connections", uses num connections to a node}
+
+\item{nodesize}{modify node size, numeric value, will modify size whether nodesizevar used or not}
 
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 
@@ -137,8 +183,6 @@ omop_graph_calc(dfin)
 }
 \value{
 ggraph object
-
-list containing edges & nodes tables
 }
 \description{
 graph omop hierarchy
@@ -147,8 +191,8 @@ accepts output from either omop_ancestors(), omop_descendants() or omop_relation
 super short name graph func
 }
 \examples{
-#TODO need a more flexible palette solution than brewer (that limits num cats)
-#TODO try to sort being able to size nodes AND use a variable
 bp <- omop_relations("Non-invasive blood pressure")
-listedges_nodes <- omop_graph_calc(bp)
+omop_graph(bp, nodesizevar="", nodesize = 5)
+
+#TODO need a more flexible palette solution than brewer (that limits num cats)
 }

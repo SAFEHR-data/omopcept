@@ -15,13 +15,8 @@
 #' @param edgealpha edge transparency, default 0.3, #ggraph uses underscore edge_alpha but would mess up my consistency
 #' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
 #'
-#' @param nodesize node size, default="connections", or set to numeric value
-# TODO replace nodesize with
-# together with splitting out the calculation & rendering code
-# this should allow user to size nodes with their own data
-# @param nodesizevar column to set node size, default="connections", uses num connections to a node
-# @param nodesizemodify modify node size, numeric value, not sure scale yet.
-# Will work to modify size whether a sizing variable is used or not
+#' @param nodesizevar column to set node size, default="connections", uses num connections to a node
+#' @param nodesize modify node size, numeric value, will modify size whether nodesizevar used or not
 #'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
@@ -63,8 +58,11 @@
 #' @return ggraph object
 #' @export
 #' @examples
+#' bp <- omop_relations("Non-invasive blood pressure")
+#' omop_graph(bp, nodesizevar="", nodesize = 5)
+#'
 #' #TODO need a more flexible palette solution than brewer (that limits num cats)
-#' #TODO try to sort being able to size nodes AND use a variable
+#
 # pressure <- omop_names("^Blood pressure$",standard='S')
 # press_descend <- omop_descendants(pressure$concept_id[1])
 # omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
@@ -81,7 +79,8 @@ omop_graph <- function(dfin,
                        edgealpha = 0.3, #ggraph uses underscore adge_alpha but would mess up my consistency
                        edgewidth = 0.1,
 
-                       nodesize = "connections",
+                       nodesizevar = "connections",
+                       nodesize = 1,
 
                        nodetxtangle=0,
                        nodetxtsize=9,
@@ -146,7 +145,7 @@ omop_graph <- function(dfin,
                                   .default = 0)
 
 
-  #graph calc split into its own function
+  #calculates nodes and edges
   graphlist <- omop_graph_calc(dfin)
 
   #put all the rest (vis stuff) into its own function too - including from above
@@ -158,10 +157,10 @@ omop_graph <- function(dfin,
   #sets node attribute of num_edges to allow node sizing
   #or set nodesize to constant
   #TODO allow nodesize to be set by a column in the data
-  if (nodesize=="connections")
+  if (!is.null(nodesizevar) & nodesizevar=="connections")
       igraph::V(graphin)$connections <- igraph::degree(graphin)
   else
-      igraph::V(graphin)$connections <- nodesize
+      igraph::V(graphin)$connections <- 1 #nodesize
 
   ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
     ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
@@ -173,7 +172,7 @@ omop_graph <- function(dfin,
                                 #colour=.data[[nodecolourvar]]),
                                 colour=as.factor(.data[[nodecolourvar]])),
                     #TODO re-enable this when worked out how to get it to cope with "connections"
-                    #size=nodesize,
+                    size=nodesize,
                     alpha=nodealpha,
                     show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
 
@@ -289,12 +288,7 @@ omop_graph <- function(dfin,
 #' super short name graph func
 #' @rdname omop_graph
 #' @export
-#' @examples
-#' # because of R argument matching, you can just use the first unique letters of
-#' # arguments e.g. v for v_ids, cc for cc_ids
-#omgr <- omop_graph
-
-
+omgr <- omop_graph
 
 
 #' calculate nodes and edges from omop hierarchy
