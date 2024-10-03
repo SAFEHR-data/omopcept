@@ -2,7 +2,7 @@
 # omopcept 0.0.6.1 2024-07-24 DEV version
 
 * split out `omop_graph_calc()` for separate calculation of nodes & edges, either a) to enable other data to be joined on (e.g. num records) for visualisation or b) so nodes & edges can be passed to an alternative renderer (as yet unknown)   
-
+* split out `omop_graph_vis()` to enable  other data to be joined on (e.g. num records) for visualisation
 
 # omopcept 0.0.6.0 2024-09-26
 

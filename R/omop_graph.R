@@ -118,170 +118,65 @@ omop_graph <- function(dfin,
                        messages=TRUE
                        ) {
 
-  # install required packages if not present
-  required_packages <- c("igraph","tidygraph","ggraph")
-  install_package <- function(packname) {
-    if (!requireNamespace(packname, quietly = TRUE)) {
-      message("Trying to install required package:",packname)
-      utils::install.packages(packname)
-    }
-  }
-  #required_packages |> purrr::map(\(pkg) install_package(pkg))
-  lapply(required_packages,install_package)
 
-  #set node & text colour same by default, but user can change
-  if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
-  if (is.null(nodecolourvar)) nodecolourvar <- textcolourvar
-
-  titlehjust <- dplyr::case_match(titlejust,
-              c("centre","center") ~ 0.5,
-              "left" ~ 0,
-              "right" ~ 1,
-              .default = 0)
-  captionhjust <- dplyr::case_match(captionjust,
-                                  c("centre","center") ~ 0.5,
-                                  "left" ~ 0,
-                                  "right" ~ 1,
-                                  .default = 0)
-
-
-  #calculates nodes and edges
+  #calculate nodes and edges
   graphlist <- omop_graph_calc(dfin)
 
-  #put all the rest (vis stuff) into its own function too - including from above
-  #need to pass all args from main func, will this work ?
-  #omop_graph_vis(graphlist, ...)
+  #put all the rest (vis stuff) into its own function too
+  #need to pass all args from main func
+  #must be a better way than this ...
+  omop_graph_vis(graphlist,
+                 ggrlayout=ggrlayout,
+                 palettebrewer=palettebrewer,
+                 palettedirection=palettedirection,
 
-  graphin <- tidygraph::tbl_graph(nodes=graphlist$nodes, edges=graphlist$edges)
+                 edgecolour=edgecolour,
+                 nodecolourvar=nodecolourvar,
+                 textcolourvar=textcolourvar,
 
-  #sets node attribute of num_edges to allow node sizing
-  #or set nodesize to constant
-  #TODO allow nodesize to be set by a column in the data
-  if (!is.null(nodesizevar) & nodesizevar=="connections")
-      igraph::V(graphin)$connections <- igraph::degree(graphin)
-  else
-      igraph::V(graphin)$connections <- 1 #nodesize
+                 nodealpha = nodealpha,
+                 edgealpha = edgealpha, #ggraph uses underscore adge_alpha but would mess up my consistency
+                 edgewidth = edgewidth,
 
-  ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
-    ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
-    #couldn't get colouring edges to work
-    #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
-    #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
-    #as.factor gets colours to work if numeric
-    ggraph::geom_node_point(aes(size=connections,
-                                #colour=.data[[nodecolourvar]]),
-                                colour=as.factor(.data[[nodecolourvar]])),
-                    #TODO re-enable this when worked out how to get it to cope with "connections"
-                    size=nodesize,
-                    alpha=nodealpha,
-                    show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
+                 nodesizevar = nodesizevar,
+                 nodesize = nodesize,
 
-    #distiller should cope with larger num cats by interpolation ?
-    #no gives Discrete values supplied to continuous scale
-    #scale_color_distiller(palette=palettebrewer, direction=palettedirection) +
-    scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
+                 nodetxtangle=nodetxtangle,
+                 nodetxtsize=nodetxtsize,
+                 nodetxtnudgey=nodetxtnudgey,
+                 nodetxtnudgex=nodetxtnudgex,
+                 legendtxtsize=legendtxtsize,
+                 titletxtsize=titletxtsize,
+                 titlejust=titlejust,
 
-    labs(title=graphtitle,subtitle=graphsubtitle,
-         caption=caption) +
-    theme(#panel.background=element_blank(),
-          panel.background=element_rect(fill=backcolour, colour=backcolour, size=0.5),
-          plot.background=element_blank(),
-          legend.position = legendpos,
-          legend.direction = legenddir,
-          legend.key.size = unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
-          #legend.key.height = unit(1, 'cm'),
-          #legend.key.width = unit(1, 'cm'),
-          legend.key = element_rect(fill = "white"),
-          #legend.title = element_text(size=30),
-          legend.title = element_blank(),
-          legend.text = element_text(size=legendtxtsize),
-          #hjust=0.5 to make centred
-          plot.title = element_text(size=titletxtsize,
-                               colour=titlecolour,
-                               hjust=titlehjust),
-          plot.caption = element_text(size=captiontxtsize,
-                                      colour=captioncolour,
-                                      hjust=captionhjust),
-          plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
-    #allows legend key symbols to be bigger, not sure if required
-    guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
-    ggraph::geom_node_text(aes(label=name,
-                               #colour=.data[[textcolourvar]]),
-                               colour=as.factor(.data[[textcolourvar]])),
-                   size=nodetxtsize,
-                   angle=nodetxtangle,
-                   show.legend=FALSE,
-                   repel=TRUE,
-                   check_overlap=FALSE,
-                   nudge_y=nodetxtnudgey, #0.3, #move labels above points
-                   nudge_x=nodetxtnudgex,
-                   alpha=1)
+                 legendshow = legendshow,
+                 legendpos = legendpos,
+                 legenddir = legenddir,
+                 legendcm = legendcm,
 
-  #if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
+                 plot=plot,
+                 saveplot = saveplot,
+                 filetype = filetype,
+                 filenameroot = filenameroot,
+                 filenamecustom = filenamecustom,
+                 filepath = filepath,
 
-  #
-  #if (plot) plot(ggr)
+                 canvas=canvas,
+                 width=width,
+                 height=height,
+                 units=units,
+                 titlecolour=titlecolour,
+                 backcolour=backcolour,
 
-  #plot file naming convention
-  #s  separation min
-  #m  plot metres
-  #ea edge alpha
-  #ta text alpha
-  #pdark2 palette color brewer
-  #ns node sized
-  #nts node text size
-  #d? domains
-
-  if (saveplot)
-  {
-    if (!is.null(canvas))
-    {
-      canvas_specs <- get_plot_dims(canvas)
-      width <- canvas_specs$width
-      height <- canvas_specs$height
-      units <- canvas_specs$units
-    }
-
-    cat("plot dims: w",width," h",height," u:",units,"\n")
-
-    if (!is.null(filenamecustom))
-      filename <- filenamecustom
-    else
-    {
-      filename <- paste0(filenameroot,
-                         "-",ggrlayout,
-                         "-p",palettedirection,palettebrewer,
-                         "-leg",legendpos,legendcm,
-                         "-nts",nodetxtsize,
-                         "-nta",nodetxtangle,
-                         "-n",nodecolourvar,
-                         "-b",backcolour,
-                         "-e",edgecolour)
-    }
-
-    #add these even if custom filename
-    if (!is.null(canvas)) filename <- paste0(filename,"-",canvas)
-    else                  filename <- paste0(filename,"-",width,"x",height,units)
-
-    #add extension
-    filename <- paste0(filename,".",filetype)
-
-    #if plot folder doesn't exist create it
-    #could be done with ggsave::create.dir=TRUE but only in ggplot from 2024
-    if (!dir.exists(filepath))
-        dir.create(filepath, recursive = TRUE)
+                 graphtitle=graphtitle,
+                 graphsubtitle=graphsubtitle,
+                 caption=caption,
+                 captiontxtsize=captiontxtsize,
+                 captionjust=captionjust,
+                 captioncolour=captioncolour,
+                 messages=messages)
 
 
-    ggsave(ggr, filename=file.path(filepath,filename),
-           width=width, height=height, units=units, limitsize=FALSE)
-           #create.dir=TRUE) #beware create.dir needs ggplot v >3.50
-
-
-    if (messages) message("saved graph file as ", filename)
-  }
-
-
-  return(ggr)
 
 }
 
@@ -356,3 +251,282 @@ omop_graph_calc <- function(dfin) {
 
 }
 
+
+#' visualise graph of omop hierarchy
+#' called by omop_graph()
+#'
+#' @param graphlist list of `edges` and `nodes` created from `omop_graph_calc()`
+#' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
+#'
+#' @param ggrlayout ggraph layout, default = "graphopt", also "tree" works well, more directional
+#' @param palettebrewer colour brewer palette, default='Dark2', other options e.g. 'Set1' see RColorBrewer::brewer.pal.info
+#' @param palettedirection palette direction, default=1, -1 for reversed
+#'
+#' @param edgecolour colour for lines joining nodes
+#' @param nodecolourvar column to specify node colour, default="domain_id" other options "vocabulary_id" "concept_class_id" "standard_concept"
+#' @param textcolourvar column to specify node text colour, default=NULL then set same as node_colour above. Other options "vocabulary_id" "concept_class_id" "standard_concept"
+#'
+#' @param nodealpha node transparency, default 0.8
+#' @param edgealpha edge transparency, default 0.3, #ggraph uses underscore edge_alpha but would mess up my consistency
+#' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
+#'
+#' @param nodesizevar column to set node size, default="connections", uses num connections to a node
+#' @param nodesize modify node size, numeric value, will modify size whether nodesizevar used or not
+#'
+#' @param nodetxtangle node text angle, default=0, 90 gives vertical text
+#' @param nodetxtsize node text size, default=9
+#' @param nodetxtnudgey nudge_y text relative to points, default 0.3
+#' @param nodetxtnudgex nudge_x text relative to points, default 0
+#' @param legendtxtsize text size for legend, default=20
+#' @param titletxtsize text size for title, default=20
+#' @param titlejust title justification, "left","right", default "centre"
+#'
+#' @param legendshow whether to show legend, default TRUE
+#' @param legendpos legend position, default 'bottom'
+#' @param legenddir legen direction default = 'horizontal'
+#' @param legendcm legend size cm, default=3
+#'
+#' @param plot whether to display plot, default TRUE, note that large plots will not display well in R graphics window but do output well to pdf
+#' @param saveplot whether to save plot, default TRUE, note that large plots will not display well in R graphics window but do output well to pdf
+#' @param filetype output image file, default='pdf'
+#' @param filenameroot optional root for an auto filename for plot (not used if filenamecustom is supplied)
+#' @param filenamecustom optional filename for plot, otherwise default name is created
+#' @param filepath where to save image file, default=file.path("..//omopcept-plots")
+#'
+#' @param canvas some plot setups that override width,height,units "A4" "A4landscape" etc.
+#' @param width plot width, default=50
+#' @param height plot height, default=30
+#' @param units plot size units default='cm'
+#' @param titlecolour colour for main title, default='darkred'
+#' @param backcolour colour for background
+#'
+#' @param graphtitle optional title for graph, default NULL for none
+#' @param graphsubtitle optional subtitle for graph, default NULL for none
+#'
+#' @param caption optional text below plot, default=NULL
+#' @param captiontxtsize caption text size default=18,
+#' @param captionjust caption justification default="left",
+#' @param captioncolour caption text colour default="black",
+#'
+#' @param messages whether to print info messages, default=TRUE
+#'
+#' @return ggraph object
+#' @export
+#' @examples
+#' bp <- omop_relations("Non-invasive blood pressure")
+#' omop_graph(bp, nodesizevar="", nodesize = 5)
+#'
+omop_graph_vis <- function(
+                       graphlist,
+                       dfin,
+                       ggrlayout='graphopt',
+                       palettebrewer='Dark2',
+                       palettedirection=1,
+
+                       edgecolour='grey71',
+                       nodecolourvar='domain_id',
+                       textcolourvar=NULL,
+
+                       nodealpha = 0.8,
+                       edgealpha = 0.3, #ggraph uses underscore adge_alpha but would mess up my consistency
+                       edgewidth = 0.1,
+
+                       nodesizevar = "connections",
+                       nodesize = 1,
+
+                       nodetxtangle=0,
+                       nodetxtsize=9,
+                       nodetxtnudgey=0.3,
+                       nodetxtnudgex=0,
+                       legendtxtsize=18,
+                       titletxtsize=18,
+                       titlejust="centre",
+
+                       legendshow = TRUE,
+                       legendpos = 'bottom',
+                       legenddir = 'horizontal',
+                       legendcm = 3,
+
+                       plot=TRUE,
+                       saveplot = TRUE,
+                       filetype = 'pdf',
+                       filenameroot = 'omop_graph',
+                       filenamecustom = NULL,
+                       filepath = file.path("..//omopcept-plots"),
+
+                       canvas=NULL,
+                       width=50,
+                       height=30,
+                       units='cm',
+                       titlecolour='darkred',
+                       backcolour='white',
+
+                       graphtitle="omopcept graph",
+                       graphsubtitle=NULL,
+                       caption=NULL,
+                       captiontxtsize=18,
+                       captionjust="left",
+                       captioncolour="black",
+                       messages=TRUE
+) {
+
+
+
+# install required packages if not present
+required_packages <- c("igraph","tidygraph","ggraph")
+install_package <- function(packname) {
+  if (!requireNamespace(packname, quietly = TRUE)) {
+    message("Trying to install required package:",packname)
+    utils::install.packages(packname)
+  }
+}
+#required_packages |> purrr::map(\(pkg) install_package(pkg))
+lapply(required_packages,install_package)
+
+#set node & text colour same by default, but user can change
+if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
+if (is.null(nodecolourvar)) nodecolourvar <- textcolourvar
+
+titlehjust <- dplyr::case_match(titlejust,
+                                c("centre","center") ~ 0.5,
+                                "left" ~ 0,
+                                "right" ~ 1,
+                                .default = 0)
+captionhjust <- dplyr::case_match(captionjust,
+                                  c("centre","center") ~ 0.5,
+                                  "left" ~ 0,
+                                  "right" ~ 1,
+                                  .default = 0)
+
+
+graphin <- tidygraph::tbl_graph(nodes=graphlist$nodes, edges=graphlist$edges)
+
+#sets node attribute of num_edges to allow node sizing
+#or set nodesize to constant
+#TODO allow nodesize to be set by a column in the data
+if (!is.null(nodesizevar) & nodesizevar=="connections")
+  igraph::V(graphin)$connections <- igraph::degree(graphin)
+else
+  igraph::V(graphin)$connections <- 1 #nodesize
+
+ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
+  ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
+  #couldn't get colouring edges to work
+  #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
+  #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
+  #as.factor gets colours to work if numeric
+  ggraph::geom_node_point(aes(size=connections,
+                              #colour=.data[[nodecolourvar]]),
+                              colour=as.factor(.data[[nodecolourvar]])),
+                          #TODO re-enable this when worked out how to get it to cope with "connections"
+                          size=nodesize,
+                          alpha=nodealpha,
+                          show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
+
+  #distiller should cope with larger num cats by interpolation ?
+  #no gives Discrete values supplied to continuous scale
+  #scale_color_distiller(palette=palettebrewer, direction=palettedirection) +
+  scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
+
+  labs(title=graphtitle,subtitle=graphsubtitle,
+       caption=caption) +
+  theme(#panel.background=element_blank(),
+    panel.background=element_rect(fill=backcolour, colour=backcolour, size=0.5),
+    plot.background=element_blank(),
+    legend.position = legendpos,
+    legend.direction = legenddir,
+    legend.key.size = unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
+    #legend.key.height = unit(1, 'cm'),
+    #legend.key.width = unit(1, 'cm'),
+    legend.key = element_rect(fill = "white"),
+    #legend.title = element_text(size=30),
+    legend.title = element_blank(),
+    legend.text = element_text(size=legendtxtsize),
+    #hjust=0.5 to make centred
+    plot.title = element_text(size=titletxtsize,
+                              colour=titlecolour,
+                              hjust=titlehjust),
+    plot.caption = element_text(size=captiontxtsize,
+                                colour=captioncolour,
+                                hjust=captionhjust),
+    plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
+  #allows legend key symbols to be bigger, not sure if required
+  guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
+  ggraph::geom_node_text(aes(label=name,
+                             #colour=.data[[textcolourvar]]),
+                             colour=as.factor(.data[[textcolourvar]])),
+                         size=nodetxtsize,
+                         angle=nodetxtangle,
+                         show.legend=FALSE,
+                         repel=TRUE,
+                         check_overlap=FALSE,
+                         nudge_y=nodetxtnudgey, #0.3, #move labels above points
+                         nudge_x=nodetxtnudgex,
+                         alpha=1)
+
+#if (!is.null(graphtitle)) ggr <- ggr + ggtitle(graphtitle)
+
+#
+#if (plot) plot(ggr)
+
+#plot file naming convention
+#s  separation min
+#m  plot metres
+#ea edge alpha
+#ta text alpha
+#pdark2 palette color brewer
+#ns node sized
+#nts node text size
+#d? domains
+
+if (saveplot)
+{
+  if (!is.null(canvas))
+  {
+    canvas_specs <- get_plot_dims(canvas)
+    width <- canvas_specs$width
+    height <- canvas_specs$height
+    units <- canvas_specs$units
+  }
+
+  cat("plot dims: w",width," h",height," u:",units,"\n")
+
+  if (!is.null(filenamecustom))
+    filename <- filenamecustom
+  else
+  {
+    filename <- paste0(filenameroot,
+                       "-",ggrlayout,
+                       "-p",palettedirection,palettebrewer,
+                       "-leg",legendpos,legendcm,
+                       "-nts",nodetxtsize,
+                       "-nta",nodetxtangle,
+                       "-n",nodecolourvar,
+                       "-b",backcolour,
+                       "-e",edgecolour)
+  }
+
+  #add these even if custom filename
+  if (!is.null(canvas)) filename <- paste0(filename,"-",canvas)
+  else                  filename <- paste0(filename,"-",width,"x",height,units)
+
+  #add extension
+  filename <- paste0(filename,".",filetype)
+
+  #if plot folder doesn't exist create it
+  #could be done with ggsave::create.dir=TRUE but only in ggplot from 2024
+  if (!dir.exists(filepath))
+    dir.create(filepath, recursive = TRUE)
+
+
+  ggsave(ggr, filename=file.path(filepath,filename),
+         width=width, height=height, units=units, limitsize=FALSE)
+  #create.dir=TRUE) #beware create.dir needs ggplot v >3.50
+
+
+  if (messages) message("saved graph file as ", filename)
+}
+
+
+return(ggr)
+}
