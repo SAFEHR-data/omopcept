@@ -18,7 +18,7 @@ omop_graph_vis(
   edgealpha = 0.3,
   edgewidth = 0.1,
   nodesizevar = "connections",
-  nodesize = 1,
+  nodesize = c(0, 6),
   nodetxtangle = 0,
   nodetxtsize = 9,
   nodetxtnudgey = 0.3,
@@ -76,7 +76,7 @@ omop_graph_vis(
 
 \item{nodesizevar}{column to set node size, default="connections", uses num connections to a node}
 
-\item{nodesize}{modify node size, numeric value, will modify size whether nodesizevar used or not}
+\item{nodesize}{modify node size range, default c(0,6), will modify size whether nodesizevar used or not}
 
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 
@@ -146,7 +146,9 @@ visualise graph of omop hierarchy
 called by omop_graph()
 }
 \examples{
+#showing how nodesizevar can be set from any column
 bp <- omop_relations("Non-invasive blood pressure")
-omop_graph(bp, nodesizevar="", nodesize = 5)
-
+nodesedges <- omop_graph_calc(bp)
+nodesedges$nodes$testsizevar <- c(1:nrow(nodesedges$nodes))
+omop_graph_vis(nodesedges, nodesizevar="testsizevar", nodesize = 5)
 }

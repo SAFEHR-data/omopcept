@@ -16,7 +16,7 @@
 #' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
 #'
 #' @param nodesizevar column to set node size, default="connections", uses num connections to a node
-#' @param nodesize modify node size, numeric value, will modify size whether nodesizevar used or not
+#' @param nodesize modify node size range, default c(0,6), will modify size whether nodesizevar used or not
 #'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
@@ -59,6 +59,7 @@
 #' @export
 #' @examples
 #' bp <- omop_relations("Non-invasive blood pressure")
+#' omop_graph(bp, nodesizevar="connections", nodesize = 5)
 #' omop_graph(bp, nodesizevar="", nodesize = 5)
 #'
 #' #TODO need a more flexible palette solution than brewer (that limits num cats)
@@ -80,7 +81,7 @@ omop_graph <- function(dfin,
                        edgewidth = 0.1,
 
                        nodesizevar = "connections",
-                       nodesize = 1,
+                       nodesize = c(0,6),
 
                        nodetxtangle=0,
                        nodetxtsize=9,
@@ -122,7 +123,7 @@ omop_graph <- function(dfin,
   #calculate nodes and edges
   graphlist <- omop_graph_calc(dfin)
 
-  #put all the rest (vis stuff) into its own function too
+  #visualisation
   #need to pass all args from main func
   #must be a better way than this ...
   omop_graph_vis(graphlist,
@@ -175,8 +176,6 @@ omop_graph <- function(dfin,
                  captionjust=captionjust,
                  captioncolour=captioncolour,
                  messages=messages)
-
-
 
 }
 
@@ -271,7 +270,7 @@ omop_graph_calc <- function(dfin) {
 #' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
 #'
 #' @param nodesizevar column to set node size, default="connections", uses num connections to a node
-#' @param nodesize modify node size, numeric value, will modify size whether nodesizevar used or not
+#' @param nodesize modify node size range, default c(0,6), will modify size whether nodesizevar used or not
 #'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
@@ -313,9 +312,11 @@ omop_graph_calc <- function(dfin) {
 #' @return ggraph object
 #' @export
 #' @examples
+#' #showing how nodesizevar can be set from any column
 #' bp <- omop_relations("Non-invasive blood pressure")
-#' omop_graph(bp, nodesizevar="", nodesize = 5)
-#'
+#' nodesedges <- omop_graph_calc(bp)
+#' nodesedges$nodes$testsizevar <- c(1:nrow(nodesedges$nodes))
+#' omop_graph_vis(nodesedges, nodesizevar="testsizevar", nodesize = 5)
 omop_graph_vis <- function(
                        graphlist,
                        dfin,
@@ -332,7 +333,7 @@ omop_graph_vis <- function(
                        edgewidth = 0.1,
 
                        nodesizevar = "connections",
-                       nodesize = 1,
+                       nodesize = c(0,6),
 
                        nodetxtangle=0,
                        nodetxtsize=9,
@@ -402,12 +403,12 @@ captionhjust <- dplyr::case_match(captionjust,
 graphin <- tidygraph::tbl_graph(nodes=graphlist$nodes, edges=graphlist$edges)
 
 #sets node attribute of num_edges to allow node sizing
-#or set nodesize to constant
-#TODO allow nodesize to be set by a column in the data
 if (!is.null(nodesizevar) & nodesizevar=="connections")
-  igraph::V(graphin)$connections <- igraph::degree(graphin)
+  igraph::V(graphin)$sizecolumn <- igraph::degree(graphin)
+else if( nodesizevar %in% names(graphlist$nodes))
+  igraph::V(graphin)$sizecolumn <- graphlist$nodes[[nodesizevar]]
 else
-  igraph::V(graphin)$connections <- 1 #nodesize
+  igraph::V(graphin)$sizecolumn <- 1 #nodesize
 
 ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
@@ -415,13 +416,14 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
   #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
   #as.factor gets colours to work if numeric
-  ggraph::geom_node_point(aes(size=connections,
-                              #colour=.data[[nodecolourvar]]),
+  ggraph::geom_node_point(aes(size=sizecolumn,
                               colour=as.factor(.data[[nodecolourvar]])),
                           #TODO re-enable this when worked out how to get it to cope with "connections"
-                          size=nodesize,
+                          #size=nodesize,
                           alpha=nodealpha,
                           show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
+
+  scale_size_continuous(range = nodesize) +
 
   #distiller should cope with larger num cats by interpolation ?
   #no gives Discrete values supplied to continuous scale

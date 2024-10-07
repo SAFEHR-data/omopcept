@@ -73,4 +73,5 @@ utils::globalVariables(c('concept_name', 'concept_id','concept_code',
                          'concept_name_1','concept_name_2',
                          'valid_start_date','valid_end_date','invalid_reason',
                          'from', 'to', 'name', 'connections',
-                         'concept_name_to_check','check'))
+                         'concept_name_to_check','check',
+                         'sizecolumn'))
