@@ -1303,7 +1303,7 @@ vin <- omop_names("vincristine", exact=TRUE)
 #4 from diff vocabs, incl. Rxnorm & dm+d
 vins <- omop_names("vincristine", exact=TRUE, v="SNOMED")   
   
-vinsr2 <- omop_relations(vins$concept_id, steps=2)
+vinsr2 <- omop_relations(vins$concept_id, nsteps=2)
 freqvr <- vinsr2 |> count(relationship_id, sort=TRUE)
 #  1 Cytotox chemo RX of   301
 #  2 Is a                   59
@@ -1319,6 +1319,10 @@ freqvr <- vinsr2 |> count(relationship_id, sort=TRUE)
 vinsr2 |> count(step, sort=TRUE)
 # 1     2   653
 # 2     1    25
+
+	
+vinsr2chemo <- vinsr2 |> filter(relationship_id == "Cytotox chemo RX of")
+vinsr2chemo |> count(step, sort=TRUE) #only step 2
 
 #filter just relations that have a freq between 59 & 18 to get 9 cats
 rsb <- freqvr |> filter(n<60 & n>17) |> pull(relationship_id)
