@@ -19,6 +19,7 @@
 #' @importFrom dplyr any_of
 #' @importFrom dplyr contains
 #' @importFrom dplyr tibble
+#' @importFrom dplyr count
 #'
 #' @importFrom rlang .data
 #'

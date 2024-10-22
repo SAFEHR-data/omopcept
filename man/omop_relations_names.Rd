@@ -57,6 +57,7 @@ a different (and quicker) way of finding relationships than omop_relations() tha
 note that names are not contained in CONCEPT_RELATIONSHIP so the function joins to CONCEPT to query
 }
 \examples{
+#1 min to return 38 concepts
 orn <- omop_relations_names("diffuse large B cell lymphoma")
 #omop_relations_names("AJCC/UICC Stage")
 #omop_relations_names("chemotherapy", v_ids="LOINC")

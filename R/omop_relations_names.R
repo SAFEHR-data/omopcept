@@ -17,6 +17,7 @@
 #' @param messages whether to print info messages, default=TRUE
 #' @export
 #' @examples
+#' #1 min to return 38 concepts
 #' orn <- omop_relations_names("diffuse large B cell lymphoma")
 #' #omop_relations_names("AJCC/UICC Stage")
 #' #omop_relations_names("chemotherapy", v_ids="LOINC")
