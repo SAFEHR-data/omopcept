@@ -217,7 +217,31 @@ omop_graph_calc <- function(dfin) {
       rename(from = descendant_concept_name,
              to = concept_name)
 
-  } else if ("concept_name_1" %in% names(dfin)) {
+  #} else if ("concept_name_1" %in% names(dfin)) {
+
+    # TODO get this to cope with raw relationship table
+    # by if ("concept_id_1" %in% names(dfin) & !"concept_name_1" %in% names(dfin))
+    # and then join names here
+    # currently this relies on names having been joined
+    # onto the relationship table before
+    # that limits ability to graph directly from concept_relationship
+
+    #TODO resolve why this error
+    #still happening from raw concept_relationship data
+    #I thought that omop_join_name_all(columns="all") should fix it ?
+
+    # Error in `ggraph::geom_node_point()` at omopcept/R/omop_graph.R:426:0:
+    #   ! Problem while computing aesthetics.
+    # ℹ Error occurred in the 2nd layer.
+    # Caused by error in `.data[["domain_id"]]`:
+    #   ! Column `domain_id` not found in `.data`.
+    # Run `rlang::last_trace()` to see where the error occurred.
+
+  } else if ("concept_id_1" %in% names(dfin)) {
+
+    if (!"concept_name_1" %in% names(dfin)) {
+      dfin <- dfin |> omop_join_name_all(columns="all")
+    }
 
     #RELATION
     dfin2 <- dfin |>

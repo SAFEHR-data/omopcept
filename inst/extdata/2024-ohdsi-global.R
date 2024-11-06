@@ -62,12 +62,6 @@ omop_graph(fxr1,
 fxr2 <- omop_relations(fx$concept_id, nsteps = 2) #3818 rows
 
 freqrfxr2 <- fxr2 |> count(relationship_id, sort=TRUE)
-
-#TODO I could write a quick func that auto does all freqs of vocab,domain,relationship, cc
-#maybe outputs a list with dfs named ac to the column headers
-#also perhaps indiv funcs
-#countconceptclass, countvocab, countdomain, countrelationship
-
 freqvfxr2 <- fxr2 |> count(vocabulary_id, sort=TRUE)
 
 # 1 RxNorm Extension  2841
@@ -193,5 +187,35 @@ omop_graph(f2,
            captionjust="centre",
            filenamecustom="ohdsi-global-24-poster-fluoxetine-tree")
 
+# 2024-10-24 thursday OHDSI global
+# have a look at Cancer Modifiers
+cm <- omop_names("",v="Cancer Modifier")
+#returning 6043 concepts
+omopfreqdomain(cm)
+#1 Measurement  6028
+#2 Observation    15
+
+omopfreqconceptclass(cm)
+
+# 1 Staging/Grading     3281
+# 2 Metastasis           579
+# 3 Extension/Invasion   545
+# 4 Topography           518
+# 5 Histopattern         444
+# 6 Margin               433
+# 7 Nodes                192
+# 8 Dimension             29
+# 9 Morph Abnormality     15
+# 10 Qualifier Value        7
+
+cmtopo <- cm |> filter(concept_class_id=="Topography")
+cmnodes <- cm |> filter(concept_class_id=="Nodes") #192
+
+#can I filter all these cmnodes from relationship table ?
+#YES :-), vquick 648 rows
+cmnodes_r <- omop_concept_relationship() |>
+  filter(concept_id_1 %in% cmnodes$concept_id) |>
+  collect()
 
 
+omop_graph(cmnodes_r)

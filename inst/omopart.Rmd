@@ -925,28 +925,30 @@ sharpr4 <- omop_relations(sharp$concept_id,
                                       r_ids=c('Is a','Subsumes'), 
                                       nsteps=4) 
 
-caption <- 'sharp <- omop_names("Accident caused by sharp-edged object", standard="S")\n
+caption <- 'OMOP visualisation with omopcept github.com/SAFEHR-data/omopcept\n
+            sharp <- omop_names("Accident caused by sharp-edged object", standard="S")\n
             sharpr3 <- omop_relations(sharp$concept_id, r_ids=c("Is a","Subsumes"), nsteps=3)\n
             omop_graph( sharpr3 )'
 
 #4POSTER GOOD for A4 (not sure about plot & text sizing)
 omop_graph( sharpr3,
-            graphtitle="example SNOMED hierarchy", titletxtsize = 40,
+            graphtitle="Accident caused by sardine tin lid in OMOP", titletxtsize = 50,
            canvas="A1",
            palettebrewer = "YlOrRd",
            palettedirection = -1,
            legendshow = FALSE,
            backcolour="black",
-           titlecolour = "darkred",
-           edgecolour="red",
+           titlecolour = "red3",
+           edgecolour="yellow",
+           edgewidth = 0.9,
            nodetxtsize=10,
            caption=caption,
-           captiontxtsize=12,
+           captiontxtsize=24,
            captionjust="centre",
            textcolourvar="step", nodecolourvar="step",
-           filenamecustom="ohdsi-uk-24-snomed-sharp",
-           filetype="png"
-           #filetype="pdf"           
+           filenamecustom="ohdsi-global-24-sardine-tin-lid-A5",
+           #filetype="png"
+           filetype="pdf"           
            )
 
 #OK 260 obs
@@ -1499,7 +1501,7 @@ omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
            palettebrewer = "Greens",
            palettedirection = 1,
            legendshow = FALSE,
-           graphtitle = "example SNOMED procedures",
+           graphtitle = "Anaesthesia procedures in SNOMED & OMOP",
            titletxtsize = 40,
            backcolour="white",
            titlecolour = "darkred",
@@ -1509,9 +1511,9 @@ omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
            caption=caption,
            captiontxtsize=12,
            captionjust="centre",
-           filenamecustom="ohdsi-uk-24-poster-anaesthesia",
-           filetype="png"
-           #filetype="pdf"           
+           filenamecustom="ohdsi-global-24-poster-anaesthesia",
+           #filetype="png"
+           filetype="pdf"           
            )
            
 
