@@ -29,10 +29,18 @@ omop_join_name <- function(df,
   else if (namestart == "") id_col_name <- "concept_id"
   else id_col_name  <- paste0(namestart,"_concept_id")
 
+  #allows func to accept either a df or an "arrow_dplyr_query" e.g. from omop_ancestors()
+  #otherwise get "only data frames are allowed as unnamed arguments to be auto spliced"
+  if (inherits(df,"data.frame")) df <- arrow::arrow_table(df)
+
   #protect against concept_id columns that are not integer
   #this also fixes previous issue with columns full of NAs
   #now those columns are converted to integer and it does join a name column full of NAs
-  df[[id_col_name]] <- as.integer(df[[id_col_name]])
+  #TODO this seems to cause error if data haven't been collected
+  #Expression as.integer(~"ancestor_concept_id") not supported in Arrow Call collect() first to pull data into R.
+  #more informative error than previously
+  df <- df |> mutate({{id_col_name}} := as.integer({{id_col_name}}))
+
 
   #e.g. ancestor_concept_id to ancestor_name
   name_col_name <- sub("_id","_name",id_col_name)
@@ -76,15 +84,19 @@ omop_join_name <- function(df,
       rename_with(~name_col_name, concept_name)
   }
 
+  #TODO offer option to rename any extra columns with namestart_
+  #BEWARE that concept_name may be in columns
+  # add_namestart_to_columns <- TRUE
+  # if (add_namestart_to_columns)
+  # {
+  #   rename_with(~name_col_name, concept_name)
+  # }
+
   #beware tricky code
   #join works fast within arrow by
   #a. put arg table into arrow (if not already)
   #to avoid Error in `auto_copy()`:! `x` and `y` must share the same src.
   #b. using {{}} so that an arg can be used in join_by
-
-  #allows func to accept either a df or an "arrow_dplyr_query" e.g. from omop_ancestors()
-  #otherwise get "only data frames are allowed as unnamed arguments to be auto spliced"
-  if (inherits(df,"data.frame")) df <- arrow::arrow_table(df)
 
   #protect against the function (& the _all version) failing
   #because e.g. all values are NA which can lead to
