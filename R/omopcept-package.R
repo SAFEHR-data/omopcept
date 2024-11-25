@@ -4,6 +4,7 @@
 ## usethis namespace: start
 #' @importFrom dplyr filter
 #' @importFrom dplyr left_join
+#' @importFrom dplyr right_join
 #' @importFrom dplyr semi_join
 #' @importFrom dplyr mutate
 #' @importFrom dplyr rename_with

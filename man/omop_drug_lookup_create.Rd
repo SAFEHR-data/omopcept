@@ -10,7 +10,8 @@ omop_drug_lookup_create(
   concept_class_ids = c("Ingredient"),
   savefile = FALSE,
   file = "drug_lookup",
-  filetype = "csv"
+  filetype = "csv",
+  messages = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ omop_drug_lookup_create(
 \item{savefile}{whether to save as file, default TRUE}
 
 \item{filetype}{default "csv" later add optrion for "parquet"}
+
+\item{messages}{whether to print info messages, default=TRUE}
 }
 \value{
 data frame with drug concepts and ATC classes
@@ -34,5 +37,4 @@ OR all drug concepts in a passed table (e.g. drug_exposure)
 }
 \examples{
 drug_lookup = omop_drug_lookup_create()
-
 }
