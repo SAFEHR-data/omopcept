@@ -16,9 +16,9 @@
 #' @export
 #' @examples
 #' drug_lookup = omop_drug_lookup_create()
-# TODO why this example not working ?? gives df with zero rows
-# rxnormext_egs <- omop_concept() |> filter(vocabulary_id == "RxNorm Extension") |> head(100) |> collect()
-# lookup2 <- omop_drug_lookup_create(select(rxnormext_egs,concept_id), name_drug_concept_id="concept_id")
+# #standard_concept == 'S' important for this example to work
+#rxnormext_egs <- omop_concept() |> filter(vocabulary_id == "RxNorm Extension" & standard_concept == 'S') |> head(100) |> collect()
+#lookup2 <- omop_drug_lookup_create(select(rxnormext_egs,concept_id), name_drug_concept_id="concept_id")
 omop_drug_lookup_create <- function(df = NULL,
                                     name_drug_concept_id = "drug_concept_id",
                                     concept_class_ids = c("Ingredient"),
@@ -32,9 +32,7 @@ omop_drug_lookup_create <- function(df = NULL,
 
   if (messages) message("creating drug lookup may take more than a few seconds (e.g. ~20s for all concept_class_ids == 'Ingredient'")
 
-  #TODO move filtering by name_drug_concept_id earlier to try to speed up
-  #can also move descendant joining first & then filter by concept_class_id
-  #before ancestor joining
+  #filtering order to try to speed up (i.e. filter before join where possible)
 
   # get first link to the data
   atc_descendants <- omop_concept_ancestor()
