@@ -17,7 +17,8 @@ omop_relations(
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
   messages = TRUE,
   nsteps = 1,
-  add_step_column = TRUE
+  add_step_column = TRUE,
+  join_names = TRUE
 )
 
 orels(
@@ -32,7 +33,8 @@ orels(
   names2avoid = c("SNOMED CT core", "Defined", "Primitive"),
   messages = TRUE,
   nsteps = 1,
-  add_step_column = TRUE
+  add_step_column = TRUE,
+  join_names = TRUE
 )
 }
 \arguments{
@@ -59,6 +61,8 @@ orels(
 \item{nsteps}{number of recursions to search}
 
 \item{add_step_column}{whether to add column with step level, default=TRUE}
+
+\item{join_names}{whether to join on concept_names, default=TRUE}
 }
 \value{
 a dataframe of concepts and attributes

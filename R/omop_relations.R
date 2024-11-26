@@ -14,6 +14,7 @@
 #' @param messages whether to print info messages, default=TRUE
 #' @param nsteps number of recursions to search
 #' @param add_step_column whether to add column with step level, default=TRUE
+#' @param join_names whether to join on concept_names, default=TRUE
 #' @export
 #' @examples
 #' omop_relations("Non-invasive blood pressure")
@@ -33,7 +34,8 @@ omop_relations <- function(c_id=NULL,
                            names2avoid=c("SNOMED CT core","Defined","Primitive"),
                            messages=TRUE,
                            nsteps=1,
-                           add_step_column=TRUE) {
+                           add_step_column=TRUE,
+                           join_names=TRUE) {
 
 
   #checks c_id and gets name (ALL if c_id==NULL)
@@ -105,7 +107,8 @@ omop_relations <- function(c_id=NULL,
   }
 
   #join names onto ids only at end to make faster
-  dfall <- dfall |> omop_join_name_all()
+  if (join_names) dfall <- dfall |> omop_join_name_all()
+
 
   return(dfall)
 }
