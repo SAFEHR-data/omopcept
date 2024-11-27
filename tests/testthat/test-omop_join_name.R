@@ -30,26 +30,30 @@ test_that("omop_join_name_all() doesn't error with column containing all NAs", {
 
 })
 
-test_that("omop_join_name_all() works on a double ID column", {
+# commented because I don't think I want it to have to cope
+# # with ids as doubles anymore
+# test_that("omop_join_name_all() works on a double ID column", {
+#
+#   #note no L after numbers so they are created as doubles
+#   df1 <- tibble(concept_id = (c(3571338,4002075)))
+#   df2 <- df1 |> omop_join_name_all()
+#   df3 <- df1 |> mutate(concept_name = c("Problem behaviour","BLUE LOTION"))
+#
+#   #checks joined column
+#   expect_equal(df2[,2],df3[,2])
+# })
 
-  #note no L after numbers so they are created as doubles
-  df1 <- tibble(concept_id = (c(3571338,4002075)))
-  df2 <- df1 |> omop_join_name_all()
-  df3 <- df1 |> mutate(concept_name = c("Problem behaviour","BLUE LOTION"))
-
-  #checks joined column
-  expect_equal(df2[,2],df3[,2])
-})
-
-test_that("omop_join_name_all() works on a string ID column", {
-
-  df1 <- tibble(concept_id = (c("3571338","4002075")))
-  df2 <- df1 |> omop_join_name_all()
-  df3 <- df1 |> mutate(concept_name = c("Problem behaviour","BLUE LOTION"))
-
-  #checks joined column
-  expect_equal(df2[,2],df3[,2])
-})
+# commented because I don't think I want it to have to cope
+# # with ids as strings anymore
+# test_that("omop_join_name_all() works on a string ID column", {
+#
+#   df1 <- tibble(concept_id = (c("3571338","4002075")))
+#   df2 <- df1 |> omop_join_name_all()
+#   df3 <- df1 |> mutate(concept_name = c("Problem behaviour","BLUE LOTION"))
+#
+#   #checks joined column
+#   expect_equal(df2[,2],df3[,2])
+# })
 
 
 

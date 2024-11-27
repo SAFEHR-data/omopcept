@@ -15,7 +15,11 @@ check_c_id <- function(c_id) {
   #toreturn <- data.frame(c_id=c_id,name1="ALL")
   #BEWARE the above created pernicious fault when c_id NULL,
   #error in `data.frame()`: ! arguments imply differing number of rows: 0, 1
-  toreturn <- data.frame(c_id="none",name1="ALL")
+  #toreturn <- data.frame(c_id="none",name1="ALL")
+  #2024-11-27 trying to fix another pernicious fault that
+  #id columns end up as num rather than integer causing joins to fail
+  #ensuring integer here may fix
+  toreturn <- data.frame(c_id=0L, name1="ALL")
 
   #if arg is char assume it is exact name & lookup id
   if (is.character(c_id))
@@ -23,8 +27,10 @@ check_c_id <- function(c_id) {
     toreturn$name1 <- c_id
     toreturn$c_id <- dplyr::filter(omop_concept(), concept_name == c_id) |>
       dplyr::pull(concept_id, as_vector=TRUE)
-  } else if (!is.null(c_id)) {
-    toreturn$c_id <- c_id #bugfix this line missing 2023-09-12
+  } else if (!is.null(c_id))
+  {
+    #2024-11-27 add as.integer to try to fix fault with id columns ending up numeric
+    toreturn$c_id <- as.integer(c_id)
     toreturn$name1 <- dplyr::filter(omop_concept(), concept_id == c_id) |>
       dplyr::pull(concept_name, as_vector=TRUE)
   } else {

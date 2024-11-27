@@ -8,9 +8,7 @@ omop_drug_lookup_create(
   df = NULL,
   name_drug_concept_id = "drug_concept_id",
   concept_class_ids = c("Ingredient"),
-  savefile = FALSE,
-  file = "drug_lookup",
-  filetype = "csv",
+  outfile = NULL,
   messages = TRUE
 )
 }
@@ -21,9 +19,7 @@ omop_drug_lookup_create(
 
 \item{concept_class_ids}{optional filter of concept_class_ids, multiple allowed, default = "Ingredient", ignored if a table is passed as df}
 
-\item{savefile}{whether to save as file, default TRUE}
-
-\item{filetype}{default "csv" later add optrion for "parquet"}
+\item{outfile}{name for output file default=NULL for no file}
 
 \item{messages}{whether to print info messages, default=TRUE}
 }

@@ -8,8 +8,8 @@
 #' @param name_drug_concept_id name of column containing drug concept ids, default="drug_concept_id"
 #' @param concept_class_ids optional filter of concept_class_ids, multiple allowed, default = "Ingredient", ignored if a table is passed as df
 #'
-#' @param savefile whether to save as file, default TRUE
-#' @param filetype default "csv" later add optrion for "parquet"
+#' @param outfile name for output file default=NULL for no file
+# @param filetype default "csv" later add optrion for "parquet"
 #' @param messages whether to print info messages, default=TRUE
 #'
 #' @return data frame with drug concepts and ATC classes
@@ -22,9 +22,9 @@
 omop_drug_lookup_create <- function(df = NULL,
                                     name_drug_concept_id = "drug_concept_id",
                                     concept_class_ids = c("Ingredient"),
-                                    savefile = FALSE,
-                                    file = "drug_lookup",
-                                    filetype = "csv",
+                                    #savefile = FALSE,
+                                    outfile = NULL, #"drug_lookup",
+                                    #filetype = "csv",
                                     messages = TRUE) {
 
 
@@ -87,7 +87,7 @@ omop_drug_lookup_create <- function(df = NULL,
     mutate(ATC_level = stringr::str_sub(ATC_level,5,5))
 
 
-if (savefile) write_csv(atc_descendants, file = file)
+if (!is.null(outfile)) write_csv(atc_descendants, file = paste0(outfile,".csv"))
 
 invisible(atc_descendants)
 

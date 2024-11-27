@@ -74,6 +74,7 @@ omop_relations <- function(c_id=NULL,
                                itself=itself,
                                names2avoid=names2avoid,
                                messages=messages,
+                               #note deliberate no join names in steps (even if set to true, done at end)
                                join_names=FALSE)
 
       if (!is.null(dfprev1)) {
@@ -105,6 +106,11 @@ omop_relations <- function(c_id=NULL,
     dfall <- bind_rows(dfall,dfprev)
 
   }
+
+  #sometimes an issue that concept_id_1 & 2 get in format 'num' rather than integer
+  #which stops joining below working
+  #not sure how they get to num
+  #this is a fix to convert back to integer
 
   #join names onto ids only at end to make faster
   if (join_names) dfall <- dfall |> omop_join_name_all()

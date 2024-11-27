@@ -1,0 +1,314 @@
+---
+title: "Getting drug classes from the hierarchy"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting drug classes from the hierarchy}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(omopcept)
+library(CodelistGenerator)
+library(dplyr)
+```
+
+**DRAFT** much of this has been replaced by `omop_drug_lookup_create()`    
+
+
+## Use case
+
+Researchers want to be able to identify drug classes from an omop extract.
+Maybe 
+1. antibiotics
+1. broad spectrum antibiotics
+1. specific antibiotic classes
+
+A need to map blood count components from two different source systems to OMOP. There are different potential OMOP concept ids. How to choose between them ? 
+
+Will help deal with different institutions having different OMOP concept ids for essentially the same drugs.
+
+## Does anything else already do this ?
+
+Seems that the [CodelistGenerator package](https://github.com/darwin-eu/CodelistGenerator) does things that could solve this.
+
+[CodelistGenerator::getATCCodes](https://github.com/darwin-eu/CodelistGenerator/blob/main/R/drugCodes.R) returns descendants of ATC classes.
+
+@param level ATC level. Can be one or more of "ATC 1st", "ATC 2nd", "ATC 3rd", "ATC 4th", and "ATC 5th"
+@param name ATC name of interest. For example, c("Dermatologicals", "Nervous System"), would result in a list of length two with the descendant concepts for these two particular ATC groups.
+
+```{r CodeListGenerator getATCCodes}
+
+cdm <- mockVocabRef()
+atc1 <- getATCCodes(cdm = cdm, level = "ATC 1st")
+# atc2 <- getATCCodes(cdm = cdm, level = "ATC 2nd")
+# Error in getATCCodes(cdm = cdm, level = "ATC 2nd") : 2 assertions failed:
+#  * - No matching ATC codes found
+#  * Variable 'atcCheck': Must be TRUE.
+
+```
+
+But these only show results that are in a CDM. I'd like comprehensive results to help me make sure its doing what I want before I apply it to any data.
+
+Potential `omopcept` workflow :
+
+1. use `omopcept::omop_names()` to look at what ATC classifier concepts there are.
+1. 
+T
+
+omop_concept_ancestor_fields()
+"ancestor_concept_id"      
+"descendant_concept_id"    
+"min_levels_of_separation" 
+"max_levels_of_separation"
+
+
+
+```{r omopcept subset ATC levels from concepts table, eval=FALSE}
+
+#eval=FALSE because much of this replaced by omop_drug_lookup_create()
+
+#300k rows
+rxn <- omopcept::omop_names("", v="RxNorm")
+
+omopfreqconceptclass(rxn)
+
+# doesn't seem to have ATC classes I want ??
+
+#    concept_class_id         n
+#    <chr>                <int>
+#  1 Clinical Drug        53083
+#  2 Branded Drug         39083
+#  3 Clinical Drug Comp   38474
+#  4 Branded Drug Comp    36748
+#  5 Branded Drug Form    26595
+#  6 Branded Dose Group   23388
+#  7 Clinical Drug Form   20773
+#  8 Brand Name           19469
+#  9 Clinical Dose Group  17741
+# 10 Ingredient           15604
+# 11 Multiple Ingredients  4469
+# 12 Quant Clinical Drug   3860
+# 13 Precise Ingredient    3476
+# 14 Quant Branded Drug    3215
+# 15 Branded Pack          1308
+# 16 Clinical Pack         1175
+# 17 Dose Form              201
+# 18 Dose Form Group         47
+
+# Aha, by looking at code for CodeListGenerator I see that the ATC classes are not in RxNorm but in a vocab called ATC
+
+#6740 rows
+atc <- omopcept::omop_names("", v="ATC")
+
+omopfreqconceptclass(atc)
+# 1 ATC 5th           5452
+# 2 ATC 4th            911
+# 3 ATC 3rd            269
+# 4 ATC 2nd             94
+# 5 ATC 1st             14
+
+# TO be able to get ATC classes for any drug concept
+# take the ancestor table
+# filter all ancestor_concept_id that are in vocab ATC
+# can then use filter any descendant_concept_id that appears in user data
+# and should end up with vector of ATC classes at the different levels
+
+#9 million ATC descendants !!
+
+atc_descendants <- omop_concept_ancestor() |> 
+  #ideally would do before collect
+  #but get Error in df[[id_col_name]] <- as.integer(df[[id_col_name]]) : cannot add bindings to a locked environment
+  #that I can probably fix in omopcept
+  #collect() |> 
+  omop_join_name(namestart = "ancestor", columns = c("concept_name","vocabulary_id","concept_class_id")) |> 
+  #renaming of joined columns to differentiate ancestor & descendant
+  rename(ancestor_vocabulary_id = vocabulary_id) |> 
+  rename(ancestor_concept_class_id = concept_class_id) |>  
+  omop_join_name(namestart = "descendant", columns = c("concept_name","vocabulary_id","concept_class_id")) |> 
+  rename(descendant_vocabulary_id = vocabulary_id) |> 
+  rename(descendant_concept_class_id = concept_class_id) |> 
+  collect() |>   
+  #head(100) |> 
+  filter(ancestor_vocabulary_id=="ATC") 
+
+atc_descendants |> count(descendant_vocabulary_id, sort=TRUE)
+# 1 RxNorm Extension         8732808
+# 2 RxNorm                    819887
+# 3 ATC                        30849
+# 4 HCPCS                        140
+# 5 HemOnc                        66
+
+atc_descendants |> count(ancestor_concept_class_id, sort=TRUE)
+
+#8.7m rows
+atc_rxnormext_descendants <- atc_descendants |> 
+  filter(descendant_vocabulary_id == "RxNorm Extension") |> 
+  select(ATC_concept_id = ancestor_concept_id,
+         ATC_concept_name = ancestor_concept_name,
+         drug_concept_id = descendant_concept_id,
+         drug_concept_name = descendant_concept_name,
+         ATC_level = ancestor_concept_class_id,
+         #this is RxNormExtension concept class e.g. Branded Drug etc.
+         #probably don't need because it will be in drug_exposure table
+         #but may be useful here during development
+         concept_class_id = descendant_concept_class_id
+         ) |> 
+   #extract numeric part of the ATC level
+   mutate(ATC_level = str_sub(ATC_level,5,5))
+
+atc_rxnormext_descendants |> count(concept_class_id, sort=TRUE)
+
+#  1 Marketed Product    2692126
+#  2 Branded Drug Box    1084960
+#  3 Branded Drug         856819
+#  4 Branded Drug Comp    710365
+#  5 Branded Drug Form    569727
+#  6 Clinical Drug Box    532821
+#  7 Quant Branded Drug   467679
+#  8 Quant Branded Box    411968
+#  9 Quant Clinical Drug  346667
+# 10 Clinical Drug        333783
+# 11 Quant Clinical Box   324265
+# 12 Clinical Drug Comp   200522
+# 13 Clinical Drug Form   151217
+# 14 Branded Pack          16291
+# 15 Clinical Pack         12935
+# 16 Ingredient             8911
+# 17 Branded Pack Box       6604
+# 18 Clinical Pack Box      5148
+
+#SOMETHING NOT RIGHT ? SEEMS CAN'T FIND MANY DRUGS IN HERE
+
+#TODO check in one of UCLH extracts what the values of RxNormExt concept_class_id are
+#e.g. is it just Ingredient ?
+
+atc_rxnormext_ingredient <- atc_rxnormext_descendants |> 
+  filter(concept_class_id %in% c("Ingredient"))
+
+atc2ingredients <- atc_rxnormext_ingredient |> 
+  filter(ATC_level %in% c("ATC 1st"))
+
+atc_rxnormext_clinicaldrug <- atc_rxnormext_descendants |> 
+  filter(concept_class_id %in% c("Clinical Drug"))
+
+atc_tmp <- atc_rxnormext_descendants |> head(1000)
+
+atc_from_rxnormext_ingredient <- atc_rxnormext_ingredient |> 
+#atc_from_rxnormext_wide <- atc_rxnormext_descendants |> 
+#atc_from_rxnormext_wide <- atc_tmp |> 
+  pivot_wider(names_from = ATC_level, 
+              values_from = c(ATC_concept_name, ATC_concept_id), 
+              id_cols=c(drug_concept_name, drug_concept_id))
+
+# Warning message:
+# Values from `ATC_concept_id` and `ATC_concept_name` are not uniquely identified; output will contain list-cols.
+# Use the following dplyr code to identify duplicates.
+# 800k rows !
+#dup <- atc_rxnormext_descendants |>
+dup <- atc_rxnormext_ingredient |>  
+  dplyr::summarise(n = dplyr::n(), .by = c(drug_concept_name, drug_concept_id, ATC_level)) |>
+  dplyr::filter(n > 1L)
+
+# SO a drug can be in more than one ATC class
+
+# lets have a look at a single drug example
+
+drugname <- "biapenem"
+drugname <- "Bromisoval" #apparently has 37 duplicates !!
+drugname <- "Azidamfenicol" #10 duplicates
+
+oneingredient <- atc_rxnormext_descendants |> 
+  filter(drug_concept_name == drugname) |> 
+  arrange(ATC_level)
+
+#biapenem has single entry per ATC level
+#   ATC_concept_id ATC_concept_name                 drug_concept_id drug_concept_name ATC_level concept_class_id
+# 1       21602795 ANTIINFECTIVES FOR SYSTEMIC USE         35198093 biapenem          ATC 1st   Ingredient      
+# 2       21602796 ANTIBACTERIALS FOR SYSTEMIC USE         35198093 biapenem          ATC 2nd   Ingredient      
+# 3       21602868 OTHER BETA-LACTAM ANTIBACTERIALS        35198093 biapenem          ATC 3rd   Ingredient      
+# 4       21602920 Carbapenems                             35198093 biapenem          ATC 4th   Ingredient      
+# 5       21602924 biapenem; parenteral                    35198093 biapenem          ATC 5th   Ingredient  
+
+#but e.g. Azidamfenicol has multiple entries in all ATC levels
+#suggests that maybe we need multiple rows per drug (i.e. keep data long)
+#perhaps function can offer option for short & long ?
+#OR maybe start by producing a long lookup table because we are close to that already
+#
+
+#even Bromisoval, most duplicates are in level 5
+#oneingredient |> count(ATC_level, sort=TRUE)
+# 1 ATC 5th      37
+# 2 ATC 4th       6
+# 3 ATC 3rd       4
+# 4 ATC 1st       1
+# 5 ATC 2nd       1
+
+#TEMPTED to try to plot relationships of ATC levels
+#probably 1-3
+
+
+#I think we may want ATC (3rd level, pharmacological subgroup)
+atc3_rxnormext_descendants <- atc_descendants |> 
+  filter(descendant_vocabulary_id == "RxNorm Extension") |> 
+  filter(ancestor_concept_class_id == "ATC 3rd")
+
+atc2_rxnormext_descendants <- atc_descendants |> 
+  filter(descendant_vocabulary_id == "RxNorm Extension") |> 
+  filter(ancestor_concept_class_id == "ATC 2nd")
+
+atc1_rxnormext_descendants <- atc_descendants |> 
+  filter(descendant_vocabulary_id == "RxNorm Extension") |> 
+  filter(ancestor_concept_class_id == "ATC 1st")
+
+#234 rows at ATC3
+freq_atc3 <- atc3_rxnormext_descendants |> count(ancestor_concept_name, sort=TRUE)
+#90 rows at ATC2
+freq_atc2 <- atc2_rxnormext_descendants |> count(ancestor_concept_name, sort=TRUE)
+#14 rows at ATC1
+freq_atc1 <- atc1_rxnormext_descendants |> count(ancestor_concept_name, sort=TRUE)
+
+cyto <- atc3_rxnormext_descendants |> 
+  filter(ancestor_concept_name == "CYTOTOXIC ANTIBIOTICS AND RELATED SUBSTANCES")
+
+#amoxicillin etc.
+beta <- atc3_rxnormext_descendants |> 
+  filter(ancestor_concept_name == "BETA-LACTAM ANTIBACTERIALS, PENICILLINS")
+
+#OTHER BETA-LACTAM ANTIBACTERIALS
+
+
+#find what level2 is for level3= "BETA-LACTAM ANTIBACTERIALS, PENICILLINS"
+beta_atc2 <- atc_descendants |> 
+  filter(ancestor_concept_class_id == "ATC 2nd") |> 
+  filter(descendant_concept_name == "BETA-LACTAM ANTIBACTERIALS, PENICILLINS")  
+
+anti_atc3 <- atc_descendants |> 
+  filter(ancestor_concept_name == "ANTIBACTERIALS FOR SYSTEMIC USE" ) |> 
+  filter(descendant_concept_class_id == "ATC 3rd")
+
+anti_atc4 <- atc_descendants |> 
+  filter(ancestor_concept_name == "ANTIBACTERIALS FOR SYSTEMIC USE" ) |> 
+  filter(descendant_concept_class_id == "ATC 4th")
+
+beta_atc1 <- atc_descendants |> 
+  filter(ancestor_concept_class_id == "ATC 1st") |> 
+  filter(descendant_concept_name == "BETA-LACTAM ANTIBACTERIALS, PENICILLINS") 
+
+a3_and_4 <- bind_rows(anti_atc3, anti_atc4)
+
+#SO WHAT WE COULD DO is create a post-processing script that will add columns to the omop extracts for ATC2,3,& 4 likely to be most useful
+#TODO
+#write a function addATC_to_drug_concepts()
+#want to add 1 column for each ATC level
+#probably by filtering all ATC levels & then doing pivot_wider()
+
+```
+

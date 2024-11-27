@@ -1058,10 +1058,10 @@ anes <- omop_names("Administration of anesthesia",exact=TRUE,v="SNOMED")
 #                                       nsteps=7)
 # 
 # write_csv(anes_downr7,file=here("..","omopcept-plots","data","anes_downr7.csv"))
-anes_downr7 <- read_csv(here("..","omopcept-plots","data","anes_downr7.csv"))
+anes_downr7 <- read_csv(here::here("..","omopcept-plots","data","anes_downr7.csv"))
 
 ############################################################
-#####***GOOD ONE***
+#####***GOOD ONE*** this was entry to UCLH art comp 2024 - only got into online gallery
 caption <- "Standardised names for anesthesia procedures used in the NHS (concepts with a numeric code defined in SNOMED CT). Standards make patient care and research more efficient. \nUCLH stores data in SNOMED and translates it to another standard (the OMOP Common Data Model) to enable comparison between hospitals. Plot made by Andy South using R, ggplot2 & omopcept."
 
 #hack to try to avoid lightest colours
@@ -1082,10 +1082,31 @@ omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
            backcolour="white",
            titlecolour = "darkred",
            edgecolour="burlywood",
-           nodetxtsize=18,
+           nodetxtsize=4, #was 18 originally but I think may be bug in nodetext sizing
            caption=caption,
            captionjust="centre",
            captiontxtsize=18)
+
+#2024-11-12 trying to make a jpeg < 400kb because that is max UCLH art site can cope with
+#probably want to select fewer nodes and make it bit smaller
+#rawjpeg is 20,000 kb !! so want to reduce by a factor of 50
+omop_graph(anes_downr7b, filenameroot="anes_downr7rb",
+           width=84, height=119, 
+           textcolourvar ="recurse_level",
+           nodecolourvar="recurse_level",
+           palettebrewer = "Greens",
+           palettedirection = 1,
+           legendshow = FALSE,
+           graphtitle = "Rock-a-bye-Baby",
+           titletxtsize = 130,
+           backcolour="white",
+           titlecolour = "darkred",
+           edgecolour="burlywood",
+           nodetxtsize=4, #was 18 originally but I think may be bug in nodetext sizing
+           caption=caption,
+           captionjust="centre",
+           captiontxtsize=18,
+           filetype = "jpg")
 
 
 # BIRTH v DEATH

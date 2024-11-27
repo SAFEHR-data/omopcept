@@ -32,6 +32,8 @@ omop_join_name <- function(df,
 
 
   #protect against concept_id columns that are not integer
+  #happens sometimes that they are 'num' & that stops join
+  #e.g. from omop_relations()
   #this also fixes previous issue with columns full of NAs
   #now those columns are converted to integer and it does join a name column full of NAs
   #TODO this seems to cause error if data haven't been collected
@@ -121,7 +123,7 @@ omop_join_name <- function(df,
 
     },
     error = function(e){
-      first_values <- df |> head() |> collect() |> select(id_col_name) |> pull()
+      first_values <- df |> head() |> collect() |> select(all_of(id_col_name)) |> pull()
       message('problem with column ', id_col_name, " not able to join names. First values = ", first_values)
       #print(e)
     },

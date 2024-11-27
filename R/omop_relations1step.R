@@ -64,7 +64,7 @@ omop_relations1step <- function(c_id=NULL,
     left_join(concept_attributes, by = dplyr::join_by(concept_id_2 == concept_id)) |>
     omop_filter_concepts(c_ids=c_ids, d_ids=d_ids, v_ids=v_ids, cc_ids=cc_ids, standard=standard)
 
-  #joining names to concept ids, could make it optional & not do in recursive
+  #joining names to concept ids optional & not done in recursive until final step
   if (join_names)
   {
     df1 <- df1 |>  omop_join_name_all()
@@ -76,7 +76,11 @@ omop_relations1step <- function(c_id=NULL,
   #old move name column next to id to make more readable
   #not needed now with way names are joined
   #dplyr::relocate(concept_name_2, .after=concept_id_1) |>
+
+  #TODO check whether have to collect here
   df1 <- df1 |> collect()
+
+
 
   if (messages) message("returning ",nrow(df1)," concepts")
 
