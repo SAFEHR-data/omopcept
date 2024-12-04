@@ -7,7 +7,6 @@ called by omop_graph()}
 \usage{
 omop_graph_vis(
   graphlist,
-  dfin,
   ggrlayout = "graphopt",
   palettebrewer = "Dark2",
   palettedirection = 1,
@@ -53,8 +52,6 @@ omop_graph_vis(
 }
 \arguments{
 \item{graphlist}{list of \code{edges} and \code{nodes} created from \code{omop_graph_calc()}}
-
-\item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
 
 \item{ggrlayout}{ggraph layout, default = "graphopt", also "tree" works well, more directional}
 

@@ -198,6 +198,9 @@ omgr <- omop_graph
 #' @examples
 #' bp <- omop_relations("Non-invasive blood pressure")
 #' listedges_nodes <- omop_graph_calc(bp)
+#' rel <- omop_concept_relationship() |> head() |> collect()
+#' listrel <- omop_graph_calc(rel)
+# omop_graph(rel)
 omop_graph_calc <- function(dfin) {
 
   # to detect input type from presence of specific column names
@@ -228,7 +231,13 @@ omop_graph_calc <- function(dfin) {
 
     #TODO resolve why this error
     #still happening from raw concept_relationship data
-    #I thought that omop_join_name_all(columns="all") should fix it ?
+
+    #I think it is combination of 2 issues that I need to fix :
+    ##1 domain_id being used as an attribute even when not present
+    ## see here :
+    ###TODO check presence of nodecolourvar in data before here
+    #colour=as.factor(.data[[nodecolourvar]])),
+    ##2 domain_id being renamed to domain_id.x & y because two domain_ids
 
     # Error in `ggraph::geom_node_point()` at omopcept/R/omop_graph.R:426:0:
     #   ! Problem while computing aesthetics.
@@ -236,6 +245,7 @@ omop_graph_calc <- function(dfin) {
     # Caused by error in `.data[["domain_id"]]`:
     #   ! Column `domain_id` not found in `.data`.
     # Run `rlang::last_trace()` to see where the error occurred.
+
 
   } else if ("concept_id_1" %in% names(dfin)) {
 
@@ -279,7 +289,6 @@ omop_graph_calc <- function(dfin) {
 #' called by omop_graph()
 #'
 #' @param graphlist list of `edges` and `nodes` created from `omop_graph_calc()`
-#' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
 #'
 #' @param ggrlayout ggraph layout, default = "graphopt", also "tree" works well, more directional
 #' @param palettebrewer colour brewer palette, default='Dark2', other options e.g. 'Set1' see RColorBrewer::brewer.pal.info
@@ -343,7 +352,6 @@ omop_graph_calc <- function(dfin) {
 #' omop_graph_vis(nodesedges, nodesizevar="testsizevar", nodesize = 5)
 omop_graph_vis <- function(
                        graphlist,
-                       dfin,
                        ggrlayout='graphopt',
                        palettebrewer='Dark2',
                        palettedirection=1,
@@ -441,6 +449,7 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
   #as.factor gets colours to work if numeric
   ggraph::geom_node_point(aes(size=sizecolumn,
+                              #TODO check presence of nodecolourvar in data before here
                               colour=as.factor(.data[[nodecolourvar]])),
                           #TODO re-enable this when worked out how to get it to cope with "connections"
                           #size=nodesize,
