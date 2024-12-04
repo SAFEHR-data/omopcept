@@ -119,7 +119,7 @@ omgr(
 
 \item{nodesizevar}{column to set node size, default="connections", uses num connections to a node}
 
-\item{nodesize}{modify node size range, default c(0,6), will modify size whether nodesizevar used or not}
+\item{nodesize}{modify node size range, default c(0,6), will modify size whether nodesizevar used or not, single value e.g. 5 will give equal sized nodes}
 
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 

@@ -16,7 +16,7 @@
 #' @param edgewidth edge width, default 0.1, #ggraph uses underscore edge_width but would mess up my consistency
 #'
 #' @param nodesizevar column to set node size, default="connections", uses num connections to a node
-#' @param nodesize modify node size range, default c(0,6), will modify size whether nodesizevar used or not
+#' @param nodesize modify node size range, default c(0,6), will modify size whether nodesizevar used or not, single value e.g. 5 will give equal sized nodes
 #'
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
@@ -416,9 +416,7 @@ install_package <- function(packname) {
 #required_packages |> purrr::map(\(pkg) install_package(pkg))
 lapply(required_packages,install_package)
 
-#set node & text colour same by default, but user can change
-if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
-if (is.null(nodecolourvar)) nodecolourvar <- textcolourvar
+
 
 titlehjust <- dplyr::case_match(titlejust,
                                 c("centre","center") ~ 0.5,
@@ -431,8 +429,37 @@ captionhjust <- dplyr::case_match(captionjust,
                                   "right" ~ 1,
                                   .default = 0)
 
-
 graphin <- tidygraph::tbl_graph(nodes=graphlist$nodes, edges=graphlist$edges)
+
+#check if nodecolourvar is present in data
+# if not, make a new column with equal values
+# (this was only way I could think to avoid having a condition withing
+#  the ggplot call, which I don't think is possible)
+#  uses graphlist because not sure where I expect nodecolourvar to be in graphin !!
+if( !(nodecolourvar %in% names(graphlist$nodes)) )
+{
+  igraph::V(graphin)$xxnodecolour <- 1
+  nodecolourvar <- "xxnodecolour"
+}
+#cat(paste("textcolourvar:",textcolourvar,"\n"))
+#have to check null first otherwise errors
+#TODO problem with this that when textcolourvar missing
+#it seems to add an extra coloured dot to the legend on right
+#even though below uses geom_node_text(show.legend=FALSE)
+#bp <- omop_relations("Non-invasive blood pressure")
+#ln <- omop_graph_calc(bp)
+#omop_graph_vis(ln,nodesize = 5,textcolourvar = "test")
+#add this as a test after
+if( !is.null(textcolourvar)) {
+  if(! textcolourvar %in% names(graphlist$nodes))
+    {
+      igraph::V(graphin)$xxtextcolour <- 1
+      textcolourvar <- "xxtextcolour"
+    }}
+
+#set node & text colour same by default, but user can change
+if (is.null(textcolourvar)) textcolourvar <- nodecolourvar
+if (is.null(nodecolourvar)) nodecolourvar <- textcolourvar
 
 #sets node attribute of num_edges to allow node sizing
 if (!is.null(nodesizevar) & nodesizevar=="connections")
