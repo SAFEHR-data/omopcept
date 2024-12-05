@@ -32,3 +32,6 @@ snomed_to_icd10_lookup <-   omop_concept_relationship() |>
 # snomed_to_icd10_lookup |> count(relationship_id)
 # 1 Mapped from       18957
 # 2 Value mapped from   293
+
+# Looking at one concept in SNOMED that Ewan found maps to >100 icd10 concepts
+# cspine <- omop_concept_relationship() |> filter(concept_id_1==80497L) |> omop_join_name_all() |> filter(relationship_id=="Mapped from") |> collect()

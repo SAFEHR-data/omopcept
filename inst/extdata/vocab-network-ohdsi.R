@@ -40,7 +40,7 @@ count_inter_vocabrships <- function () {
     rename(vocabulary_id_1=vocabulary_id) |>
     # could filter just one of concept1 (passed in arg)
     # filter(vocabulary_id_1 == v1) |>
-    # join on vocab_id for concept1
+    # join on vocab_id for concept2
     left_join(select(omop_concept(),concept_id,vocabulary_id), by=c(concept_id_2="concept_id")) |>
     rename(vocabulary_id_2=vocabulary_id) |>
 
