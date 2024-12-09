@@ -5,9 +5,9 @@
 #' OR all drug concepts in a passed table (e.g. drug_exposure)
 #'
 #' @param df optional table containing drug concept ids
-#' @param name_drug_concept_id name of column containing drug concept ids, default="drug_concept_id"
+#' @param name_drug_concept_id optional name of column containing drug concept ids, default="drug_concept_id"
 #' @param concept_class_ids optional filter of concept_class_ids, multiple allowed, default = "Ingredient", ignored if a table is passed as df
-#'
+#' @param drug_concept_vocabs vocabs containing drug concepts default = "RxNorm Extension", option c("RxNorm","RxNorm Extension")
 #' @param outfile name for output file default=NULL for no file
 # @param filetype default "csv" later add option for "parquet"
 #' @param messages whether to print info messages, default=TRUE
@@ -17,12 +17,17 @@
 #' @examples
 #' #to create a lookup table for all RxNorm Extension Ingredients
 #' drug_lookup = omop_drug_lookup_create()
+#' #counting numbers of concepts under each level in ATC hierarchy
+# freqatc1 <- drug_lookup |> filter(ATC_level==1) |> count(ATC_concept_name, sort=TRUE)
+# freqatc2 <- drug_lookup |> filter(ATC_level==2) |> count(ATC_concept_name, sort=TRUE)
+# find ATC parents of some drug concept ids
 # #standard_concept == 'S' important for this example to work
 #rxnormext_egs <- omop_concept() |> filter(vocabulary_id == "RxNorm Extension" & standard_concept == 'S') |> head(100) |> collect()
 #lookup2 <- omop_drug_lookup_create(select(rxnormext_egs, concept_id), name_drug_concept_id="concept_id")
 omop_drug_lookup_create <- function(df = NULL,
                                     name_drug_concept_id = "drug_concept_id",
                                     concept_class_ids = c("Ingredient"),
+                                    drug_concept_vocabs = "RxNorm Extension",
                                     #savefile = FALSE,
                                     outfile = NULL, #"drug_lookup",
                                     #filetype = "csv",
@@ -74,8 +79,9 @@ omop_drug_lookup_create <- function(df = NULL,
 
 
     filter(ancestor_vocabulary_id=="ATC" &
-           #TODO for US audience allow RxNorm
-           drug_vocabulary_id == "RxNorm Extension") |>
+           #to allow for US audience RxNorm
+           drug_vocabulary_id %in% drug_concept_vocabs ) |>
+           #drug_vocabulary_id == "RxNorm Extension") |>
 
     # renaming columns
     select(drug_concept_name, drug_concept_id, drug_concept_class_id,

@@ -8,6 +8,7 @@ omop_drug_lookup_create(
   df = NULL,
   name_drug_concept_id = "drug_concept_id",
   concept_class_ids = c("Ingredient"),
+  drug_concept_vocabs = "RxNorm Extension",
   outfile = NULL,
   messages = TRUE
 )
@@ -15,9 +16,11 @@ omop_drug_lookup_create(
 \arguments{
 \item{df}{optional table containing drug concept ids}
 
-\item{name_drug_concept_id}{name of column containing drug concept ids, default="drug_concept_id"}
+\item{name_drug_concept_id}{optional name of column containing drug concept ids, default="drug_concept_id"}
 
 \item{concept_class_ids}{optional filter of concept_class_ids, multiple allowed, default = "Ingredient", ignored if a table is passed as df}
+
+\item{drug_concept_vocabs}{vocabs containing drug concepts default = "RxNorm Extension", option c("RxNorm","RxNorm Extension")}
 
 \item{outfile}{name for output file default=NULL for no file}
 
@@ -34,4 +37,5 @@ OR all drug concepts in a passed table (e.g. drug_exposure)
 \examples{
 #to create a lookup table for all RxNorm Extension Ingredients
 drug_lookup = omop_drug_lookup_create()
+#counting numbers of concepts under each level in ATC hierarchy
 }
