@@ -35,7 +35,6 @@ omop_drug_lookup_create <- function(df = NULL,
 
 
   # 9 million ATC descendants !
-
   if (messages) message("creating drug lookup may take more than a few seconds (e.g. ~20s for all concept_class_ids == 'Ingredient'")
 
   #filtering order to try to speed up (i.e. filter before join where possible)
@@ -45,6 +44,12 @@ omop_drug_lookup_create <- function(df = NULL,
 
   if ( !is.null(df) )
   {
+    #TODO check for presence of name_drug_concept_id in df
+
+    #select & filter 1 column & unique values from df
+    df <- df |> select({{name_drug_concept_id}}) |>
+      distinct()
+
     #join or filter concept_ids present in passed table
     atc_descendants <- atc_descendants |>
       dplyr::right_join(df, by=join_by(descendant_concept_id == {{name_drug_concept_id}}))

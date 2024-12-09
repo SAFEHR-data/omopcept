@@ -21,6 +21,7 @@
 #' @importFrom dplyr contains
 #' @importFrom dplyr tibble
 #' @importFrom dplyr count
+#' @importFrom dplyr distinct
 #'
 #' @importFrom rlang .data
 #'
