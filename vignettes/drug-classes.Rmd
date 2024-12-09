@@ -1,5 +1,5 @@
 ---
-title: "Getting drug classes from the hierarchy"
+title: "Getting drug classes from the OMOP hierarchy"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting drug classes from the hierarchy}
@@ -20,22 +20,40 @@ library(CodelistGenerator)
 library(dplyr)
 ```
 
-**DRAFT** much of this has been replaced by `omop_drug_lookup_create()`    
+**DRAFT**   
 
+## TLDR
+
+omopcept has recently gained a function `omop_drug_lookup_create()` to create a lookup table from drug concept IDs to drug classes in the ATC classification. To create a lookup table for all RxNorm Extension Ingredients :
+
+```
+drug_lookup = omop_drug_lookup_create()
+```
 
 ## Use case
 
-Researchers want to be able to identify drug classes from an omop extract.
+Researchers want to be able to identify drug classes from an omop extract that has more specific drug names.
+
 Maybe 
 1. antibiotics
 1. broad spectrum antibiotics
 1. specific antibiotic classes
 
-A need to map blood count components from two different source systems to OMOP. There are different potential OMOP concept ids. How to choose between them ? 
+## ATC a WHO drug classification
 
-Will help deal with different institutions having different OMOP concept ids for essentially the same drugs.
+[ATC](https://atcddd.fhi.no/atc/structure_and_principles/) the Anatomical Therapeutic Chemical Classification System maintained by WHO and the Defined Daily Dose (DDD) as a measuring unit "have become the gold standard for international drug utilization monitoring and research".
+
+In ATC, active substances are classified in a hierarchy with five levels.  The system has fourteen main anatomical/pharmacological groups or 1st levels.  Each ATC main group is divided into 2nd levels which could be either pharmacological or therapeutic groups.  The 3rd and 4th levels are chemical, pharmacological or therapeutic subgroups and the 5th level is the chemical substance.
+
+## ATC in OMOP via RxNorm Extension & RxNorm
+
+In OMOP each drug concept ID in the vocabularies `RxNorm Extension` & `RxNorm` has ancestor concepts in the different levels of the ATC hierarchy. The new omopcept function `omop_drug_lookup_create()` creates a lookup table from drug concept IDs to drug classes in the ATC classification.
+
+
 
 ## Does anything else already do this ?
+
+I couldn't quite get anything to provide a comprehensive list of drug classes.
 
 Seems that the [CodelistGenerator package](https://github.com/darwin-eu/CodelistGenerator) does things that could solve this.
 
@@ -57,23 +75,11 @@ atc1 <- getATCCodes(cdm = cdm, level = "ATC 1st")
 
 But these only show results that are in a CDM. I'd like comprehensive results to help me make sure its doing what I want before I apply it to any data.
 
-Potential `omopcept` workflow :
-
-1. use `omopcept::omop_names()` to look at what ATC classifier concepts there are.
-1. 
-T
-
-omop_concept_ancestor_fields()
-"ancestor_concept_id"      
-"descendant_concept_id"    
-"min_levels_of_separation" 
-"max_levels_of_separation"
-
-
 
 ```{r omopcept subset ATC levels from concepts table, eval=FALSE}
 
-#eval=FALSE because much of this replaced by omop_drug_lookup_create()
+# OLD exploration
+# eval=FALSE because much of this replaced by omop_drug_lookup_create()
 
 #300k rows
 rxn <- omopcept::omop_names("", v="RxNorm")

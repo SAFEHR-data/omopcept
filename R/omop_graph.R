@@ -198,8 +198,8 @@ omgr <- omop_graph
 #' @examples
 #' bp <- omop_relations("Non-invasive blood pressure")
 #' listedges_nodes <- omop_graph_calc(bp)
-#' rel <- omop_concept_relationship() |> head() |> collect()
-#' listrel <- omop_graph_calc(rel)
+# rel <- omop_concept_relationship() |> head() |> collect()
+# listrel <- omop_graph_calc(rel)
 # omop_graph(rel)
 omop_graph_calc <- function(dfin) {
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/omop_drug_lookup_create.R
 \name{omop_drug_lookup_create}
 \alias{omop_drug_lookup_create}
-\title{create a lookup table from drug concepts to ATC drug classes}
+\title{create a lookup table from drug concepts in \verb{RxNorm Extension} to ATC drug classes}
 \usage{
 omop_drug_lookup_create(
   df = NULL,
@@ -32,5 +32,6 @@ either all drug concepts filtered by concept_class_id
 OR all drug concepts in a passed table (e.g. drug_exposure)
 }
 \examples{
+#to create a lookup table for all RxNorm Extension Ingredients
 drug_lookup = omop_drug_lookup_create()
 }

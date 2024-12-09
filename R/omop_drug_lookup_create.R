@@ -1,4 +1,4 @@
-#' create a lookup table from drug concepts to ATC drug classes
+#' create a lookup table from drug concepts in `RxNorm Extension` to ATC drug classes
 #'
 #' EXPERIMENTAL
 #' either all drug concepts filtered by concept_class_id
@@ -9,16 +9,17 @@
 #' @param concept_class_ids optional filter of concept_class_ids, multiple allowed, default = "Ingredient", ignored if a table is passed as df
 #'
 #' @param outfile name for output file default=NULL for no file
-# @param filetype default "csv" later add optrion for "parquet"
+# @param filetype default "csv" later add option for "parquet"
 #' @param messages whether to print info messages, default=TRUE
 #'
 #' @return data frame with drug concepts and ATC classes
 #' @export
 #' @examples
+#' #to create a lookup table for all RxNorm Extension Ingredients
 #' drug_lookup = omop_drug_lookup_create()
 # #standard_concept == 'S' important for this example to work
 #rxnormext_egs <- omop_concept() |> filter(vocabulary_id == "RxNorm Extension" & standard_concept == 'S') |> head(100) |> collect()
-#lookup2 <- omop_drug_lookup_create(select(rxnormext_egs,concept_id), name_drug_concept_id="concept_id")
+#lookup2 <- omop_drug_lookup_create(select(rxnormext_egs, concept_id), name_drug_concept_id="concept_id")
 omop_drug_lookup_create <- function(df = NULL,
                                     name_drug_concept_id = "drug_concept_id",
                                     concept_class_ids = c("Ingredient"),
@@ -73,6 +74,7 @@ omop_drug_lookup_create <- function(df = NULL,
 
 
     filter(ancestor_vocabulary_id=="ATC" &
+           #TODO for US audience allow RxNorm
            drug_vocabulary_id == "RxNorm Extension") |>
 
     # renaming columns
