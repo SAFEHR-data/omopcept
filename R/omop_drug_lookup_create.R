@@ -3,6 +3,7 @@
 #' EXPERIMENTAL
 #' either all drug concepts filtered by concept_class_id
 #' OR all drug concepts in a passed table (e.g. drug_exposure)
+#' [ATC](https://www.nlm.nih.gov/research/umls/rxnorm/sourcereleasedocs/atc.html) is a WHO drug classification incorporated within RxNorm. Anatomical Therapeutic Chemical Classification System.
 #'
 #' @param df optional table containing drug concept ids
 #' @param name_drug_concept_id optional name of column containing drug concept ids, default="drug_concept_id"
@@ -45,6 +46,9 @@ omop_drug_lookup_create <- function(df = NULL,
   if ( !is.null(df) )
   {
     #TODO check for presence of name_drug_concept_id in df
+    #TODO add a test that columns not repeated
+    dftst <- data.frame(drug_concept_id=rep(36894568L,5))
+    dctst <- omopcept::omop_drug_lookup_create(dftst)
 
     #select & filter 1 column & unique values from df
     df <- df |> select({{name_drug_concept_id}}) |>

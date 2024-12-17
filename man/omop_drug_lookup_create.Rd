@@ -33,6 +33,7 @@ data frame with drug concepts and ATC classes
 EXPERIMENTAL
 either all drug concepts filtered by concept_class_id
 OR all drug concepts in a passed table (e.g. drug_exposure)
+\href{https://www.nlm.nih.gov/research/umls/rxnorm/sourcereleasedocs/atc.html}{ATC} is a WHO drug classification incorporated within RxNorm. Anatomical Therapeutic Chemical Classification System.
 }
 \examples{
 #to create a lookup table for all RxNorm Extension Ingredients
