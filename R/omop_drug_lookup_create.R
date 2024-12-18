@@ -1,4 +1,4 @@
-#' create a lookup table from drug concepts in `RxNorm Extension` to ATC drug classes
+#' create a lookup table from drug concepts in vocabs `RxNorm` and/or `RxNorm Extension` to ATC drug classes
 #'
 #' EXPERIMENTAL
 #' either all drug concepts filtered by concept_class_id
@@ -8,7 +8,7 @@
 #' @param df optional table containing drug concept ids
 #' @param name_drug_concept_id optional name of column containing drug concept ids, default="drug_concept_id"
 #' @param concept_class_ids optional filter of concept_class_ids, multiple allowed, default = "Ingredient", ignored if a table is passed as df
-#' @param drug_concept_vocabs vocabs containing drug concepts default = "RxNorm Extension", option c("RxNorm","RxNorm Extension")
+#' @param drug_concept_vocabs vocabs containing drug concepts default = c("RxNorm","RxNorm Extension") option just = "RxNorm Extension"
 #' @param outfile name for output file default=NULL for no file
 # @param filetype default "csv" later add option for "parquet"
 #' @param messages whether to print info messages, default=TRUE
@@ -16,7 +16,7 @@
 #' @return data frame with drug concepts and ATC classes
 #' @export
 #' @examples
-#' #to create a lookup table for all RxNorm Extension Ingredients
+#' #to create a lookup table for all Ingredients
 #' drug_lookup = omop_drug_lookup_create()
 #' #counting numbers of concepts under each level in ATC hierarchy
 # freqatc1 <- drug_lookup |> filter(ATC_level==1) |> count(ATC_concept_name, sort=TRUE)
@@ -28,7 +28,7 @@
 omop_drug_lookup_create <- function(df = NULL,
                                     name_drug_concept_id = "drug_concept_id",
                                     concept_class_ids = c("Ingredient"),
-                                    drug_concept_vocabs = "RxNorm Extension",
+                                    drug_concept_vocabs = c("RxNorm","RxNorm Extension"),
                                     #savefile = FALSE,
                                     outfile = NULL, #"drug_lookup",
                                     #filetype = "csv",
