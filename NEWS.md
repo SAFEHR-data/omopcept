@@ -1,5 +1,7 @@
+# omopcept 0.0.6.2 2024-12-18 DEV version
 
-# omopcept 0.0.6.1 2024-12-18 DEV version
+
+# omopcept 0.0.6.1 2024-12-18
 
 * add helper functions `omopfreq*()` for counting frequency of values in `domain` `conceptclass` `relationship` or `vocabulary`
 * split out `omop_graph_calc()` for separate calculation of nodes & edges, either a) to enable other data to be joined on (e.g. num records) for visualisation or b) so nodes & edges can be passed to an alternative renderer (as yet unknown)   
