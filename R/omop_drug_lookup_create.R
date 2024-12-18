@@ -47,8 +47,8 @@ omop_drug_lookup_create <- function(df = NULL,
   {
     #TODO check for presence of name_drug_concept_id in df
     #TODO add a test that columns not repeated
-    dftst <- data.frame(drug_concept_id=rep(36894568L,5))
-    dctst <- omopcept::omop_drug_lookup_create(dftst)
+    #dftst <- data.frame(drug_concept_id=rep(36894568L,5))
+    #dctst <- omopcept::omop_drug_lookup_create(dftst)
 
     #select & filter 1 column & unique values from df
     df <- df |> select({{name_drug_concept_id}}) |>
