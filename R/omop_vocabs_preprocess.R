@@ -33,14 +33,6 @@ omop_vocabs_preprocess <- function(from,
 
   concepts <- read_athena_data("CONCEPT.csv", col_types = "icccccciic") |>
     convert_valid_dates() |>
-    #TODO do I offer option to filter out vocabs ?
-    #these are vocabs that we filtered out for omop_es
-    #but why didn't we just not download ?
-    #also they are filtered out from here but not from relationship & ancestor tables
-    #maybe I could also produce something that documents correspondence between
-    #athena tick boxes & these ids
-    #can I get at vocabulary_name from somewhere ?
-    #filter(!(vocabulary_id %in% c("NDC","SPL","OSM","ICD10PCS","ICD10CM","ICD9CM"))) |>
     write_result("concept.parquet")
 
   read_athena_data("CONCEPT_RELATIONSHIP.csv",col_types = "iiciic") |>

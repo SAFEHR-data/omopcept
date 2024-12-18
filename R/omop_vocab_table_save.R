@@ -1,6 +1,6 @@
 #' save omop vocabulary parquet file from provided location to local package cache
 #'
-#' default using UCLH temporary private filestore, option to use local files
+#' default using UCLH github repo, option to use local files
 #'
 #' @param tablename which omop table to download, defaults to 'concept'
 #' @param from url of file source location, defaults to UCLH filestore
@@ -13,9 +13,18 @@
 #'
 #' @export
 omop_vocab_table_save <- function( tablename = "concept",
-                           from = "https://omopes.blob.core.windows.net/newcontainer/",
+                           from = NULL,
                            to = tools::R_user_dir("omopcept", which = "cache"),
                            download_max_secs = 720) {
+
+  if (is.null(from))
+  {
+    message("Warning: downloading a subset of omop vocab files, pre-processed.\n",
+            "If you want to make sure you have the vocabs you need, download from Athena, save locally & call `omop_vocabs_preprocess()`\n")
+    tag <- "v4"
+    from <- paste0("https://github.com/SAFEHR-data/omop-vocabs-processed/raw/refs/tags/",
+                   tag,"/data/")
+  }
 
   #increase timeout, allow that user may have set timeout
   #to be higher via environment variable R_DEFAULT_INTERNET_TIMEOUT
@@ -25,22 +34,12 @@ omop_vocab_table_save <- function( tablename = "concept",
   message("downloading ",tablename, " file, may take a few minutes",
           ", this only needs to be repeated if the package is re-installed")
 
-  #concept_ancestor took just over a minute on local PC
-  #concept_relationship took ~5 minutes on local PC
-
-  #concept_relationship
-  #Error ... In utils::download.file ... Timeout of 360 seconds was reached
-
-  #where to save concept file ? to allow user to update.
+  # processed data saved in recommended location
   # https://r-pkgs.org/data.html#sec-data-persistent
   # Persistent user data
   # Sometimes there is data that your package obtains, on behalf of itself or the user,
   # that should persist even across R sessions.
   # The primary function you should use to derive acceptable locations for user data is tools::R_user_dir()
-
-  #dest_path <- to
-
-  #[1] "C:\\Users\\andy.south\\AppData\\Local/R/cache/R/omopcept"
 
   #recursive means it creates all nested folders needed
   if (!dir.exists(to)) {dir.create(to, recursive=TRUE )}
@@ -60,8 +59,4 @@ omop_vocab_table_save <- function( tablename = "concept",
   }
 
   download(paste0(tablename,".parquet"), "wb")
-  # download("concept_relationship.parquet", "wb")
-  # download("concept_ancestor.parquet", "wb")
-  # download("drug_strength.parquet", "wb")
-  # download("metadata_version.txt", "w")
 }

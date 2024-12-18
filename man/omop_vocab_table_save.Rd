@@ -6,7 +6,7 @@
 \usage{
 omop_vocab_table_save(
   tablename = "concept",
-  from = "https://omopes.blob.core.windows.net/newcontainer/",
+  from = NULL,
   to = tools::R_user_dir("omopcept", which = "cache"),
   download_max_secs = 720
 )
