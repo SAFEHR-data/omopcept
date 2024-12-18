@@ -24,7 +24,7 @@ omop_vocab_table_save(
 nothing
 }
 \description{
-default using UCLH temporary private filestore, option to use local files
+default using UCLH github repo, option to use local files
 }
 \seealso{
 \code{\link[=omop_vocabs_preprocess]{omop_vocabs_preprocess()}}

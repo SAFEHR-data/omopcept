@@ -43,6 +43,7 @@ omop_drug_lookup_create <- function(df = NULL,
   # get first link to the data
   atc_descendants <- omop_concept_ancestor()
 
+  # if a table is passed, filter descendants by unique drugs in that table
   if ( !is.null(df) )
   {
     #TODO check for presence of name_drug_concept_id in df
@@ -61,10 +62,7 @@ omop_drug_lookup_create <- function(df = NULL,
 
 
   atc_descendants <- atc_descendants |>
-    #ideally would do before collect
-    #but get Error in df[[id_col_name]] <- as.integer(df[[id_col_name]]) : cannot add bindings to a locked environment
-    #that I can probably fix in omopcept
-    #collect() |>
+
     omop_join_name(namestart = "descendant", columns = c("concept_name","vocabulary_id","concept_class_id"))
 
   # done here straight after join of concept_class_id for speed
@@ -81,21 +79,22 @@ omop_drug_lookup_create <- function(df = NULL,
            drug_concept_class_id = concept_class_id,
            drug_vocabulary_id = vocabulary_id) |>
 
-    omop_join_name(namestart = "ancestor", columns = c("concept_name","vocabulary_id","concept_class_id")) |>
+    omop_join_name(namestart = "ancestor", columns = c("concept_name","vocabulary_id","concept_class_id","concept_code")) |>
     #renaming of joined columns to differentiate ancestor & descendant
     rename(ancestor_vocabulary_id = vocabulary_id,
-           ATC_level         =  concept_class_id) |>
+           ATC_level         =  concept_class_id,
+           ATC_code          =  concept_code) |>
 
 
     filter(ancestor_vocabulary_id=="ATC" &
            #to allow for US audience RxNorm
            drug_vocabulary_id %in% drug_concept_vocabs ) |>
-           #drug_vocabulary_id == "RxNorm Extension") |>
 
     # renaming columns
     select(drug_concept_name, drug_concept_id, drug_concept_class_id,
            ATC_level,
            ATC_concept_name  = ancestor_concept_name,
+           ATC_code,
            ATC_concept_id    = ancestor_concept_id
 
     ) |>

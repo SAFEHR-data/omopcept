@@ -78,4 +78,7 @@ utils::globalVariables(c('concept_name', 'concept_id','concept_code',
                          'valid_start_date','valid_end_date','invalid_reason',
                          'from', 'to', 'name', 'connections',
                          'concept_name_to_check','check',
-                         'sizecolumn'))
+                         'sizecolumn',
+                         'ATC_code', 'ATC_level', 'all_of', 'ancestor_vocabulary_id',
+                         'drug_concept_class_id', 'drug_concept_id', 'drug_concept_name',
+                         'drug_vocabulary_id'))
