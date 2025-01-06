@@ -198,9 +198,10 @@ omgr <- omop_graph
 #' @examples
 #' bp <- omop_relations("Non-invasive blood pressure")
 #' listedges_nodes <- omop_graph_calc(bp)
-# rel <- omop_concept_relationship() |> head() |> collect()
-# listrel <- omop_graph_calc(rel)
-# omop_graph(rel)
+# GOOD example with raw relationship table subset
+# rel <- omop_concept_relationship() |> head(50) |> collect()
+# #note this colours nodes by relationship, not quite sure how it works when nodes inevitably have >1 relationship type
+# omop_graph(rel, nodecolourvar="relationship_id", nodetxtsize=3)
 omop_graph_calc <- function(dfin) {
 
   # to detect input type from presence of specific column names
@@ -208,60 +209,33 @@ omop_graph_calc <- function(dfin) {
   # from,to table required by ggraph
   if ("ancestor_name" %in% names(dfin)) {
 
-    #DESCENDANT
+    #DESCENDANT TABLE
     dfin2 <- dfin |>
       rename(from = ancestor_name,
              to = concept_name)
 
   } else if ("descendant_concept_name" %in% names(dfin)) {
 
-    #ANCESTOR
+    #ANCESTOR TABLE
     dfin2 <- dfin |>
       rename(from = descendant_concept_name,
              to = concept_name)
 
-  #} else if ("concept_name_1" %in% names(dfin)) {
-
-    # TODO get this to cope with raw relationship table
-    # by if ("concept_id_1" %in% names(dfin) & !"concept_name_1" %in% names(dfin))
-    # and then join names here
-    # currently this relies on names having been joined
-    # onto the relationship table before
-    # that limits ability to graph directly from concept_relationship
-
-    #TODO resolve why this error
-    #still happening from raw concept_relationship data
-
-    #I think it is combination of 2 issues that I need to fix :
-    ##1 domain_id being used as an attribute even when not present
-    ## see here :
-    ###TODO check presence of nodecolourvar in data before here
-    #colour=as.factor(.data[[nodecolourvar]])),
-    ##2 domain_id being renamed to domain_id.x & y because two domain_ids
-
-    # Error in `ggraph::geom_node_point()` at omopcept/R/omop_graph.R:426:0:
-    #   ! Problem while computing aesthetics.
-    # ℹ Error occurred in the 2nd layer.
-    # Caused by error in `.data[["domain_id"]]`:
-    #   ! Column `domain_id` not found in `.data`.
-    # Run `rlang::last_trace()` to see where the error occurred.
-
-
   } else if ("concept_id_1" %in% names(dfin)) {
 
+    #RELATION TABLE
+    #names not present in relation table, join on because needed to label nodes
     if (!"concept_name_1" %in% names(dfin)) {
       dfin <- dfin |> omop_join_name_all(columns="all")
     }
 
-    #RELATION
     dfin2 <- dfin |>
       #2024-09-16 changed order of these to resolve text colouring issue
       rename(from = concept_name_2,
              to = concept_name_1)
   }
 
-  #challenge to make sure get all nodes from columns from & to
-  #to avoid Invalid (negative) vertex id
+  #challenge to get all nodes from columns from & to, to avoid Invalid (negative) vertex id
   nodesfrom <- dfin2 |>
     #select(from,vocabulary_id,domain_id) |>
     group_by(from) |>
