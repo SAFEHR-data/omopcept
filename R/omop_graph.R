@@ -205,21 +205,20 @@ omgr <- omop_graph
 omop_graph_calc <- function(dfin) {
 
   # to detect input type from presence of specific column names
-  # then create a table containing 2 columns named 'from' and 'to'
-  # from,to table required by ggraph
+  # then create table with columns named 'from' and 'to' required by ggraph
+
+  # TODO1 I may want to allow user to specify from & to columns as args
+  # TOOD2 maybe replace all renames with mutate below so that user can use columns in later vis
+
   if ("ancestor_name" %in% names(dfin)) {
 
     #DESCENDANT TABLE
-    dfin2 <- dfin |>
-      rename(from = ancestor_name,
-             to = concept_name)
+    dfin2 <- dfin |> mutate(from = ancestor_name,           to = concept_name)
 
   } else if ("descendant_concept_name" %in% names(dfin)) {
 
     #ANCESTOR TABLE
-    dfin2 <- dfin |>
-      rename(from = descendant_concept_name,
-             to = concept_name)
+    dfin2 <- dfin |> mutate(from = descendant_concept_name, to = concept_name)
 
   } else if ("concept_id_1" %in% names(dfin)) {
 
@@ -229,11 +228,18 @@ omop_graph_calc <- function(dfin) {
       dfin <- dfin |> omop_join_name_all(columns="all")
     }
 
-    dfin2 <- dfin |>
-      #2024-09-16 changed order of these to resolve text colouring issue
-      rename(from = concept_name_2,
-             to = concept_name_1)
+    dfin2 <- dfin |> mutate(from = concept_name_2,          to = concept_name_1)
+
+  } else if ("ATC_concept_name" %in% names(dfin)) {
+
+    #FROM omop_drug_lookup_create()
+    #dfin2 <- dfin |> rename(from = ATC_concept_name,        to = drug_concept_name)
+    #copying in case user wants to use original names for vis
+    dfin2 <- dfin |> mutate(from = ATC_concept_name,        to = drug_concept_name)
+
   }
+
+
 
   #challenge to get all nodes from columns from & to, to avoid Invalid (negative) vertex id
   nodesfrom <- dfin2 |>
