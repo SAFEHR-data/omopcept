@@ -236,6 +236,11 @@ omop_graph_calc <- function(dfin) {
     #copying in case user wants to use original names for vis
     dfin2 <- dfin |> mutate(from = ATC_concept_name,        to = drug_concept_name)
 
+  } else if ("vocabulary_id_1" %in% names(dfin)) {
+
+    #from vocab-network-ohdsi.R
+    dfin2 <- dfin |> mutate(from = vocabulary_id_1, to = vocabulary_id_2)
+
   }
 
 
