@@ -207,8 +207,7 @@ omop_graph_calc <- function(dfin) {
   # to detect input type from presence of specific column names
   # then create table with columns named 'from' and 'to' required by ggraph
 
-  # TODO1 I may want to allow user to specify from & to columns as args
-  # TOOD2 maybe replace all renames with mutate below so that user can use columns in later vis
+  # TODO I may want to allow user to specify from & to columns as args
 
   if ("ancestor_name" %in% names(dfin)) {
 
