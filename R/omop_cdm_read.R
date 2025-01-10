@@ -10,6 +10,8 @@
 #' @export
 #' @examples
 #' #omop = omop_cdm_read(path,filetype="csv")
+#' #TODO woulkd be good to have a minimal example file in the package
+#' #and to have a test that integer guessing works correctly
 #'
 omop_cdm_read <- function(path,
                      filetype = "parquet",
@@ -45,7 +47,23 @@ omop_cdm_read <- function(path,
 
   } else if (filetype == "csv") {
 
-    list_omop <- purrr::map(filepaths,read_csv)
+    #list_omop <- purrr::map(filepaths,read_csv)
+
+    #BEWARE
+    #to guess integer columns correctly
+    #previous issue that *concept_id in as double by read_csv then don't join
+    #this reads as char then uses readr::type_convert that has a guess_integer arg
+    #other (safer?) option would be to check col names & specify all *concept_id
+    #columns as i, leave other as guess
+    #e.g. like col_types="i?ii??"
+    #read_csv doesn't have a guess_integer arg because can cause issues
+    #see https://github.com/tidyverse/readr/issues/1094
+    #ALSO WET that this is repeated in omop_cdm_table_read() for single table
+    read_csv_guessint <- function(onefile) {
+      read_csv(onefile, col_types = cols(.default = "c")) |>
+        readr::type_convert(guess_integer = TRUE)
+    }
+    list_omop <- purrr::map(filepaths, read_csv_guessint)
   }
 }
 

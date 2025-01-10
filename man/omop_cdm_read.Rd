@@ -25,5 +25,7 @@ NOTE these omop_cdm* functions are for omop extracts rather than the concepts an
 }
 \examples{
 #omop = omop_cdm_read(path,filetype="csv")
+#TODO woulkd be good to have a minimal example file in the package
+#and to have a test that integer guessing works correctly
 
 }

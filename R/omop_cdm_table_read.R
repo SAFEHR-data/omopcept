@@ -20,6 +20,10 @@ omop_cdm_table_read <- function(tablename,
     data <- read_parquet(filename)
   else
     data <- read_csv(filename)
+    #BEWARE WET that this is repeated in omop_cdm_read()
+    #see there for explanation
+    data <- read_csv(onefile, col_types = cols(.default = "c")) |>
+        readr::type_convert(guess_integer = TRUE)
 
 }
 

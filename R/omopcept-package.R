@@ -35,6 +35,7 @@
 #' @importFrom readr read_tsv
 #' @importFrom readr read_csv
 #' @importFrom readr write_csv
+#' @importFrom readr type_convert
 #'
 #' @importFrom lubridate ymd
 #'
