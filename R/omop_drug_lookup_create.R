@@ -23,8 +23,17 @@
 # freqatc2 <- drug_lookup |> filter(ATC_level==2) |> count(ATC_concept_name, sort=TRUE)
 # find ATC parents of some drug concept ids
 # #standard_concept == 'S' important for this example to work
-#rxnormext_egs <- omop_concept() |> filter(vocabulary_id == "RxNorm Extension" & standard_concept == 'S') |> head(100) |> collect()
-#lookup2 <- omop_drug_lookup_create(select(rxnormext_egs, concept_id), name_drug_concept_id="concept_id")
+# rxnormext_egs <- omop_concept() |> filter(vocabulary_id == "RxNorm Extension" & standard_concept == 'S') |> head(100) |> collect()
+# lookup2 <- omop_drug_lookup_create(select(rxnormext_egs, concept_id), name_drug_concept_id="concept_id")
+# # visualisation of ATC drug classes
+# # by default gets all ATC classes for all Ingredients
+# drug_lookup <- omop_drug_lookup_create()
+# freq_atc_level <- drug_lookup |> count(ATC_level)
+# ing_atc2 <- drug_lookup |> filter(ATC_level==2)
+# # to get 2 classes of antibacterial & antibiotic
+# antib_atc2 <- ing_atc2 |> filter(ATC_concept_name, str_detect("ANTIB"))
+# # nice plot showing 2 classes & some drugs shared between them
+# omop_graph(antib_atc2, nodetxtsize = 3, nodecolourvar = "ATC_concept_name")
 omop_drug_lookup_create <- function(df = NULL,
                                     name_drug_concept_id = "drug_concept_id",
                                     concept_class_ids = c("Ingredient"),
