@@ -14,17 +14,10 @@ library(dplyr)
 # ability to filter which relationships, e.g. just 'maps to'
 
 # all relationships per vocab (not what I need)
-vocabrships <- omop_concept_relationship() |>
-               left_join(omop_concept(), by=c(concept_id_1="concept_id")) |>
-               count(vocabulary_id, sort=TRUE, name="allrelationships") |>
-               collect()
-
-
-
-# but still not quite sure what I want to end up with ...
-# maybe I want
-# vocab1 nconcepts vocab2 nrshipsbw
-# will be multiple rows of vocab1 & nconcepts will be same for each & repeated
+# vocabrships <- omop_concept_relationship() |>
+#                left_join(omop_concept(), by=c(concept_id_1="concept_id")) |>
+#                count(vocabulary_id, sort=TRUE, name="allrelationships") |>
+#                collect()
 
 # function to count all connected vocabs for all vocabs
 # ~10 secs, result ~289 rows, dependent on which vocabs downloaded from Athena
