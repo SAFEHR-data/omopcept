@@ -6,6 +6,7 @@
 #' the most recent data from https://atcddd.fhi.no/atc_ddd_index/
 #'
 #' @param filepath file location and name
+#' @return dataframe of ATC to DDD data
 #' @export
 #' @examples
 #'
