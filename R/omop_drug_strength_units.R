@@ -26,6 +26,14 @@ omop_drug_strength_units <- function(df) {
 
     drug_strength <- arrow::open_dataset(filepath)
 
+    # select only the columns we want
+    drug_strength <- drug_strength |>
+        select(
+            drug_concept_id, ingredient_concept_id, amount_value,
+            amount_unit_concept_id, numerator_value, numerator_unit_concept_id,
+            denominator_value, denominator_unit_concept_id
+        )
+
     # filter the drug strength table to only include the drugs in the input dataframe
     drug_strength <- drug_strength |>
         filter(drug_concept_id %in% df$drug_concept_id)
@@ -47,10 +55,23 @@ omop_drug_strength_units <- function(df) {
         select(concept_id, concept_name)
 
 
-
-
-
-
+    # join the drug strength table with the units concepts table
+    drug_strength_units <- drug_strength |>
+        left_join(
+            units_concepts,
+            join_by(numerator_unit_concept_id == concept_id)
+        ) |>
+        rename(numerator_unit_concept_name = concept_name) |>
+        left_join(
+            units_concepts,
+            join_by(denominator_unit_concept_id == concept_id)
+        ) |>
+        rename(denominator_unit_concept_name = concept_name) |>
+        left_join(
+            units_concepts,
+            join_by(amount_unit_concept_id == concept_id)
+        ) |>
+        rename(amount_unit_concept_name = concept_name)
 
     return(drug_strength)
 }
