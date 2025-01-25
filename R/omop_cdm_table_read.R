@@ -15,7 +15,6 @@ omop_cdm_table_read <- function(tablename,
   stopifnot(filetype %in% c("parquet","csv"))
 
   filename <- file.path(path,paste0(tablename,".",filetype))
-  print(filename)
 
   if (filetype=="parquet")
     data <- read_parquet(filename)
