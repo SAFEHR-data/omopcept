@@ -30,6 +30,25 @@ omop_drug_strength_units <- function(df) {
     drug_strength <- drug_strength |>
         filter(drug_concept_id %in% df$drug_concept_id)
 
+    # get concepts file and filter it to only include the units
+    # and the columns we want
+    concepts <- arrow::open_dataset(
+        file.path(
+            tools::R_user_dir("omopcept",
+                which = "cache"
+            ), "concept.parquet"
+        )
+    )
+
+    units_concepts <- concepts |>
+        filter(domain_id == "Unit")
+
+    units_concepts <- units_concepts |>
+        select(concept_id, concept_name)
+
+
+
+
 
 
 
