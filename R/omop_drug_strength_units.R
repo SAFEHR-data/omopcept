@@ -3,9 +3,7 @@
 #' @param df a dataframe of drug exposure from the OMOP CDM
 #' TODO: add default df to all the drugs in the OMOP CDM
 #'
-#'
 #' @return a dataframe of drug strength
-#'
 #' @examples
 omop_drug_strength_units <- function(df) {
     # get the drug strength table from the package cache
@@ -114,7 +112,8 @@ omop_drug_strength_units <- function(df) {
             by = "combined_unit"
         ) |>
         select(-is_valid)
-
+    # TODO: add a warning for invalid units and export a report
+    # TODO: add a check for missing numerator or denominator
 
     # Create a lookup table of unique units
     unit_lookup <- drug_strength_units_valid |>
@@ -153,9 +152,5 @@ omop_drug_strength_units <- function(df) {
     #         )
     #     )
 
-
-
-
-
-    return(drug_strength)
+    return(drug_strength_units_valid)
 }
