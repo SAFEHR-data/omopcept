@@ -73,5 +73,89 @@ omop_drug_strength_units <- function(df) {
         ) |>
         rename(amount_unit_concept_name = concept_name)
 
+    # Create a new column that combines unit information based on availability
+    drug_strength_units <- drug_strength_units |>
+        mutate(
+            combined_unit = case_when(
+                !is.na(amount_unit_concept_name) ~ amount_unit_concept_name,
+                !is.na(numerator_unit_concept_name) | !is.na(denominator_unit_concept_name) ~
+                    paste(numerator_unit_concept_name, "/", denominator_unit_concept_name),
+                TRUE ~ NA_character_
+            )
+        )
+
+    # Create a vector of valid units that can be parsed by as_units()
+    valid_units <- drug_strength_units |>
+        distinct(combined_unit) |>
+        filter(!is.na(combined_unit)) |>
+        mutate(
+            is_valid = sapply(combined_unit, function(x) {
+                tryCatch(
+                    {
+                        as_units(x)
+                        TRUE
+                    },
+                    error = function(e) FALSE
+                )
+            })
+        )
+
+    # Split the drug_strength_units dataframe based on valid/invalid units
+    drug_strength_units_valid <- drug_strength_units |>
+        inner_join(
+            valid_units |> filter(is_valid),
+            by = "combined_unit"
+        ) |>
+        select(-is_valid)
+
+    drug_strength_units_invalid <- drug_strength_units |>
+        inner_join(
+            valid_units |> filter(!is_valid),
+            by = "combined_unit"
+        ) |>
+        select(-is_valid)
+
+
+    # Create a lookup table of unique units
+    unit_lookup <- drug_strength_units_valid |>
+        distinct(combined_unit) |>
+        mutate(
+            unit_object = sapply(combined_unit, as_units)
+        )
+
+    # Join back to replace string units with unit objects
+    drug_strength_units_valid <- drug_strength_units_valid |>
+        left_join(unit_lookup, by = "combined_unit") |>
+        mutate(combined_unit = unit_object) |>
+        select(-unit_object)
+
+    # Calculate combined values based on available numerator/denominator or amount values
+    drug_strength_units_valid <- drug_strength_units_valid |>
+        mutate(
+            combined_value = case_when(
+                !is.na(numerator_value) & !is.na(denominator_value) ~
+                    numerator_value / denominator_value,
+                !is.na(numerator_value) ~ numerator_value,
+                !is.na(amount_value) ~ amount_value,
+                TRUE ~ NA_real_
+            )
+        )
+
+    # # Do the same for invalid units dataframe to keep structure consistent
+    # drug_strength_units_invalid <- drug_strength_units_invalid |>
+    #     mutate(
+    #         combined_value = case_when(
+    #             !is.na(numerator_value) & !is.na(denominator_value) ~
+    #                 numerator_value / denominator_value,
+    #             !is.na(numerator_value) ~ numerator_value,
+    #             !is.na(amount_value) ~ amount_value,
+    #             TRUE ~ NA_real_
+    #         )
+    #     )
+
+
+
+
+
     return(drug_strength)
 }
