@@ -3,7 +3,9 @@
 #'
 #' @param df dataframe with drug concepts
 #' @return data frame with drug concepts and ATC classes
-#' @export
+#' @export table of drug concepts with DDD values, ATC administration routes
+#' and units of measurement. If no dataframe is passed, the function will
+#' create a drug lookup from all drugs in the OMOP vocabulary.
 #' @examples
 
 omop_drug_lookup_ddd <- function(df = NULL,
