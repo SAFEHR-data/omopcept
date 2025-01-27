@@ -66,18 +66,18 @@ omop_drug_strength_units <- function(df) {
 
 
     # join the drug strength table with the units concepts table
-    drug_strength_units <- drug_strength |>
-        left_join(
+    drug_strength_units <- filtered_drug_strength |>
+        dplyr::left_join(
             units_concepts,
             join_by(numerator_unit_concept_id == concept_id)
         ) |>
         rename(numerator_unit_concept_name = concept_name) |>
-        left_join(
+        dplyr::left_join(
             units_concepts,
             join_by(denominator_unit_concept_id == concept_id)
         ) |>
         rename(denominator_unit_concept_name = concept_name) |>
-        left_join(
+        dplyr::left_join(
             units_concepts,
             join_by(amount_unit_concept_id == concept_id)
         ) |>
