@@ -145,10 +145,11 @@ omop_drug_strength_units <- function(df) {
         )
 
     # Join back to replace string units with unit objects
+    # TODO: find a better way to do this
     drug_strength_units_valid <- drug_strength_units_valid |>
         dplyr::left_join(vaild_unit_lookup, by = "combined_unit") |>
         mutate(combined_unit = unit_object) |>
-        select(-unit_object)
+        select(-unit_object, -is_valid)
 
     # Calculate combined values based on available numerator/denominator or amount values
     drug_strength_units_valid <- drug_strength_units_valid |>
