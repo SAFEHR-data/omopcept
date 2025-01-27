@@ -35,6 +35,36 @@ compute_ddd <- function(mode = "atc",
         drug_lookup <- omop_drug_lookup_create(drug_exposure_table, drug_concept_vocabs = c("RxNorm", "RxNorm Extension"))
 
         # get the OMOP concept_id for the drug code
-        filtered_drug_lookup <- drug_lookup |> filter(ATC_code %in% drug_code)
+        filtered_drug_lookup <- drug_lookup |>
+            filter(ATC_code %in% drug_code) |>
+            select(drug_concept_id)
+
+        # Check for duplicate drug_concept_ids
+        duplicate_concepts <- filtered_drug_lookup |>
+            group_by(drug_concept_id) |>
+            filter(n() > 1)
+
+        if (nrow(duplicate_concepts) > 0) {
+            # Group by drug_concept_id and concatenate ATC codes
+            warning_msg <- duplicate_concepts |>
+                group_by(drug_concept_id) |>
+                summarise(atc_codes = paste(ATC_code, collapse = ", ")) |>
+                mutate(msg = sprintf(
+                    "drug_concept_id %d appears for ATC codes: %s",
+                    drug_concept_id, atc_codes
+                )) |>
+                pull(msg) |>
+                paste(collapse = "\n")
+
+            warning(
+                "Duplicate drug_concept_ids found for ATC codes
+                This may cause issues in the DDD computation:\n",
+                warning_msg
+            )
+        }
+    } else if (mode == "omop") {
+        filtered_drug_lookup <- drug_code
     }
+
+    # compute DDD
 }
