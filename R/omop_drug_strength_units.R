@@ -59,10 +59,11 @@ omop_drug_strength_units <- function(df) {
     )
 
     units_concepts <- concepts |>
-        filter(domain_id == "Unit")
-
-    units_concepts <- units_concepts |>
-        select(concept_id, concept_name)
+        arrow::to_duckdb() |>
+        dplyr::filter(domain_id == "Unit") |>
+        dplyr::select(concept_id, concept_name) |>
+        dplyr::compute() |>
+        dplyr::collect()
 
 
     # join the drug strength table with the units concepts table
