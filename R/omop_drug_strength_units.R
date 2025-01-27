@@ -107,7 +107,7 @@ omop_drug_strength_units <- function(df) {
             is_valid = sapply(combined_unit, function(x) {
                 tryCatch(
                     {
-                        as_units(x)
+                        units::as_units(x)
                         TRUE
                     },
                     error = function(e) FALSE
