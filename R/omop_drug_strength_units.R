@@ -133,10 +133,15 @@ omop_drug_strength_units <- function(df) {
     # TODO: add a check for missing numerator or denominator
 
     # Create a lookup table of unique units
-    unit_lookup <- drug_strength_units_valid |>
-        distinct(combined_unit) |>
+    vaild_unit_lookup <- valid_units |>
+        filter(is_valid) |>
         mutate(
-            unit_object = sapply(combined_unit, as_units)
+            unit_object = sapply(combined_unit, function(x) {
+                tryCatch(
+                    units::as_units(x),
+                    error = function(e) NULL
+                )
+            }, simplify = FALSE)
         )
 
     # Join back to replace string units with unit objects
