@@ -43,8 +43,18 @@ omop_drug_strength_units <- function(df) {
         )
 
     # filter the drug strength table to only include the drugs in the input dataframe
-    drug_strength <- drug_strength |>
-        filter(drug_concept_id %in% df$drug_concept_id)
+    # first collect unique drug_concept_ids from df
+    drug_ids <- df |>
+        dplyr::select(drug_concept_id) |>
+        dplyr::distinct() |>
+        dplyr::compute() |>
+        dplyr::collect()
+
+    filtered_drug_strength <- drug_strength |>
+        arrow::to_duckdb() |>
+        dplyr::filter(drug_concept_id %in% drug_ids$drug_concept_id) |>
+        dplyr::compute() |>
+        dplyr::collect()
 
     # get concepts file and filter it to only include the units
     # and the columns we want
