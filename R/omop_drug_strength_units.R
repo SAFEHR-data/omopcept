@@ -5,6 +5,13 @@
 #'
 #' @return a dataframe of drug strength
 #' @examples
+#' create a table of drug strength
+#'
+#' @param df a dataframe of drug exposure from the OMOP CDM
+#' TODO: add default df to all the drugs in the OMOP CDM
+#'
+#' @return a dataframe of drug strength
+#' @examples
 omop_drug_strength_units <- function(df) {
     # get the drug strength table from the package cache
     # if it doesn't exist, download the DRUG_STRENGTH.csv from Athena
