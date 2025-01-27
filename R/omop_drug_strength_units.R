@@ -163,17 +163,9 @@ omop_drug_strength_units <- function(df) {
             )
         )
 
-    # # Do the same for invalid units dataframe to keep structure consistent
-    # drug_strength_units_invalid <- drug_strength_units_invalid |>
-    #     mutate(
-    #         combined_value = case_when(
-    #             !is.na(numerator_value) & !is.na(denominator_value) ~
-    #                 numerator_value / denominator_value,
-    #             !is.na(numerator_value) ~ numerator_value,
-    #             !is.na(amount_value) ~ amount_value,
-    #             TRUE ~ NA_real_
-    #         )
-    #     )
+    # select only the columns we need
+    drug_strength_units_valid <- drug_strength_units_valid |>
+        select(drug_concept_id, ingredient_concept_id, combined_value, combined_unit)
 
     return(drug_strength_units_valid)
 }
