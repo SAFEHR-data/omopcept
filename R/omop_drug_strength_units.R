@@ -1,21 +1,19 @@
-#' create a table of drug strength
+#' Create a table of drug strength with standardized units
 #'
-#' @param df a dataframe of drug exposure from the OMOP CDM
-#' TODO: add default df to all the drugs in the OMOP CDM
-#'
-#' @return a dataframe of drug strength
+#' @param df A dataframe of drug exposure from the OMOP CDM containing drug_concept_id
+#' @return A dataframe with columns:
+#'   - drug_concept_id: The OMOP concept ID for the drug
+#'   - ingredient_concept_id: The OMOP concept ID for the active ingredient
+#'   - combined_value: The standardized strength value
+#'   - combined_unit: The standardized unit (as a units object)
 #' @examples
-#' create a table of drug strength
-#'
-#' @param df a dataframe of drug exposure from the OMOP CDM
-#' TODO: add default df to all the drugs in the OMOP CDM
-#'
-#' @return a dataframe of drug strength
-#' @examples
+#' drug_exposures <- data.frame(drug_concept_id = c(1127078, 1127433))
+#' drug_strengths <- omop_drug_strength_units(drug_exposures)
 omop_drug_strength_units <- function(df) {
-    # get the drug strength table from the package cache
-    # if it doesn't exist, download the DRUG_STRENGTH.csv from Athena
-    # and save it to the package cache
+    # Validate input
+    if (!("drug_concept_id" %in% names(df))) {
+        stop("Input dataframe must contain drug_concept_id column")
+    }
 
     # suppress Warnings for invalid units
     options(warn = -1)
@@ -34,8 +32,7 @@ omop_drug_strength_units <- function(df) {
 
     drug_strength <- arrow::open_dataset(filepath)
 
-    # filter the drug strength table to only include the drugs in the input dataframe
-    # first collect unique drug_concept_ids from df
+    # Get unique drug IDs from input and filter drug strength table
     drug_ids <- df |>
         dplyr::select(drug_concept_id) |>
         dplyr::distinct() |>
@@ -48,8 +45,7 @@ omop_drug_strength_units <- function(df) {
         dplyr::compute() |>
         dplyr::collect()
 
-    # get concepts file and filter it to only include the units
-    # and the columns we want
+    # Load and filter unit concepts
     concepts <- arrow::open_dataset(
         file.path(
             tools::R_user_dir("omopcept",
@@ -65,44 +61,40 @@ omop_drug_strength_units <- function(df) {
         dplyr::compute() |>
         dplyr::collect()
 
-
-    # join the drug strength table with the units concepts table
+    # Join drug strength with unit information
     drug_strength_units <- filtered_drug_strength |>
         dplyr::left_join(
             units_concepts,
             join_by(numerator_unit_concept_id == concept_id)
         ) |>
-        rename(numerator_unit_concept_name = concept_name) |>
+        dplyr::rename(numerator_unit_concept_name = concept_name) |>
         dplyr::left_join(
             units_concepts,
             join_by(denominator_unit_concept_id == concept_id)
         ) |>
-        rename(denominator_unit_concept_name = concept_name) |>
+        dplyr::rename(denominator_unit_concept_name = concept_name) |>
         dplyr::left_join(
             units_concepts,
             join_by(amount_unit_concept_id == concept_id)
         ) |>
-        rename(amount_unit_concept_name = concept_name)
+        dplyr::rename(amount_unit_concept_name = concept_name)
 
-    # Create a new column that combines unit information based on availability
+    # Combine unit information
     drug_strength_units <- drug_strength_units |>
-        mutate(
-            combined_unit = case_when(
+        dplyr::mutate(
+            combined_unit = dplyr::case_when(
                 !is.na(amount_unit_concept_name) ~ amount_unit_concept_name,
-                !is.na(numerator_unit_concept_name) | !is.na(denominator_unit_concept_name) ~
+                !is.na(numerator_unit_concept_name) & !is.na(denominator_unit_concept_name) ~
                     paste(numerator_unit_concept_name, "/", denominator_unit_concept_name),
+                !is.na(numerator_unit_concept_name) ~ numerator_unit_concept_name,
                 TRUE ~ NA_character_
             )
         )
 
-    # Create a vector of valid units that can be parsed by as_units()
-    # Using DuckDB because I could not get arrow to work correctly
-    # TODO: find a better way to do this
+    # Identify valid units
     valid_units <- drug_strength_units |>
-        arrow::to_duckdb() |>
         dplyr::filter(!is.na(combined_unit)) |>
         dplyr::distinct(combined_unit) |>
-        dplyr::collect() |>  # Collect only after reducing to unique units
         dplyr::mutate(
             is_valid = sapply(combined_unit, function(x) {
                 tryCatch(
@@ -117,35 +109,23 @@ omop_drug_strength_units <- function(df) {
 
     # Split the drug_strength_units dataframe based on valid/invalid units
     drug_strength_units_valid <- drug_strength_units |>
-        dplyr::inner_join(
-            valid_units |> filter(is_valid),
-            by = "combined_unit"
-        ) |>
-        select(-is_valid)
+        dplyr::inner_join(valid_units |> dplyr::filter(is_valid), by = "combined_unit")
 
     drug_strength_units_invalid <- drug_strength_units |>
-        dplyr::inner_join(
-            valid_units |> filter(!is_valid),
-            by = "combined_unit"
-        ) |>
-        select(-is_valid)
-    # TODO: add a warning for invalid units and export a report
-    # TODO: add a check for missing numerator or denominator
+        dplyr::inner_join(valid_units |> dplyr::filter(!is_valid), by = "combined_unit")
 
-    # Create a lookup table of unique units
-    vaild_unit_lookup <- valid_units |>
-        filter(is_valid) |>
-        mutate(
-            unit_object = sapply(combined_unit, function(x) {
-                tryCatch(
-                    units::as_units(x),
-                    error = function(e) NULL
-                )
-            }, simplify = FALSE)
+    if (nrow(drug_strength_units_invalid) > 0) {
+        warning(sprintf("Found %d records with invalid units", nrow(drug_strength_units_invalid)))
+    }
+
+    # Convert string units to unit objects
+    unit_lookup <- valid_units |>
+        dplyr::filter(is_valid) |>
+        dplyr::mutate(
+            unit_object = sapply(combined_unit, units::as_units, simplify = FALSE)
         )
 
-    # Join back to replace string units with unit objects
-    # TODO: find a better way to do this
+    # Calculate final values and units
     drug_strength_units_valid <- drug_strength_units_valid |>
         dplyr::left_join(vaild_unit_lookup, by = "combined_unit") |>
         mutate(combined_unit = unit_object) |>
