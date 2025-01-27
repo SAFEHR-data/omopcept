@@ -127,14 +127,13 @@ omop_drug_strength_units <- function(df) {
 
     # Calculate final values and units
     drug_strength_units_valid <- drug_strength_units_valid |>
-        dplyr::left_join(vaild_unit_lookup, by = "combined_unit") |>
-        mutate(combined_unit = unit_object) |>
-        select(-unit_object, -is_valid)
+        dplyr::left_join(unit_lookup, by = "combined_unit") |> # Fixed typo in vaild_unit_lookup
+        dplyr::mutate(combined_unit = unit_object)
 
     # Calculate combined values based on available numerator/denominator or amount values
     drug_strength_units_valid <- drug_strength_units_valid |>
-        mutate(
-            combined_value = case_when(
+        dplyr::mutate( # Added missing dplyr:: prefix
+            combined_value = dplyr::case_when( # Added missing dplyr:: prefix
                 !is.na(numerator_value) & !is.na(denominator_value) ~
                     numerator_value / denominator_value,
                 !is.na(numerator_value) ~ numerator_value,
@@ -145,7 +144,7 @@ omop_drug_strength_units <- function(df) {
 
     # select only the columns we need
     drug_strength_units_valid <- drug_strength_units_valid |>
-        select(drug_concept_id, ingredient_concept_id, combined_value, combined_unit)
+        dplyr::select(drug_concept_id, ingredient_concept_id, combined_value, combined_unit)
 
     return(drug_strength_units_valid)
 }
