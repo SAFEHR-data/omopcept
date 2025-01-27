@@ -28,16 +28,13 @@ compute_ddd <- function(mode = "atc",
         stop("drug_code must be either a string or a list")
     }
 
-
-    # compute DDD
     if (mode == "atc") {
         # create drug_lookup table
         drug_lookup <- omop_drug_lookup_create(drug_exposure_table, drug_concept_vocabs = c("RxNorm", "RxNorm Extension"))
 
         # get the OMOP concept_id for the drug code
         filtered_drug_lookup <- drug_lookup |>
-            filter(ATC_code %in% drug_code) |>
-            select(drug_concept_id)
+            filter(ATC_code %in% drug_code)
 
         # Check for duplicate drug_concept_ids
         duplicate_concepts <- filtered_drug_lookup |>
@@ -62,6 +59,8 @@ compute_ddd <- function(mode = "atc",
                 warning_msg
             )
         }
+        filtered_drug_lookup <- filtered_drug_lookup |>
+            distinct(drug_concept_id)
     } else if (mode == "omop") {
         filtered_drug_lookup <- drug_code
     }
