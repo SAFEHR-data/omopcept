@@ -17,6 +17,9 @@ omop_drug_strength_units <- function(df) {
     # if it doesn't exist, download the DRUG_STRENGTH.csv from Athena
     # and save it to the package cache
 
+    # suppress Warnings for invalid units
+    options(warn = -1)
+
     filepath <- file.path(tools::R_user_dir("omopcept", which = "cache"), "drug_strength.parquet")
 
     if (!file.exists(filepath) &&
