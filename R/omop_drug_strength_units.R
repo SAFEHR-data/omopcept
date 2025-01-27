@@ -96,10 +96,14 @@ omop_drug_strength_units <- function(df) {
         )
 
     # Create a vector of valid units that can be parsed by as_units()
+    # Using DuckDB because I could not get arrow to work correctly
+    # TODO: find a better way to do this
     valid_units <- drug_strength_units |>
-        distinct(combined_unit) |>
-        filter(!is.na(combined_unit)) |>
-        mutate(
+        arrow::to_duckdb() |>
+        dplyr::filter(!is.na(combined_unit)) |>
+        dplyr::distinct(combined_unit) |>
+        dplyr::collect() |>  # Collect only after reducing to unique units
+        dplyr::mutate(
             is_valid = sapply(combined_unit, function(x) {
                 tryCatch(
                     {
