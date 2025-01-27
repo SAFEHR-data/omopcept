@@ -117,14 +117,14 @@ omop_drug_strength_units <- function(df) {
 
     # Split the drug_strength_units dataframe based on valid/invalid units
     drug_strength_units_valid <- drug_strength_units |>
-        inner_join(
+        dplyr::inner_join(
             valid_units |> filter(is_valid),
             by = "combined_unit"
         ) |>
         select(-is_valid)
 
     drug_strength_units_invalid <- drug_strength_units |>
-        inner_join(
+        dplyr::inner_join(
             valid_units |> filter(!is_valid),
             by = "combined_unit"
         ) |>
@@ -141,7 +141,7 @@ omop_drug_strength_units <- function(df) {
 
     # Join back to replace string units with unit objects
     drug_strength_units_valid <- drug_strength_units_valid |>
-        left_join(unit_lookup, by = "combined_unit") |>
+        dplyr::left_join(vaild_unit_lookup, by = "combined_unit") |>
         mutate(combined_unit = unit_object) |>
         select(-unit_object)
 
