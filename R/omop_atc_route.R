@@ -24,11 +24,11 @@ omop_atc_route <- function(route_concept_id) {
     # TODO: Add more routes and correct the ones that are wrong
     route_concepts <- route_concepts |>
         dplyr::mutate(atc_route = dplyr::case_when(
-            concept_name %in% c("No matching concept") ~ NA_character_,
+            # concept_name %in% c("No matching concept") ~ NA_character_,
             concept_name %in% c("Respiratory trac") ~ "Inhal",
             concept_name %in% c("Urethral", "Ophthalmic", "Epidural", "Intra-articula", "Nasojejunal", "Otic") ~ "Instill",
             concept_name %in% c("Nasogastric", "Nasal", "Infiltration") ~ "N",
-            concept_name %in% c("Oral", "Gastrostomy", "Jejunostomy", "Oropharyngeal", "Paravertebral", "Ocula", ) ~ "O",
+            concept_name %in% c("Oral", "Gastrostomy", "Jejunostomy", "Oropharyngeal", "Paravertebral", "Ocula") ~ "O",
             concept_name %in% c("Intravenous", "Haemodiafiltration", "Intrapleural", "Intravesical", "Intra-arterial", "Intravitreal", "Intrathecal") ~ "P",
             concept_name %in% c("Rectal") ~ "R",
             concept_name %in% c("Buccal", "Sublingual", "Oromucosal", "Subcutaneous", "Intraosseous", "Dental", "Otic", "Perineural") ~ "SL",
@@ -37,4 +37,6 @@ omop_atc_route <- function(route_concept_id) {
             concept_name %in% c("Intramuscula") ~ "Implant",
             .default = NA_character_
         ))
+
+    return(route_concepts)
 }
