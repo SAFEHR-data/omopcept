@@ -5,7 +5,8 @@
 
 compute_ddd <- function(mode = "atc",
                         drug_code = NULL,
-                        drug_exposure_table = NULL) {
+                        drug_exposure_table = NULL,
+                        atc_ddd_path = NULL) {
     # TODO: add option to input route of administration
 
     # Check input parameters
@@ -65,5 +66,57 @@ compute_ddd <- function(mode = "atc",
         filtered_drug_lookup <- drug_code
     }
 
+    # filter drug_exposure_table for the drug_concept_ids
+    filtered_drug_exposure <- drug_exposure_table |>
+        filter(drug_concept_id %in% filtered_drug_lookup$drug_concept_id)
+
+    # get the route of administration
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        left_join(omop_atc_route(filtered_drug_exposure$route_concept_id), by = c("route_concept_id" = "concept_id"))
+
+    # get the drug strength
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        left_join(omop_drug_strength_units(filtered_drug_exposure), by = "drug_concept_id")
+
+    # add back the atc_code
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        left_join(filtered_drug_lookup, by = "drug_concept_id")
+
+    # load atc_ddd_table
+    atc_ddd_table <- atc_ddd_ref(atc_ddd_path)
+
+    # convert the uom to units objects
+    atc_ddd_table <- atc_ddd_table |>
+        dplyr::mutate(
+            uom_as_units = sapply(uom, function(x) {
+                tryCatch(
+                    {
+                        units::as_units(x, mode = "standard")
+                    },
+                    error = function(e) {
+                        warning(sprintf("Could not convert unit '%s' to units object", x))
+                        NA
+                    }
+                )
+            }, simplify = FALSE)
+        )
+
+
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        left_join(atc_ddd_table, by = c("ATC_code" = "atc_code"))
+
     # compute DDD
+    # this does not work
+    # filtered_drug_exposure <- filtered_drug_exposure |>
+    #     mutate(
+    #         ddd_per_exposure = quantity * combined_value * combined_unit /
+    #             ddd * uom_as_units
+    #     )
+
+    # RAMSES uses mixed units for DDD
+    # I am not suer how to do the calculation correctly
+    # the code that RAMSES uses is:
+    # DDD := as.numeric(
+    #  units::mixed_units(x = dose, value = unit) /
+    #    units::mixed_units(x = ddd_value, value = u)
 }
