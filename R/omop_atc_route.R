@@ -26,7 +26,7 @@ omop_atc_route <- function(route_concept_id) {
         dplyr::compute() |>
         dplyr::collect()
 
-    # THIS LIST IS NOT COMPLETE NOR CORRECT
+    # THIS LIST IS NEITHER COMPLETE NOR CORRECT
     # I did not find a way to get the correct ATC route from the concept_name
     # I build this list on top of the one in the validate article from RAMSES
     # https://ramses-antibiotics.web.app/articles/load-data.html
