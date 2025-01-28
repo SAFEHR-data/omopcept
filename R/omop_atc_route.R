@@ -1,5 +1,14 @@
-# Get the ATC route of administration for a given OMOP route_concept_id
-
+#' Get the ATC route of administration for a given OMOP route_concept_id
+#'
+#' @param route_concept_id A numeric vector or list containing OMOP concept IDs for routes of administration
+#' @return A data frame containing the original concept_id, concept_name, and mapped ATC route
+#' @export
+#' @examples
+#' # Get ATC route for a single route concept
+#' omop_atc_route(4128794)
+#'
+#' # Get ATC routes for multiple route concepts
+#' omop_atc_route(c(4128794, 4112421))
 omop_atc_route <- function(route_concept_id) {
     # load concepts table and filter for route concepts
     concepts <- arrow::open_dataset(
