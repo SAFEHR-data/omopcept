@@ -21,12 +21,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-**Active development 2024, breaking changes possible**     
+**Active development 2025, breaking changes possible**     
      
 **omopcept** provides access to **OMOP** *con***CEPT***s* (all pros, no *cons*!).   
    
-Initial motivation was to make it super-easy to get the names associated with concept IDs.   
-Later additions allow exploration and visualisation of OMOP hierarchies.
+Makes it super-easy to get the names associated with concept IDs and allows exploration and visualisation of OMOP hierarchies.
+
+[Link to poster & report](https://www.ohdsi.org/2024showcase-112/?_gl=1*190hru4*_ga*MTA2MzM2NTAzOC4xNzIwMDIzMjcz*_ga_PNYYSZVRVX*MTczODE1ODI3Mi4zNC4xLjE3MzgxNTgzMDIuMC4wLjA.) presented at OHDSI Global Symposium 2024.
 
 **omopcept** provides R functions that are :
 
