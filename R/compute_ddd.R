@@ -13,8 +13,8 @@ compute_ddd <- function(drug_code = NULL,
                         drug_exposure_table = NULL,
                         atc_ddd_path = NULL) {
     # Input validation
-    if (!is.null(drug_code)) {
-        stop("Drug code must be NULL")
+    if (is.null(drug_code)) {
+        stop("Drug code must not be NULL")
     }
 
     if (is.null(drug_exposure_table)) {
