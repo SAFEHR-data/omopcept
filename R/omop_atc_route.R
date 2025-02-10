@@ -18,11 +18,11 @@ omop_atc_route <- function(route_concept_id) {
     # load concepts table and filter for route concepts
     concepts <- arrow::open_dataset(
         file.path(
-            tools::R_user_dir("omopcept",
-                which = "cache"
-            ), "concept.parquet"
+            tools::R_user_dir("omopcept", which = "cache"),
+            "concept.parquet"
         )
     )
+
     route_ids <- unlist(route_concept_id)
     route_concepts <- concepts |>
         arrow::to_duckdb() |>
@@ -31,11 +31,8 @@ omop_atc_route <- function(route_concept_id) {
         dplyr::compute() |>
         dplyr::collect()
 
-    # THIS LIST IS NEITHER COMPLETE NOR CORRECT
-    # I did not find a way to get the correct ATC route from the concept_name
-    # I build this list on top of the one in the validate article from RAMSES
-    # https://ramses-antibiotics.web.app/articles/load-data.html
-    # TODO: Add more routes and correct the ones that are wrong
+    # Map OMOP route concepts to ATC routes
+    # Reference: WHO ATC/DDD Index (https://www.whocc.no/atc_ddd_index/)
     route_concepts <- route_concepts |>
         dplyr::mutate(atc_route = dplyr::case_when(
             # Inhalation
