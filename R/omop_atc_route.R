@@ -82,5 +82,17 @@ omop_atc_route <- function(route_concept_id) {
             .default = NA_character_
         ))
 
+    # Warn about unmapped routes
+    unmapped <- route_concepts |>
+        dplyr::filter(is.na(atc_route)) |>
+        dplyr::pull(concept_name)
+
+    if (length(unmapped) > 0) {
+        warning(
+            "The following routes could not be mapped to ATC routes:\n",
+            paste(unmapped, collapse = ", ")
+        )
+    }
+
     return(route_concepts)
 }
