@@ -8,6 +8,20 @@
 #' @param atc_ddd_path Optional path to ATC DDD reference data
 #' @return Data frame with DDD calculations per drug exposure
 #' @export
+#' @examples
+#'
+#' drug_exposure_df <- arrow::read_parquet("~/leicester/DRUG_EXPOSURE.parquet")
+#' 
+#'compute_ddd(drug_code= "1713694" ,
+#'            drug_exposure_table = drug_exposure_df,
+#'            atc_ddd_path = "~/output/WHO ATC-DDD 2025-01-27.csv")
+#'
+#' reutns:
+#' # A tibble: 1 × 2
+#'  drug_concept_id ddd_per_drug
+#'            <int>        <dbl>
+#'1         1713694       19954.
+#' 
 
 compute_ddd <- function(drug_code = NULL,
                         drug_exposure_table = NULL,
