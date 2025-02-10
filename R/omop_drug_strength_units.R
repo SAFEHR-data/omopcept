@@ -91,44 +91,51 @@ omop_drug_strength_units <- function(df) {
             )
         )
 
+
+    # I am splitting the checking of valid units
+    # and assigning the unit object to a new column
+    # because vapply expect a spesific type of return value
+    # and the check results in a logical vector
+    # while the assignment results in a unit object (i.e double)
+
     # Identify valid units
-    valid_units <- drug_strength_units |>
+    unit_lookup_logical <- drug_strength_units |>
         dplyr::filter(!is.na(combined_unit)) |>
         dplyr::distinct(combined_unit) |>
-        dplyr::mutate(
-            is_valid = sapply(combined_unit, function(x) {
-                tryCatch(
-                    {
-                        units::as_units(x)
-                        TRUE
-                    },
-                    error = function(e) FALSE
-                )
-            })
-        )
+        dplyr::mutate(is_valid = vapply(combined_unit, function(x) {
+            tryCatch(
+                {
+                    units::as_units(x)
+                    TRUE
+                },
+                error = function(e) FALSE
+            )
+        }, logical(1)))
 
     # Split the drug_strength_units dataframe based on valid/invalid units
     drug_strength_units_valid <- drug_strength_units |>
-        dplyr::inner_join(valid_units |> dplyr::filter(is_valid), by = "combined_unit")
+        dplyr::inner_join(unit_lookup_logical |> dplyr::filter(is_valid), by = "combined_unit")
 
     drug_strength_units_invalid <- drug_strength_units |>
-        dplyr::inner_join(valid_units |> dplyr::filter(!is_valid), by = "combined_unit")
+        dplyr::inner_join(unit_lookup_logical |> dplyr::filter(!is_valid), by = "combined_unit")
 
     if (nrow(drug_strength_units_invalid) > 0) {
         warning(sprintf("Found %d records with invalid units", nrow(drug_strength_units_invalid)))
     }
 
-    # Convert string units to unit objects
-    unit_lookup <- valid_units |>
-        dplyr::filter(is_valid) |>
-        dplyr::mutate(
-            unit_object = sapply(combined_unit, units::as_units, simplify = FALSE)
-        )
+    # # Convert string units to unit objects
+    # vaild_unit_lookup <- unit_lookup_logical |>
+    #     dplyr::filter(is_valid) |>
+    #     dplyr::mutate(
+    #         unit_object = vapply(combined_unit, function(x) {
+    #             units::as_units(x)
+    #         }, double(1))
+    #     )
 
-    # Calculate final values and units
-    drug_strength_units_valid <- drug_strength_units_valid |>
-        dplyr::left_join(unit_lookup, by = "combined_unit") |> # Fixed typo in vaild_unit_lookup
-        dplyr::mutate(combined_unit = unit_object)
+    # # Calculate final values and units
+    # drug_strength_units_valid <- drug_strength_units_valid |>
+    #     dplyr::left_join(vaild_unit_lookup, by = "combined_unit") |> # Fixed typo in vaild_unit_lookup
+    #     dplyr::mutate(combined_unit = unit_object)
 
     # Calculate combined values based on available numerator/denominator or amount values
     drug_strength_units_valid <- drug_strength_units_valid |>
