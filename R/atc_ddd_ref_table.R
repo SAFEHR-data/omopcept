@@ -9,12 +9,11 @@
 #' @return dataframe of ATC to DDD data
 #' @export
 #' @examples
-#'
 atc_ddd_ref <- function(filepath) {
   stopifnot(file.exists(filepath))
 
   # read the data
-  atc_ddd <- read_csv(filepath)
+  atc_ddd <- read.csv(filepath)
 
   return(atc_ddd)
 }
