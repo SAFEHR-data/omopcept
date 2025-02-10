@@ -65,20 +65,6 @@ compute_ddd <- function(drug_code = NULL,
     # load atc_ddd_table
     atc_ddd_table <- atc_ddd_ref(atc_ddd_path)
 
-    # # convert the uom to units objects
-    # atc_ddd_table <- atc_ddd_table |>
-    #     dplyr::mutate(
-    #         uom_as_units =
-    #             tryCatch(
-    #                 {
-    #                     units::as_units(uom, mode = "standard")
-    #                 },
-    #                 error = function(e) {
-    #                     warning(sprintf("Could not convert unit '%s' to units object", x))
-    #                     NA
-    #                 }
-    #             ))
-
     # Final join with ATC DDD data
     filtered_drug_exposure <- filtered_drug_exposure |>
         dplyr::left_join(atc_ddd_table, by = c("ATC_code" = "atc_code", "atc_route" = "adm_r"))
