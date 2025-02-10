@@ -10,6 +10,11 @@
 #' # Get ATC routes for multiple route concepts
 #' omop_atc_route(c(4128794, 4112421))
 omop_atc_route <- function(route_concept_id) {
+    # Input validation
+    if (is.null(route_concept_id)) {
+        stop("route_concept_id must be provided")
+    }
+
     # load concepts table and filter for route concepts
     concepts <- arrow::open_dataset(
         file.path(
