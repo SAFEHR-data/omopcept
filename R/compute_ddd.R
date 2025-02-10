@@ -12,7 +12,7 @@
 #'
 #' drug_exposure_df <- arrow::read_parquet("~/leicester/DRUG_EXPOSURE.parquet")
 #' 
-#' compute_ddd(target_concept_id = 1713694,
+#' compute_ddd(target_concept_id = "1713694",
 #'             mode = "drug",
 #'             drug_exposure_df = drug_exposure_df,
 #'             atc_ddd_path = "~/output/WHO ATC-DDD 2025-01-27.csv")
@@ -22,6 +22,24 @@
 #'  drug_concept_id ddd_per_drug
 #'            <int>        <dbl>
 #'1         1713694       19954.
+#' 
+#' 
+#' compute_ddd(target_concept_id= "1713332" ,
+#'             mode = "ingredient",
+#'             drug_exposure_df = drug_exposure_df,
+#'             atc_ddd_path = "~/output/WHO ATC-DDD 2025-01-27.csv")
+#' 
+#' # A tibble: 8 × 2
+#'   drug_concept_id ddd_per_drug
+#'             <int>        <dbl>
+#' 1         1713370        69.7 
+#' 2         1713520         8.33
+#' 3         1713671       171.  
+#' 4         1713694     15963.  
+#' 5         1759879       383.  
+#' 6        19073183        31   
+#' 7        19073187      3070   
+#' 8        19123605        46.4 
 #' 
 
 compute_ddd <- function(target_concept_id = NULL,
