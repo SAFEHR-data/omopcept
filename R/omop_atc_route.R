@@ -33,17 +33,47 @@ omop_atc_route <- function(route_concept_id) {
     # TODO: Add more routes and correct the ones that are wrong
     route_concepts <- route_concepts |>
         dplyr::mutate(atc_route = dplyr::case_when(
-            # concept_name %in% c("No matching concept") ~ NA_character_,
-            concept_name %in% c("Respiratory trac") ~ "Inhal",
-            concept_name %in% c("Urethral", "Ophthalmic", "Epidural", "Intra-articula", "Nasojejunal", "Otic") ~ "Instill",
+            # Inhalation
+            concept_name %in% c("Respiratory tract", "Inhalation") ~ "Inhal",
+
+            # Instillation
+            concept_name %in% c(
+                "Urethral", "Ophthalmic", "Epidural", "Intra-articular",
+                "Nasojejunal", "Otic", "Intrathecal", "Intravitreal"
+            ) ~ "Instill",
+
+            # Nasal
             concept_name %in% c("Nasogastric", "Nasal", "Infiltration") ~ "N",
-            concept_name %in% c("Oral", "Gastrostomy", "Jejunostomy", "Oropharyngeal", "Paravertebral", "Ocula") ~ "O",
-            concept_name %in% c("Intravenous", "Haemodiafiltration", "Intrapleural", "Intravesical", "Intra-arterial", "Intravitreal", "Intrathecal") ~ "P",
-            concept_name %in% c("Rectal") ~ "R",
-            concept_name %in% c("Buccal", "Sublingual", "Oromucosal", "Subcutaneous", "Intraosseous", "Dental", "Otic", "Perineural") ~ "SL",
-            concept_name %in% c("Transdermal", "Topical") ~ "TD",
-            concept_name %in% c("Vaginal", "Intrauterin") ~ "V",
-            concept_name %in% c("Intramuscula") ~ "Implant",
+
+            # Oral
+            concept_name %in% c(
+                "Oral", "Gastrostomy", "Jejunostomy", "Oropharyngeal",
+                "Paravertebral", "Ocular", "Per Oral", "By mouth"
+            ) ~ "O",
+
+            # Parenteral
+            concept_name %in% c(
+                "Intravenous", "Haemodiafiltration", "Intrapleural",
+                "Intravesical", "Intra-arterial", "IV"
+            ) ~ "P",
+
+            # Rectal
+            concept_name %in% c("Rectal", "Per Rectum") ~ "R",
+
+            # Sublingual/Subcutaneous
+            concept_name %in% c(
+                "Buccal", "Sublingual", "Oromucosal", "Subcutaneous",
+                "Intraosseous", "Dental", "Perineural"
+            ) ~ "SL",
+
+            # Transdermal
+            concept_name %in% c("Transdermal", "Topical", "Cutaneous") ~ "TD",
+
+            # Vaginal
+            concept_name %in% c("Vaginal", "Intrauterine") ~ "V",
+
+            # Implant/Depot
+            concept_name %in% c("Intramuscular", "Implant", "Depot") ~ "Implant",
             .default = NA_character_
         ))
 
