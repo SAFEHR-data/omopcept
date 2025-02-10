@@ -9,119 +9,104 @@
 #' @return Data frame with DDD calculations per drug exposure
 #' @export
 
-compute_ddd <- function(mode = "atc",
-                        drug_code = NULL,
+compute_ddd <- function(drug_code = NULL,
                         drug_exposure_table = NULL,
                         atc_ddd_path = NULL) {
     # Input validation
-    if (!mode %in% c("atc", "omop")) {
-        stop("Mode must be either 'atc' or 'omop'")
+    if (is.null(drug_code)) {
+        stop("Drug code must not be NULL")
     }
 
     if (is.null(drug_exposure_table)) {
         stop("Drug exposure table must be provided")
     }
-
-    if (is.null(drug_code)) {
-        stop("Drug code must be provided") # Fixed reversed logic
-    }
-
-    # Standardize drug_code input
-    drug_code <- if (is.character(drug_code) && length(drug_code) == 1) {
-        list(drug_code)
-    } else if (is.list(drug_code)) {
-        drug_code
-    } else {
+    # Check if drug_code is a string and convert to list if needed
+    if (is.character(drug_code) && length(drug_code) == 1) {
+        drug_code <- list(drug_code)
+    } else if (!is.list(drug_code)) {
         stop("drug_code must be either a string or a list")
     }
 
-    # Process based on mode
-    filtered_drug_lookup <- if (mode == "atc") {
-        # Create drug lookup table
-        drug_lookup <- omop_drug_lookup_create(
-            drug_exposure_table,
-            drug_concept_vocabs = c("RxNorm", "RxNorm Extension")
-        )
+    # filter drug_exposure_table for the drug_concept_ids
+    filtered_drug_exposure <- drug_exposure_table |>
+        dplyr::filter(drug_concept_id %in% drug_code)
 
-        # Filter for specified drug codes
-        filtered <- drug_lookup |>
-            dplyr::filter(ATC_code %in% unlist(drug_code))
+    # get the route of administration
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        dplyr::left_join(omop_atc_route(filtered_drug_exposure$route_concept_id), by = c("route_concept_id" = "concept_id"))
 
-        # Check for and warn about duplicates
-        duplicates <- filtered |>
-            dplyr::group_by(drug_concept_id) |>
-            dplyr::filter(dplyr::n() > 1)
+    # get the drug strength
+    # TODO: find a way to filter the drug strength table for the relevant ingredients only
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        dplyr::left_join(omop_drug_strength_units(filtered_drug_exposure), by = "drug_concept_id")
 
-        if (nrow(duplicates) > 0) {
-            warning_msg <- duplicates |>
-                dplyr::group_by(drug_concept_id) |>
-                dplyr::summarise(
-                    atc_codes = paste(ATC_code, collapse = ", "),
-                    .groups = "drop"
-                ) |>
-                dplyr::mutate(
-                    msg = sprintf(
-                        "drug_concept_id %d appears for ATC codes: %s",
-                        drug_concept_id, atc_codes
-                    )
-                ) |>
-                dplyr::pull(msg) |>
-                paste(collapse = "\n")
+    # get the drug lookup
+    filtered_drug_lookup <- omop_drug_lookup_create(filtered_drug_exposure) |>
+        dplyr::filter(ATC_level == 5)
 
-            warning(
-                "Duplicate drug_concept_ids found for ATC codes. ",
-                "This may cause issues in the DDD computation:\n",
-                warning_msg
-            )
-        }
-        dplyr::distinct(filtered, drug_concept_id)
-    } else {
-        drug_code
-    }
+    # add back the atc_code
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        dplyr::left_join(filtered_drug_lookup, by = "drug_concept_id")
 
-    # Join all required data
-    result <- drug_exposure_table |>
-        dplyr::filter(drug_concept_id %in% filtered_drug_lookup$drug_concept_id) |>
-        dplyr::left_join(
-            omop_atc_route(.$route_concept_id),
-            by = c("route_concept_id" = "concept_id")
-        ) |>
-        dplyr::left_join(
-            omop_drug_strength_units(.),
-            by = "drug_concept_id"
-        ) |>
-        dplyr::left_join(
-            filtered_drug_lookup,
-            by = "drug_concept_id"
-        )
+    # load atc_ddd_table
+    atc_ddd_table <- atc_ddd_ref(atc_ddd_path)
 
-    # Get and process ATC DDD reference data
-    atc_ddd_table <- atc_ddd_ref(atc_ddd_path) |>
-        dplyr::mutate(
-            uom_as_units = sapply(uom, function(x) {
-                tryCatch(
-                    {
-                        units::as_units(x, mode = "standard")
-                    },
-                    error = function(e) {
-                        warning(sprintf("Could not convert unit '%s' to units object", x))
-                        NA
-                    }
-                )
-            }, simplify = FALSE)
-        )
+    # # convert the uom to units objects
+    # atc_ddd_table <- atc_ddd_table |>
+    #     dplyr::mutate(
+    #         uom_as_units =
+    #             tryCatch(
+    #                 {
+    #                     units::as_units(uom, mode = "standard")
+    #                 },
+    #                 error = function(e) {
+    #                     warning(sprintf("Could not convert unit '%s' to units object", x))
+    #                     NA
+    #                 }
+    #             ))
 
     # Final join with ATC DDD data
-    result <- result |>
-        dplyr::left_join(atc_ddd_table, by = c("ATC_code" = "atc_code"))
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        dplyr::left_join(atc_ddd_table, by = c("ATC_code" = "atc_code", "atc_route" = "adm_r"))
 
-    # TODO: Implement DDD calculation
-    # Possible approach using units package:
-    # result <- result |>
-    #     dplyr::mutate(
-    #         ddd = units::set_units(quantity * combined_value, combined_unit) /
-    #               units::set_units(ddd, uom_as_units)
-    #     )
+    # TODO: improve this calculation
+    # This works now, but it is so slow because the units package is slow
+    # and it is called for each row. I think if i do some sort of grouping
+    # this might work faster
+    filtered_drug_exposure <- filtered_drug_exposure |>
+        dplyr::mutate(
+            ddd_per_exposure = vapply(seq_len(nrow(filtered_drug_exposure)), function(i) {
+                qty <- as.numeric(filtered_drug_exposure$quantity[i])
+                cval <- as.numeric(filtered_drug_exposure$combined_value[i])
+                ddd_val <- as.numeric(filtered_drug_exposure$ddd[i])
 
-    return(result)
+                if (is.na(qty) || is.na(cval) || is.na(ddd_val)) {
+                    return(NA_real_)
+                }
+
+                tryCatch(
+                    {
+                        num <- units::set_units(
+                            x = (qty * cval),
+                            value = filtered_drug_exposure$combined_unit[i],
+                            mode = "standard"
+                        )
+                        den <- units::set_units(
+                            x = ddd_val,
+                            value = filtered_drug_exposure$uom[i],
+                            mode = "standard"
+                        )
+                        as.numeric(num / den)
+                    },
+                    error = function(e) NA_real_
+                )
+            }, FUN.VALUE = numeric(1))
+        )
+
+    # sum the ddd_per_exposure
+    ddd_per_drug <- filtered_drug_exposure |>
+        dplyr::group_by(drug_concept_id) |>
+        dplyr::summarize(ddd_per_drug = sum(ddd_per_exposure, na.rm = TRUE))
+
+    return(ddd_per_drug)
 }

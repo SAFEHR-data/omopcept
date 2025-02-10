@@ -10,14 +10,19 @@
 #' # Get ATC routes for multiple route concepts
 #' omop_atc_route(c(4128794, 4112421))
 omop_atc_route <- function(route_concept_id) {
+    # Input validation
+    if (is.null(route_concept_id)) {
+        stop("route_concept_id must be provided")
+    }
+
     # load concepts table and filter for route concepts
     concepts <- arrow::open_dataset(
         file.path(
-            tools::R_user_dir("omopcept",
-                which = "cache"
-            ), "concept.parquet"
+            tools::R_user_dir("omopcept", which = "cache"),
+            "concept.parquet"
         )
     )
+
     route_ids <- unlist(route_concept_id)
     route_concepts <- concepts |>
         arrow::to_duckdb() |>
@@ -26,26 +31,65 @@ omop_atc_route <- function(route_concept_id) {
         dplyr::compute() |>
         dplyr::collect()
 
-    # THIS LIST IS NEITHER COMPLETE NOR CORRECT
-    # I did not find a way to get the correct ATC route from the concept_name
-    # I build this list on top of the one in the validate article from RAMSES
-    # https://ramses-antibiotics.web.app/articles/load-data.html
-    # TODO: Add more routes and correct the ones that are wrong
+    # Map OMOP route concepts to ATC routes
+    # Reference: WHO ATC/DDD Index (https://www.whocc.no/atc_ddd_index/)
     route_concepts <- route_concepts |>
         dplyr::mutate(atc_route = dplyr::case_when(
-            # concept_name %in% c("No matching concept") ~ NA_character_,
-            concept_name %in% c("Respiratory trac") ~ "Inhal",
-            concept_name %in% c("Urethral", "Ophthalmic", "Epidural", "Intra-articula", "Nasojejunal", "Otic") ~ "Instill",
+            # Inhalation
+            concept_name %in% c("Respiratory tract", "Inhalation") ~ "Inhal",
+
+            # Instillation
+            concept_name %in% c(
+                "Urethral", "Ophthalmic", "Epidural", "Intra-articular",
+                "Nasojejunal", "Otic", "Intrathecal", "Intravitreal"
+            ) ~ "Instill",
+
+            # Nasal
             concept_name %in% c("Nasogastric", "Nasal", "Infiltration") ~ "N",
-            concept_name %in% c("Oral", "Gastrostomy", "Jejunostomy", "Oropharyngeal", "Paravertebral", "Ocula") ~ "O",
-            concept_name %in% c("Intravenous", "Haemodiafiltration", "Intrapleural", "Intravesical", "Intra-arterial", "Intravitreal", "Intrathecal") ~ "P",
-            concept_name %in% c("Rectal") ~ "R",
-            concept_name %in% c("Buccal", "Sublingual", "Oromucosal", "Subcutaneous", "Intraosseous", "Dental", "Otic", "Perineural") ~ "SL",
-            concept_name %in% c("Transdermal", "Topical") ~ "TD",
-            concept_name %in% c("Vaginal", "Intrauterin") ~ "V",
-            concept_name %in% c("Intramuscula") ~ "Implant",
+
+            # Oral
+            concept_name %in% c(
+                "Oral", "Gastrostomy", "Jejunostomy", "Oropharyngeal",
+                "Paravertebral", "Ocular", "Per Oral", "By mouth"
+            ) ~ "O",
+
+            # Parenteral
+            concept_name %in% c(
+                "Intravenous", "Haemodiafiltration", "Intrapleural",
+                "Intravesical", "Intra-arterial", "IV"
+            ) ~ "P",
+
+            # Rectal
+            concept_name %in% c("Rectal", "Per Rectum") ~ "R",
+
+            # Sublingual/Subcutaneous
+            concept_name %in% c(
+                "Buccal", "Sublingual", "Oromucosal", "Subcutaneous",
+                "Intraosseous", "Dental", "Perineural"
+            ) ~ "SL",
+
+            # Transdermal
+            concept_name %in% c("Transdermal", "Topical", "Cutaneous") ~ "TD",
+
+            # Vaginal
+            concept_name %in% c("Vaginal", "Intrauterine") ~ "V",
+
+            # Implant/Depot
+            concept_name %in% c("Intramuscular", "Implant", "Depot") ~ "Implant",
             .default = NA_character_
         ))
+
+    # Warn about unmapped routes
+    unmapped <- route_concepts |>
+        dplyr::filter(is.na(atc_route)) |>
+        dplyr::pull(concept_name)
+
+    if (length(unmapped) > 0) {
+        warning(
+            "The following routes could not be mapped to ATC routes:\n",
+            paste(unmapped, collapse = ", ")
+        )
+    }
 
     return(route_concepts)
 }
