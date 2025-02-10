@@ -18,6 +18,10 @@ compute_ddd <- function(mode = "atc",
         stop("Mode must be either 'atc' or 'omop'")
     }
 
+    if (!is.null(drug_code)) {
+        stop("Drug code must be NULL")
+    }
+
     if (is.null(drug_exposure_table)) {
         stop("Drug exposure table must be provided")
     }
