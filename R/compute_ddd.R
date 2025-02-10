@@ -101,4 +101,11 @@ compute_ddd <- function(drug_code = NULL,
                 )
             }, FUN.VALUE = numeric(1))
         )
+
+    # sum the ddd_per_exposure
+    ddd_per_drug <- filtered_drug_exposure |>
+        dplyr::group_by(drug_concept_id) |>
+        dplyr::summarize(ddd_per_drug = sum(ddd_per_exposure, na.rm = TRUE))
+
+    return(ddd_per_drug)
 }
