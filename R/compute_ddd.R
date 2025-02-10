@@ -66,7 +66,7 @@ compute_ddd <- function(drug_code = NULL,
 
     # Final join with ATC DDD data
     filtered_drug_exposure <- filtered_drug_exposure |>
-        dplyr::left_join(atc_ddd_table, by = c("ATC_code" = "atc_code"))
+        dplyr::left_join(atc_ddd_table, by = c("ATC_code" = "atc_code", "atc_route" = "adm_r"))
 
     # TODO: Implement DDD calculation
     # Possible approach using units package:
