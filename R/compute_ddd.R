@@ -36,6 +36,7 @@ compute_ddd <- function(drug_code = NULL,
         dplyr::left_join(omop_atc_route(filtered_drug_exposure$route_concept_id), by = c("route_concept_id" = "concept_id"))
 
     # get the drug strength
+    # TODO: find a way to filter the drug strength table for the relevant ingredients only
     filtered_drug_exposure <- filtered_drug_exposure |>
         dplyr::left_join(omop_drug_strength_units(filtered_drug_exposure), by = "drug_concept_id")
 
