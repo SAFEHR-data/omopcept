@@ -3,33 +3,120 @@
 #' This function computes the Daily Defined Dose (DDD) from drug exposure data
 #'
 #' @param mode Character string specifying calculation mode - either "atc" or "omop"
-#' @param drug_code Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)
-#' @param drug_exposure_table Data frame containing drug exposure data
+#' @param target_concept_id Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)
+#' @param drug_exposure_df Data frame containing drug exposure data
 #' @param atc_ddd_path Optional path to ATC DDD reference data
 #' @return Data frame with DDD calculations per drug exposure
 #' @export
+#' @examples
+#'
+#' drug_exposure_df <- arrow::read_parquet("~/leicester/DRUG_EXPOSURE.parquet")
+#' 
+#' compute_ddd(target_concept_id = "1713694",
+#'             mode = "drug",
+#'             drug_exposure_df = drug_exposure_df,
+#'             atc_ddd_path = "~/output/WHO ATC-DDD 2025-01-27.csv")
+#'
+#' reutns:
+#' # A tibble: 1 × 2
+#'  drug_concept_id ddd_per_drug
+#'            <int>        <dbl>
+#'1         1713694       19954.
+#' 
+#' 
+#' compute_ddd(target_concept_id= "1713332" ,
+#'             mode = "ingredient",
+#'             drug_exposure_df = drug_exposure_df,
+#'             atc_ddd_path = "~/output/WHO ATC-DDD 2025-01-27.csv")
+#' 
+#' # A tibble: 8 × 2
+#'   drug_concept_id ddd_per_drug
+#'             <int>        <dbl>
+#' 1         1713370        69.7 
+#' 2         1713520         8.33
+#' 3         1713671       171.  
+#' 4         1713694     15963.  
+#' 5         1759879       383.  
+#' 6        19073183        31   
+#' 7        19073187      3070   
+#' 8        19123605        46.4 
+#' 
 
-compute_ddd <- function(drug_code = NULL,
-                        drug_exposure_table = NULL,
+compute_ddd <- function(target_concept_id = NULL,
+                        mode = "ingredient",
+                        drug_exposure_df = NULL,
                         atc_ddd_path = NULL) {
     # Input validation
-    if (is.null(drug_code)) {
+    if (is.null(target_concept_id)) {
         stop("Drug code must not be NULL")
     }
 
-    if (is.null(drug_exposure_table)) {
+    if (is.null(drug_exposure_df)) {
         stop("Drug exposure table must be provided")
     }
-    # Check if drug_code is a string and convert to list if needed
-    if (is.character(drug_code) && length(drug_code) == 1) {
-        drug_code <- list(drug_code)
-    } else if (!is.list(drug_code)) {
-        stop("drug_code must be either a string or a list")
+    # Check if target_concept_id is a string and convert to list if needed
+    if (is.character(target_concept_id) && length(target_concept_id) == 1) {
+        target_concept_id <- list(target_concept_id)
+    } else if (!is.list(target_concept_id)) {
+        stop("target_concept_id must be either a string or a list")
     }
 
-    # filter drug_exposure_table for the drug_concept_ids
-    filtered_drug_exposure <- drug_exposure_table |>
-        dplyr::filter(drug_concept_id %in% drug_code)
+    if (mode == "ingredient") {
+        return(compute_ddd_ingredient(target_concept_id, drug_exposure_df, atc_ddd_path))
+    } else if (mode == "drug") {
+        return(compute_ddd_drug(target_concept_id, drug_exposure_df, atc_ddd_path))
+    } else {
+        stop("Invalid mode")
+    }
+                        }
+
+
+compute_ddd_ingredient <- function(ingredient_concept_id_list, drug_exposure_df, atc_ddd_path) {
+
+
+    filepath <- file.path(tools::R_user_dir("omopcept", which = "cache"), "drug_strength.parquet")
+
+    if (!file.exists(filepath) &&
+        !file.exists("DRUG_STRENGTH.csv")) {
+        stop("drug_strength.parquet not found in cache and
+         DRUG_STRENGTH.csv not found in working directory
+         please download DRUG_STRENGTH.csv from Athena
+         and save in working directory")
+    }
+
+    if (!file.exists(filepath)) omop_vocabs_preprocess("DRUG_STRENGTH.csv")
+
+    drug_strength <- arrow::open_dataset(filepath)
+
+    # get list of drug_concept_ids with the ingredient_concept_id
+    ingredient_id_unlisted <- unlist(ingredient_concept_id_list)
+    drug_concept_id_list <- drug_strength |>
+        arrow::to_duckdb() |>
+        dplyr::filter(ingredient_concept_id %in% !!ingredient_id_unlisted) |>
+        dplyr::select(drug_concept_id) |>
+        dplyr::distinct() |>
+        dplyr::compute() |>
+        dplyr::collect() |>
+        dplyr::pull(drug_concept_id) |>
+        as.list()
+
+    return(compute_ddd_drug(drug_concept_id_list, drug_exposure_df, atc_ddd_path, ingredient_concept_id_list))
+}
+
+    
+
+
+
+compute_ddd_drug <- function(drug_concept_id_list,
+                             drug_exposure_df,
+                            atc_ddd_path,
+                            ingredient_concept_id_list = NULL) {
+
+    
+   
+    # filter drug_exposure_df for the drug_concept_ids
+    filtered_drug_exposure <- drug_exposure_df |>
+        dplyr::filter(drug_concept_id %in% drug_concept_id_list)
 
     # get the route of administration
     filtered_drug_exposure <- filtered_drug_exposure |>
@@ -39,6 +126,12 @@ compute_ddd <- function(drug_code = NULL,
     # TODO: find a way to filter the drug strength table for the relevant ingredients only
     filtered_drug_exposure <- filtered_drug_exposure |>
         dplyr::left_join(omop_drug_strength_units(filtered_drug_exposure), by = "drug_concept_id")
+
+    # if ingredient_concept_id is provided, filter the drug strength table
+    if (!is.null(ingredient_concept_id_list)) {
+        filtered_drug_exposure <- filtered_drug_exposure |>
+            dplyr::filter(ingredient_concept_id %in% ingredient_concept_id_list)
+    }
 
     # get the drug lookup
     filtered_drug_lookup <- omop_drug_lookup_create(filtered_drug_exposure) |>
@@ -50,20 +143,6 @@ compute_ddd <- function(drug_code = NULL,
 
     # load atc_ddd_table
     atc_ddd_table <- atc_ddd_ref(atc_ddd_path)
-
-    # # convert the uom to units objects
-    # atc_ddd_table <- atc_ddd_table |>
-    #     dplyr::mutate(
-    #         uom_as_units =
-    #             tryCatch(
-    #                 {
-    #                     units::as_units(uom, mode = "standard")
-    #                 },
-    #                 error = function(e) {
-    #                     warning(sprintf("Could not convert unit '%s' to units object", x))
-    #                     NA
-    #                 }
-    #             ))
 
     # Final join with ATC DDD data
     filtered_drug_exposure <- filtered_drug_exposure |>
