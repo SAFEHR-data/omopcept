@@ -39,6 +39,10 @@ compute_ddd <- function(drug_code = NULL,
     filtered_drug_exposure <- filtered_drug_exposure |>
         dplyr::left_join(omop_drug_strength_units(filtered_drug_exposure), by = "drug_concept_id")
 
+    # get the drug lookup
+    filtered_drug_lookup <- omop_drug_lookup_create(filtered_drug_exposure) |>
+        dplyr::filter(ATC_level == 5)
+
     # add back the atc_code
     filtered_drug_exposure <- filtered_drug_exposure |>
         dplyr::left_join(filtered_drug_lookup, by = "drug_concept_id")
