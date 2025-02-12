@@ -6,7 +6,10 @@
 #' @param target_concept_id Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)
 #' @param drug_exposure_df Data frame containing drug exposure data
 #' @param atc_ddd_path Optional path to ATC DDD reference data
-#' @return Data frame with DDD calculations per drug exposure
+#' @return A tibble with three columns:
+#'   - drug_concept_id: OMOP concept ID for the drug
+#'   - ddd_per_drug: Total DDD (Daily Defined Dose) for all exposures of that drug
+#'   - concept_name: Name of the drug                                               
 #' @export
 #' @examples
 #'
@@ -45,7 +48,8 @@
 compute_ddd <- function(target_concept_id = NULL,
                         mode = "ingredient",
                         drug_exposure_df = NULL,
-                        atc_ddd_path = NULL) {
+                        atc_ddd_path = NULL
+                        ) {
     # Input validation
     if (is.null(target_concept_id)) {
         stop("Drug code must not be NULL")
