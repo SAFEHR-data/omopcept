@@ -187,5 +187,22 @@ compute_ddd_drug <- function(drug_concept_id_list,
         dplyr::group_by(drug_concept_id) |>
         dplyr::summarize(ddd_per_drug = sum(ddd_per_exposure, na.rm = TRUE))
 
+    # add drug name from the concept table 
+    concepts <- arrow::open_dataset(
+        file.path(
+            tools::R_user_dir("omopcept", which = "cache"),
+            "concept.parquet"
+        )
+    )
+
+    ddd_per_drug <- ddd_per_drug |>
+        dplyr::left_join(concepts |>
+            arrow::to_duckdb() |>
+            dplyr::select(concept_id, concept_name) |>
+            dplyr::compute() |>
+            dplyr::collect(), by = c("drug_concept_id" = "concept_id")
+    )
+
+
     return(ddd_per_drug)
 }
