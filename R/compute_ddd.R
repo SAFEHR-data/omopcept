@@ -52,7 +52,8 @@ compute_ddd <- function(target_concept_id = NULL,
                         drug_exposure_df = NULL,
                         atc_ddd_path = NULL,
                         start_date = NULL,
-                        end_date = NULL
+                        end_date = NULL,
+                        export_csv = FALSE
                         ) {
     # Input validation
     if (is.null(target_concept_id)) {
@@ -69,6 +70,8 @@ compute_ddd <- function(target_concept_id = NULL,
     } else {
         start_date <- min(drug_exposure_df$drug_exposure_start_date)
     }
+    
+    stopifnot(!is.logical(export_csv))
     
     if (!is.null(end_date)) {
         stopifnot(IsDate(end_date))
@@ -106,6 +109,12 @@ IsDate <- function(input_date, date.format = "%d/%m/%y") {
            error = function(err) {FALSE})  
 }
 
+export_csv <- function(df, filename = NULL) {
+    if (is.null(filename)) {
+        filename <- paste0("output_", format(Sys.Date(), "%Y-%m-%d"), ".csv")
+    }
+  write.csv(df, filename)
+}
 
 
 compute_ddd_ingredient <- function(ingredient_concept_id_list, drug_exposure_df, atc_ddd_path) {
@@ -139,10 +148,6 @@ compute_ddd_ingredient <- function(ingredient_concept_id_list, drug_exposure_df,
 
     return(compute_ddd_drug(drug_concept_id_list, drug_exposure_df, atc_ddd_path, ingredient_concept_id_list))
 }
-
-    
-
-
 
 compute_ddd_drug <- function(drug_concept_id_list,
                              drug_exposure_df,
@@ -240,6 +245,9 @@ compute_ddd_drug <- function(drug_concept_id_list,
             dplyr::collect(), by = c("drug_concept_id" = "concept_id")
     )
 
-
+    if (export_csv) {
+        export_csv(ddd_per_drug)
+    }
+    
     return(ddd_per_drug)
 }
