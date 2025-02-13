@@ -86,7 +86,7 @@ compute_ddd <- function(target_concept_id = NULL,
     # OR
     # - both
     drug_exposure_df <- drug_exposure_df |>
-        dplyr::filter(filter(drug_exposure_start_date >= start_date & drug_exposure_end_date <= end_date))
+        dplyr::filter(drug_exposure_start_date >= start_date & drug_exposure_end_date <= end_date)
 
     # Check if target_concept_id is a string and convert to list if needed
     if (is.character(target_concept_id) && length(target_concept_id) == 1) {
