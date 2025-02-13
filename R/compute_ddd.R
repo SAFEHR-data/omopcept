@@ -3,9 +3,11 @@
 #' This function computes the Daily Defined Dose (DDD) from drug exposure data
 #'
 #' @param mode Character string specifying calculation mode - either "atc" or "omop"
-#' @param target_concept_id Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)
+#' @param target_concept_id Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)  
 #' @param drug_exposure_df Data frame containing drug exposure data
 #' @param atc_ddd_path Optional path to ATC DDD reference data
+#' @param start_date Optional start date to filter drug exposures (YYYY-MM-DD)
+#' @param end_date Optional end date to filter drug exposures (YYYY-MM-DD)
 #' @return A tibble with three columns:
 #'   - drug_concept_id: OMOP concept ID for the drug
 #'   - ddd_per_drug: Total DDD (Daily Defined Dose) for all exposures of that drug
@@ -48,7 +50,9 @@
 compute_ddd <- function(target_concept_id = NULL,
                         mode = "ingredient",
                         drug_exposure_df = NULL,
-                        atc_ddd_path = NULL
+                        atc_ddd_path = NULL,
+                        start_date = NULL,
+                        end_date = NULL
                         ) {
     # Input validation
     if (is.null(target_concept_id)) {
@@ -58,6 +62,29 @@ compute_ddd <- function(target_concept_id = NULL,
     if (is.null(drug_exposure_df)) {
         stop("Drug exposure table must be provided")
     }
+    
+    if (!is.null(start_date)) {
+        stopifnot(IsDate(start_date))
+        start_date <- as.Date(start_date)
+    } else {
+        start_date <- min(drug_exposure_df$drug_exposure_start_date)
+    }
+    
+    if (!is.null(end_date)) {
+        stopifnot(IsDate(end_date))
+        end_date <- as.Date(end_date)
+    } else {
+        end_date <- max(drug_exposure_df$drug_exposure_end_date)
+    }
+    # This current filter setup will catch all drug exposures that
+    # - has a start date equal to or later than the given start date
+    # OR
+    # - has an end date equal to or earlier than the given end date
+    # OR
+    # - both
+    drug_exposure_df <- drug_exposure_df |>
+        dplyr::filter(filter(drug_exposure_start_date >= start_date & drug_exposure_end_date <= end_date))
+
     # Check if target_concept_id is a string and convert to list if needed
     if (is.character(target_concept_id) && length(target_concept_id) == 1) {
         target_concept_id <- list(target_concept_id)
@@ -73,6 +100,12 @@ compute_ddd <- function(target_concept_id = NULL,
         stop("Invalid mode")
     }
                         }
+
+IsDate <- function(input_date, date.format = "%d/%m/%y") {
+  tryCatch(!is.na(as.Date(input_date, date.format)),  
+           error = function(err) {FALSE})  
+}
+
 
 
 compute_ddd_ingredient <- function(ingredient_concept_id_list, drug_exposure_df, atc_ddd_path) {
