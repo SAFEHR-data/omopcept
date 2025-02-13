@@ -96,12 +96,17 @@ compute_ddd <- function(target_concept_id = NULL,
     }
 
     if (mode == "ingredient") {
-        return(compute_ddd_ingredient(target_concept_id, drug_exposure_df, atc_ddd_path))
+        ddd_per_drug <- compute_ddd_ingredient(target_concept_id, drug_exposure_df, atc_ddd_path)
     } else if (mode == "drug") {
-        return(compute_ddd_drug(target_concept_id, drug_exposure_df, atc_ddd_path))
+        ddd_per_drug <- compute_ddd_drug(target_concept_id, drug_exposure_df, atc_ddd_path)
     } else {
         stop("Invalid mode")
     }
+
+    if(export_csv) {
+        export_csv_func(ddd_per_drug)
+    }
+    return(ddd_per_drug)
                         }
 
 IsDate <- function(input_date, date.format = "%d/%m/%y") {
@@ -109,7 +114,7 @@ IsDate <- function(input_date, date.format = "%d/%m/%y") {
            error = function(err) {FALSE})  
 }
 
-export_csv <- function(df, filename = NULL) {
+export_csv_func <- function(df, filename = NULL) {
     if (is.null(filename)) {
         filename <- paste0("output_", format(Sys.Date(), "%Y-%m-%d"), ".csv")
     }
@@ -244,10 +249,6 @@ compute_ddd_drug <- function(drug_concept_id_list,
             dplyr::compute() |>
             dplyr::collect(), by = c("drug_concept_id" = "concept_id")
     )
-
-    if (export_csv) {
-        export_csv(ddd_per_drug)
-    }
 
     return(ddd_per_drug)
 }
