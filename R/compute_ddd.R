@@ -71,7 +71,7 @@ compute_ddd <- function(target_concept_id = NULL,
         start_date <- min(drug_exposure_df$drug_exposure_start_date)
     }
     
-    stopifnot(!is.logical(export_csv))
+    stopifnot(is.logical(export_csv))
     
     if (!is.null(end_date)) {
         stopifnot(IsDate(end_date))
@@ -248,6 +248,6 @@ compute_ddd_drug <- function(drug_concept_id_list,
     if (export_csv) {
         export_csv(ddd_per_drug)
     }
-    
+
     return(ddd_per_drug)
 }
