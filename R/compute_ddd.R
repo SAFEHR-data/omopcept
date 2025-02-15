@@ -3,10 +3,15 @@
 #' This function computes the Daily Defined Dose (DDD) from drug exposure data
 #'
 #' @param mode Character string specifying calculation mode - either "atc" or "omop"
-#' @param target_concept_id Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)
+#' @param target_concept_id Drug code(s) to filter on - either ATC code(s) or OMOP concept ID(s)  
 #' @param drug_exposure_df Data frame containing drug exposure data
 #' @param atc_ddd_path Optional path to ATC DDD reference data
-#' @return Data frame with DDD calculations per drug exposure
+#' @param start_date Optional start date to filter drug exposures (YYYY-MM-DD)
+#' @param end_date Optional end date to filter drug exposures (YYYY-MM-DD)
+#' @return A tibble with three columns:
+#'   - drug_concept_id: OMOP concept ID for the drug
+#'   - ddd_per_drug: Total DDD (Daily Defined Dose) for all exposures of that drug
+#'   - concept_name: Name of the drug                                               
 #' @export
 #' @examples
 #'
@@ -45,7 +50,11 @@
 compute_ddd <- function(target_concept_id = NULL,
                         mode = "ingredient",
                         drug_exposure_df = NULL,
-                        atc_ddd_path = NULL) {
+                        atc_ddd_path = NULL,
+                        start_date = NULL,
+                        end_date = NULL,
+                        export_csv = FALSE
+                        ) {
     # Input validation
     if (is.null(target_concept_id)) {
         stop("Drug code must not be NULL")
@@ -54,6 +63,31 @@ compute_ddd <- function(target_concept_id = NULL,
     if (is.null(drug_exposure_df)) {
         stop("Drug exposure table must be provided")
     }
+    
+    if (!is.null(start_date)) {
+        stopifnot(IsDate(start_date))
+        start_date <- as.Date(start_date)
+    } else {
+        start_date <- min(drug_exposure_df$drug_exposure_start_date)
+    }
+    
+    stopifnot(is.logical(export_csv))
+    
+    if (!is.null(end_date)) {
+        stopifnot(IsDate(end_date))
+        end_date <- as.Date(end_date)
+    } else {
+        end_date <- max(drug_exposure_df$drug_exposure_end_date)
+    }
+    # This current filter setup will catch all drug exposures that
+    # - has a start date equal to or later than the given start date
+    # OR
+    # - has an end date equal to or earlier than the given end date
+    # OR
+    # - both
+    drug_exposure_df <- drug_exposure_df |>
+        dplyr::filter(drug_exposure_start_date >= start_date & drug_exposure_end_date <= end_date)
+
     # Check if target_concept_id is a string and convert to list if needed
     if (is.character(target_concept_id) && length(target_concept_id) == 1) {
         target_concept_id <- list(target_concept_id)
@@ -62,13 +96,30 @@ compute_ddd <- function(target_concept_id = NULL,
     }
 
     if (mode == "ingredient") {
-        return(compute_ddd_ingredient(target_concept_id, drug_exposure_df, atc_ddd_path))
+        ddd_per_drug <- compute_ddd_ingredient(target_concept_id, drug_exposure_df, atc_ddd_path)
     } else if (mode == "drug") {
-        return(compute_ddd_drug(target_concept_id, drug_exposure_df, atc_ddd_path))
+        ddd_per_drug <- compute_ddd_drug(target_concept_id, drug_exposure_df, atc_ddd_path)
     } else {
         stop("Invalid mode")
     }
+
+    if(export_csv) {
+        export_csv_func(ddd_per_drug)
+    }
+    return(ddd_per_drug)
                         }
+
+IsDate <- function(input_date, date.format = "%d/%m/%y") {
+  tryCatch(!is.na(as.Date(input_date, date.format)),  
+           error = function(err) {FALSE})  
+}
+
+export_csv_func <- function(df, filename = NULL) {
+    if (is.null(filename)) {
+        filename <- paste0("output_", format(Sys.Date(), "%Y-%m-%d"), ".csv")
+    }
+  write.csv(df, filename)
+}
 
 
 compute_ddd_ingredient <- function(ingredient_concept_id_list, drug_exposure_df, atc_ddd_path) {
@@ -102,10 +153,6 @@ compute_ddd_ingredient <- function(ingredient_concept_id_list, drug_exposure_df,
 
     return(compute_ddd_drug(drug_concept_id_list, drug_exposure_df, atc_ddd_path, ingredient_concept_id_list))
 }
-
-    
-
-
 
 compute_ddd_drug <- function(drug_concept_id_list,
                              drug_exposure_df,
@@ -186,6 +233,22 @@ compute_ddd_drug <- function(drug_concept_id_list,
     ddd_per_drug <- filtered_drug_exposure |>
         dplyr::group_by(drug_concept_id) |>
         dplyr::summarize(ddd_per_drug = sum(ddd_per_exposure, na.rm = TRUE))
+
+    # add drug name from the concept table 
+    concepts <- arrow::open_dataset(
+        file.path(
+            tools::R_user_dir("omopcept", which = "cache"),
+            "concept.parquet"
+        )
+    )
+
+    ddd_per_drug <- ddd_per_drug |>
+        dplyr::left_join(concepts |>
+            arrow::to_duckdb() |>
+            dplyr::select(concept_id, concept_name) |>
+            dplyr::compute() |>
+            dplyr::collect(), by = c("drug_concept_id" = "concept_id")
+    )
 
     return(ddd_per_drug)
 }
