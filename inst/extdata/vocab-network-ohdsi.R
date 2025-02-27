@@ -100,6 +100,20 @@ intervocab |>
              graphtitle = "OMOP vocabulary relationships by omopcept",
              legendshow=FALSE)
 
+# TODO colour by standard -
+# for some vocabs standard is consistent across whole vocab
+# but in some, there are standard, non-standard & classification ids
+nconcepts_per_vocab_and_standard <- omop_concept() |>
+  count(vocabulary_id, standard_concept, sort=TRUE, name="nconcepts") |>
+  collect()
+#e.g. RxNorm has all 3
+nconcepts_per_vocab_and_standard  |> filter(vocabulary_id=="RxNorm")
+# vocabulary_id standard_concept nconcepts
+# 1 RxNorm        S                   152812
+# 2 RxNorm        NA                  120119
+# 3 RxNorm        C                    35778
+
+
 # TODO
 # make colour palette more flexible from omop_graph() e.g. allow single colour choice
 # look into edge width setting
