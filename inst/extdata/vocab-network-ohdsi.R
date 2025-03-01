@@ -41,7 +41,28 @@ count_inter_vocabrships <- function () {
       mutate(total_relationships_vocab1 = sum(nrelationships)) |>
       ungroup() |>
     arrange(vocabulary_id_1, desc(nrelationships))
+}
 
+# same as above, but divides vocabs into standard,non-standard & classification concepts
+# so that each will become a separate bubble
+count_inter_vocabrships_standard <- function () {
+
+  omop_concept_relationship() |>
+    # join on vocab_id for concept1
+    left_join(select(omop_concept(),concept_id,vocabulary_id), by=c(concept_id_1="concept_id")) |>
+    rename(vocabulary_id_1=vocabulary_id) |>
+    # could filter one or more of concept1 (passed in optional arg)
+    # filter(vocabulary_id_1 %in% v1) |>
+    # join on vocab_id for concept2
+    left_join(select(omop_concept(),concept_id,vocabulary_id), by=c(concept_id_2="concept_id")) |>
+    rename(vocabulary_id_2=vocabulary_id) |>
+    count(vocabulary_id_1, vocabulary_id_2, sort=FALSE, name="nrelationships") |>
+    #add the total relationships per vocab1 (although may not be needed)
+    collect() |>
+    group_by(vocabulary_id_1) |>
+    mutate(total_relationships_vocab1 = sum(nrelationships)) |>
+    ungroup() |>
+    arrange(vocabulary_id_1, desc(nrelationships))
 }
 
 #takes ~10 secs, result ~289 rows, dependent on which vocabs downloaded from Athena
