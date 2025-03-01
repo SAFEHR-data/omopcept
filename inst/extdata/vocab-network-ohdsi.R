@@ -49,24 +49,40 @@ count_inter_vocabrships_standard <- function () {
 
   omop_concept_relationship() |>
     # join on vocab_id for concept1
-    left_join(select(omop_concept(),concept_id,vocabulary_id), by=c(concept_id_1="concept_id")) |>
+    left_join(select(omop_concept(),concept_id,vocabulary_id,standard_concept), by=c(concept_id_1="concept_id")) |>
     rename(vocabulary_id_1=vocabulary_id) |>
+    rename(standard_concept_1=standard_concept) |>
+    collect() |>
+    mutate(standard_1 = case_match(standard_concept_1,
+                                   "S"~"standard",
+                                   "C"~"classification",
+                                   NA~"non-standard")) |>
+    mutate(vocab_standard_1=paste(vocabulary_id_1,standard_1)) |>
     # could filter one or more of concept1 (passed in optional arg)
     # filter(vocabulary_id_1 %in% v1) |>
     # join on vocab_id for concept2
-    left_join(select(omop_concept(),concept_id,vocabulary_id), by=c(concept_id_2="concept_id")) |>
+    left_join(select(omop_concept(),concept_id,vocabulary_id,standard_concept),
+              by=c(concept_id_2="concept_id"), copy=TRUE) |>
     rename(vocabulary_id_2=vocabulary_id) |>
-    count(vocabulary_id_1, vocabulary_id_2, sort=FALSE, name="nrelationships") |>
+    rename(standard_concept_2=standard_concept) |>
+    mutate(standard_2 = case_match(standard_concept_2,
+                                   "S"~"standard",
+                                   "C"~"classification",
+                                   NA~"non-standard")) |>
+    mutate(vocab_standard_2=paste(vocabulary_id_2,standard_2)) |>
+    #count(vocabulary_id_1, vocabulary_id_2, sort=FALSE, name="nrelationships") |>
+    count(vocab_standard_1, standard_1, vocab_standard_2, sort=FALSE, name="nrelationships") |>
     #add the total relationships per vocab1 (although may not be needed)
-    collect() |>
-    group_by(vocabulary_id_1) |>
-    mutate(total_relationships_vocab1 = sum(nrelationships)) |>
+    #collect() |>
+    group_by(vocab_standard_1) |>
+    mutate(total_relationships_vocab_standard_1 = sum(nrelationships)) |>
     ungroup() |>
-    arrange(vocabulary_id_1, desc(nrelationships))
+    arrange(vocab_standard_1, desc(nrelationships))
 }
 
 #takes ~10 secs, result ~289 rows, dependent on which vocabs downloaded from Athena
 intervocab <- count_inter_vocabrships()
+intervocabstandard <- count_inter_vocabrships_standard()
 
 # cool :-)
 # vocabulary_id_1 vocabulary_id_2    nrelationships
@@ -86,9 +102,22 @@ intervocab <- count_inter_vocabrships()
 nconcepts_per_vocab <- omop_concept() |>
   count(vocabulary_id, sort=TRUE, name="nconcepts") |>
   collect()
+nconcepts_per_vocab_standard <- omop_concept() |>
+  collect() |>
+  mutate(standard = case_match(standard_concept,
+                                 "S"~"standard",
+                                 "C"~"classification",
+                                 NA~"non-standard")) |>
+  mutate(vocab_standard=paste(vocabulary_id,standard)) |>
+  count(vocab_standard, sort=TRUE, name="nconcepts") |>
+  collect()
 
 intervocab <- intervocab |>
   left_join(nconcepts_per_vocab, by=join_by(vocabulary_id_1==vocabulary_id))
+
+intervocabstandard <- intervocabstandard |>
+  left_join(nconcepts_per_vocab_standard, by=join_by(vocab_standard_1==vocab_standard))
+
 
 # omop_graph() now copes with plotting intervocab with names vocabulary_id_1 & 2
 # can't colour by vocab yet because too many vocabs (I need to improve palette options)
@@ -121,18 +150,41 @@ intervocab |>
              graphtitle = "OMOP vocabulary relationships by omopcept",
              legendshow=FALSE)
 
-# TODO colour by standard -
+
+# olour by standard - see above
 # for some vocabs standard is consistent across whole vocab
 # but in some, there are standard, non-standard & classification ids
-nconcepts_per_vocab_and_standard <- omop_concept() |>
-  count(vocabulary_id, standard_concept, sort=TRUE, name="nconcepts") |>
-  collect()
-#e.g. RxNorm has all 3
-nconcepts_per_vocab_and_standard  |> filter(vocabulary_id=="RxNorm")
+# nconcepts_per_vocab_and_standard <- omop_concept() |>
+#   count(vocabulary_id, standard_concept, sort=TRUE, name="nconcepts") |>
+#   collect()
+# #e.g. RxNorm has all 3
+# nconcepts_per_vocab_and_standard  |> filter(vocabulary_id=="RxNorm")
 # vocabulary_id standard_concept nconcepts
 # 1 RxNorm        S                   152812
 # 2 RxNorm        NA                  120119
 # 3 RxNorm        C                    35778
+
+#TODO think I need to remove some vocabs that only link to themselves standard to non stand
+#because they take up space & squish the other vocabs into a corner
+#TODO add standard column alone into the count in df creation
+#so that it can be used for colouring
+
+#dividing vocabs by standard
+intervocabstandard |>
+  rename(vocabulary_id_1=vocab_standard_1) |>
+  rename(vocabulary_id_2=vocab_standard_2) |>
+  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  omop_graph(nodecolourvar = "standard_1",
+             nodetxtsize = 7,
+             nodesizevar = "nconcepts",
+             nodesize = c(1,50),
+             nodealpha = 0.7, #default 0.8
+             #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
+             #palettebrewer = "PRGn", #"RdBu",
+             #palettedirection = -1, #fails to get strongest colour for single value
+             edgecolour = "gold",
+             graphtitle = "OMOP vocabulary relationships by omopcept",
+             legendshow=FALSE)
 
 
 # TODO
