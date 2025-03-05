@@ -18,6 +18,7 @@ omop_graph_vis(
   edgewidth = 0.1,
   nodesizevar = "connections",
   nodesize = c(0, 6),
+  nodetxtvar = "name",
   nodetxtangle = 0,
   nodetxtsize = 9,
   nodetxtnudgey = 0.3,
@@ -74,6 +75,8 @@ omop_graph_vis(
 \item{nodesizevar}{column to set node size, default="connections", uses num connections to a node}
 
 \item{nodesize}{modify node size range, default c(0,6), will modify size whether nodesizevar used or not}
+
+\item{nodetxtvar}{column to set node label, default="name"}
 
 \item{nodetxtangle}{node text angle, default=0, 90 gives vertical text}
 

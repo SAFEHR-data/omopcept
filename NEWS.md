@@ -1,5 +1,6 @@
-# omopcept 0.0.6.2 2024-12-18 DEV version
+# omopcept 0.0.6.2 2025-03-05 DEV version
 
+* add arg `nodetxtvar` to `omop_graph()` to allow node label to be set to any column
 * issue fixed in `omop_cdm_read()` that ID columns being read in as double not integer as needed for later joins
 * `omop_graph()` working on raw relations table e.g. `omop_concept_relationship() |> head(50) |> collect() |> omop_graph(nodecolourvar="relationship_id", nodetxtsize=3)`
 

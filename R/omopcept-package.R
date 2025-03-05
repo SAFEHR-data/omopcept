@@ -84,4 +84,4 @@ utils::globalVariables(c('concept_name', 'concept_id','concept_code',
                          'ATC_code', 'ATC_level', 'all_of', 'ancestor_vocabulary_id',
                          'drug_concept_class_id', 'drug_concept_id', 'drug_concept_name',
                          'drug_vocabulary_id',
-                         'cols','ATC_concept_name','vocabulary_id_1'))
+                         'cols','ATC_concept_name','vocabulary_id_1','vocabulary_id_2'))

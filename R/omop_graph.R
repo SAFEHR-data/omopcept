@@ -18,6 +18,7 @@
 #' @param nodesizevar column to set node size, default="connections", uses num connections to a node
 #' @param nodesize modify node size range, default c(0,6), will modify size whether nodesizevar used or not, single value e.g. 5 will give equal sized nodes
 #'
+#' @param nodetxtvar column to set node label, default="name"
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
 #' @param nodetxtnudgey nudge_y text relative to points, default 0.3
@@ -83,6 +84,7 @@ omop_graph <- function(dfin,
                        nodesizevar = "connections",
                        nodesize = c(0,6),
 
+                       nodetxtvar = 'name',
                        nodetxtangle=0,
                        nodetxtsize=9,
                        nodetxtnudgey=0.3,
@@ -142,6 +144,7 @@ omop_graph <- function(dfin,
                  nodesizevar = nodesizevar,
                  nodesize = nodesize,
 
+                 nodetxtvar = nodetxtvar,
                  nodetxtangle=nodetxtangle,
                  nodetxtsize=nodetxtsize,
                  nodetxtnudgey=nodetxtnudgey,
@@ -289,6 +292,8 @@ omop_graph_calc <- function(dfin) {
 #' @param nodesizevar column to set node size, default="connections", uses num connections to a node
 #' @param nodesize modify node size range, default c(0,6), will modify size whether nodesizevar used or not
 #'
+#2025-03-05 try adding this to make label setting independent from node ID
+#' @param nodetxtvar column to set node label, default="name"
 #' @param nodetxtangle node text angle, default=0, 90 gives vertical text
 #' @param nodetxtsize node text size, default=9
 #' @param nodetxtnudgey nudge_y text relative to points, default 0.3
@@ -351,6 +356,7 @@ omop_graph_vis <- function(
                        nodesizevar = "connections",
                        nodesize = c(0,6),
 
+                       nodetxtvar = 'name',
                        nodetxtangle=0,
                        nodetxtsize=9,
                        nodetxtnudgey=0.3,
@@ -453,6 +459,7 @@ else if( nodesizevar %in% names(graphlist$nodes))
 else
   igraph::V(graphin)$sizecolumn <- 1 #nodesize
 
+#look at set.seed to try to keep the layout the same
 ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   ggraph::geom_edge_link(colour=edgecolour, edge_alpha=edgealpha, edge_width=edgewidth ) +
   #couldn't get colouring edges to work
@@ -498,8 +505,9 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
     plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
   #allows legend key symbols to be bigger, not sure if required
   guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
-  ggraph::geom_node_text(aes(label=name,
-                             #colour=.data[[textcolourvar]]),
+  ggraph::geom_node_text(aes(#label=name,
+                             #2025-03-05 try to allow label to be set from other columns
+                             label=.data[[nodetxtvar]],
                              colour=as.factor(.data[[textcolourvar]])),
                          size=nodetxtsize,
                          angle=nodetxtangle,

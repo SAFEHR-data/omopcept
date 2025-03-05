@@ -58,20 +58,25 @@ count_inter_vocabrships_standard <- function () {
                                    "C"~"classification",
                                    NA~"non-standard")) |>
     mutate(vocab_standard_1=paste(vocabulary_id_1,standard_1)) |>
+    mutate(vocab_s_1=paste(vocabulary_id_1,standard_concept_1)) |>
+    #copying just the vocab for label (because vocabulary_id_1 is already used in omop_graph)
+    mutate(vocab_only_1=vocabulary_id_1) |>
     # could filter one or more of concept1 (passed in optional arg)
     # filter(vocabulary_id_1 %in% v1) |>
     # join on vocab_id for concept2
     left_join(select(omop_concept(),concept_id,vocabulary_id,standard_concept),
               by=c(concept_id_2="concept_id"), copy=TRUE) |>
     rename(vocabulary_id_2=vocabulary_id) |>
+    mutate(vocab_only_2=vocabulary_id_2) |>
     rename(standard_concept_2=standard_concept) |>
     mutate(standard_2 = case_match(standard_concept_2,
                                    "S"~"standard",
                                    "C"~"classification",
                                    NA~"non-standard")) |>
     mutate(vocab_standard_2=paste(vocabulary_id_2,standard_2)) |>
+    mutate(vocab_s_2=paste(vocabulary_id_2,standard_concept_2)) |>
     #count(vocabulary_id_1, vocabulary_id_2, sort=FALSE, name="nrelationships") |>
-    count(vocab_standard_1, standard_1, vocab_standard_2, sort=FALSE, name="nrelationships") |>
+    count(vocab_standard_1, vocab_s_1, vocab_only_1, standard_1, vocab_standard_2, vocab_s_2, vocab_only_2, sort=FALSE, name="nrelationships") |>
     #add the total relationships per vocab1 (although may not be needed)
     #collect() |>
     group_by(vocab_standard_1) |>
@@ -164,13 +169,15 @@ intervocab |>
 # 2 RxNorm        NA                  120119
 # 3 RxNorm        C                    35778
 
-#TODO think I need to remove some vocabs that only link to themselves standard to non stand
-#because they take up space & squish the other vocabs into a corner
-#TODO add standard column alone into the count in df creation
-#so that it can be used for colouring
 
-#dividing vocabs by standard
+#remove some vocabs that only link to themselves standard to non stand
+#because they take up space & squish the other vocabs into a corner
+
+#separate bubbles by standard, classification & NS, adding full 'standard' etc to names
 intervocabstandard |>
+  #filter low concept numbers to make plot clearer
+  filter(nconcepts > 1000) |>
+  filter(nrelationships > 10) |>
   rename(vocabulary_id_1=vocab_standard_1) |>
   rename(vocabulary_id_2=vocab_standard_2) |>
   filter(vocabulary_id_1 != vocabulary_id_2) |>
@@ -184,8 +191,48 @@ intervocabstandard |>
              #palettedirection = -1, #fails to get strongest colour for single value
              edgecolour = "gold",
              graphtitle = "OMOP vocabulary relationships by omopcept",
-             legendshow=FALSE)
+             legendshow=TRUE)
 
+#separate bubbles by standard, add S, C, NA to names
+intervocabstandard |>
+  #filter low concept numbers to make plot clearer
+  filter(nconcepts > 5000) |>
+  filter(nrelationships > 10) |>
+  rename(vocabulary_id_1=vocab_s_1) |>
+  rename(vocabulary_id_2=vocab_s_2) |>
+  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  omop_graph(nodecolourvar = "standard_1",
+             nodetxtsize = 7,
+             nodesizevar = "nconcepts",
+             nodesize = c(1,50),
+             nodealpha = 0.7, #default 0.8
+             #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
+             #palettebrewer = "PRGn", #"RdBu",
+             #palettedirection = -1, #fails to get strongest colour for single value
+             edgecolour = "gold",
+             graphtitle = "OMOP vocabulary relationships by omopcept",
+             legendshow=TRUE)
+
+#separate bubbles by standard, but try setting label to just vocab name
+intervocabstandard |>
+  #filter low concept numbers to make plot clearer
+  filter(nconcepts > 5000) |>
+  filter(nrelationships > 10) |>
+  rename(vocabulary_id_1=vocab_s_1) |>
+  rename(vocabulary_id_2=vocab_s_2) |>
+  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  omop_graph(nodecolourvar = "standard_1",
+             nodetxtvar = "vocab_only_2",
+             nodetxtsize = 7,
+             nodesizevar = "nconcepts",
+             nodesize = c(1,50),
+             nodealpha = 0.7, #default 0.8
+             #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
+             #palettebrewer = "PRGn", #"RdBu",
+             #palettedirection = -1, #fails to get strongest colour for single value
+             edgecolour = "lightpink",
+             graphtitle = "OMOP vocabulary relationships by omopcept",
+             legendshow=TRUE)
 
 # TODO
 # make colour palette more flexible from omop_graph() e.g. allow single colour choice
