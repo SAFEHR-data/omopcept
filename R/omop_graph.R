@@ -210,17 +210,18 @@ omop_graph_calc <- function(dfin) {
   # to detect input type from presence of specific column names
   # then create table with columns named 'from' and 'to' required by ggraph
 
-  # TODO I may want to allow user to specify from & to columns as args
+  # TODO allow user to specify from & to columns as args
+  # create a list with from & to strings
 
   if ("ancestor_name" %in% names(dfin)) {
-
     #DESCENDANT TABLE
-    dfin2 <- dfin |> mutate(from = ancestor_name,           to = concept_name)
+    from = 'ancestor_name'
+    to   = 'concept_name'
 
   } else if ("descendant_concept_name" %in% names(dfin)) {
-
     #ANCESTOR TABLE
-    dfin2 <- dfin |> mutate(from = descendant_concept_name, to = concept_name)
+    from = 'descendant_concept_name'
+    to   = 'concept_name'
 
   } else if ("concept_id_1" %in% names(dfin)) {
 
@@ -229,24 +230,28 @@ omop_graph_calc <- function(dfin) {
     if (!"concept_name_1" %in% names(dfin)) {
       dfin <- dfin |> omop_join_name_all(columns="all")
     }
-
-    dfin2 <- dfin |> mutate(from = concept_name_2,          to = concept_name_1)
+    from = 'concept_name_2'
+    to   = 'concept_name_1'
 
   } else if ("ATC_concept_name" %in% names(dfin)) {
 
-    #FROM omop_drug_lookup_create()
-    #dfin2 <- dfin |> rename(from = ATC_concept_name,        to = drug_concept_name)
-    #copying in case user wants to use original names for vis
-    dfin2 <- dfin |> mutate(from = ATC_concept_name,        to = drug_concept_name)
+    from = 'ATC_concept_name'
+    to   = 'drug_concept_name'
 
   } else if ("vocabulary_id_1" %in% names(dfin)) {
 
     #from vocab-network-ohdsi.R
-    dfin2 <- dfin |> mutate(from = vocabulary_id_1, to = vocabulary_id_2)
+    #dfin2 <- dfin |> mutate(from = vocabulary_id_1, to = vocabulary_id_2)
+    #trying out way of allowing user to set from, to columns
+    from <- 'vocabulary_id_1'
+    to   <- 'vocabulary_id_2'
 
-  }
+  } else
+  {stop("column names unrecognised")}
 
-
+  #copying with mutate in case user wants to use original names for vis
+  lfromto <- list(from=from, to=to)
+  dfin2 <- dfin |> mutate(from = .data[[lfromto$from]], to = .data[[lfromto$to]])
 
   #challenge to get all nodes from columns from & to, to avoid Invalid (negative) vertex id
   nodesfrom <- dfin2 |>

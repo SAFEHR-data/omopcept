@@ -76,7 +76,7 @@ count_inter_vocabrships_standard <- function () {
     mutate(vocab_standard_2=paste(vocabulary_id_2,standard_2)) |>
     mutate(vocab_s_2=paste(vocabulary_id_2,standard_concept_2)) |>
     #count(vocabulary_id_1, vocabulary_id_2, sort=FALSE, name="nrelationships") |>
-    count(vocab_standard_1, vocab_s_1, vocab_only_1, standard_1, vocab_standard_2, vocab_s_2, vocab_only_2, sort=FALSE, name="nrelationships") |>
+    count(vocab_standard_1, vocab_s_1, vocab_only_1, standard_1, vocab_standard_2, vocab_s_2, vocab_only_2, standard_2, sort=FALSE, name="nrelationships") |>
     #add the total relationships per vocab1 (although may not be needed)
     #collect() |>
     group_by(vocab_standard_1) |>
@@ -117,11 +117,18 @@ nconcepts_per_vocab_standard <- omop_concept() |>
   count(vocab_standard, sort=TRUE, name="nconcepts") |>
   collect()
 
+#joining on noncepts for vocab1 & 2
 intervocab <- intervocab |>
-  left_join(nconcepts_per_vocab, by=join_by(vocabulary_id_1==vocabulary_id))
+  left_join(nconcepts_per_vocab, by=join_by(vocabulary_id_1==vocabulary_id)) |>
+  rename(nconcepts1=nconcepts) |>
+  left_join(nconcepts_per_vocab, by=join_by(vocabulary_id_2==vocabulary_id)) |>
+  rename(nconcepts2=nconcepts)
 
 intervocabstandard <- intervocabstandard |>
-  left_join(nconcepts_per_vocab_standard, by=join_by(vocab_standard_1==vocab_standard))
+  left_join(nconcepts_per_vocab_standard, by=join_by(vocab_standard_1==vocab_standard)) |>
+  rename(nconcepts1=nconcepts) |>
+  left_join(nconcepts_per_vocab_standard, by=join_by(vocab_standard_2==vocab_standard)) |>
+  rename(nconcepts2=nconcepts)
 
 
 # omop_graph() now copes with plotting intervocab with names vocabulary_id_1 & 2
@@ -145,7 +152,7 @@ intervocab |>
   #filter(total_relationships_vocab1 > 330 ) |>
   filter(vocabulary_id_1 != vocabulary_id_2) |>
   omop_graph(nodetxtsize = 7,
-             nodesizevar = "nconcepts",
+             nodesizevar = "nconcepts2",
              nodesize = c(1,50),
              nodealpha = 0.7, #default 0.8
              #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
@@ -183,7 +190,7 @@ intervocabstandard |>
   filter(vocabulary_id_1 != vocabulary_id_2) |>
   omop_graph(nodecolourvar = "standard_1",
              nodetxtsize = 7,
-             nodesizevar = "nconcepts",
+             nodesizevar = "nconcepts2",
              nodesize = c(1,50),
              nodealpha = 0.7, #default 0.8
              #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
@@ -203,12 +210,12 @@ intervocabstandard |>
   filter(vocabulary_id_1 != vocabulary_id_2) |>
   omop_graph(nodecolourvar = "standard_1",
              nodetxtsize = 7,
-             nodesizevar = "nconcepts",
+             nodesizevar = "nconcepts2",
              nodesize = c(1,50),
              nodealpha = 0.7, #default 0.8
+             filenamecustom = "wrongatcall",
              #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
              #palettebrewer = "PRGn", #"RdBu",
-             #palettedirection = -1, #fails to get strongest colour for single value
              edgecolour = "gold",
              graphtitle = "OMOP vocabulary relationships by omopcept",
              legendshow=TRUE)
@@ -221,18 +228,43 @@ intervocabstandard |>
   rename(vocabulary_id_1=vocab_s_1) |>
   rename(vocabulary_id_2=vocab_s_2) |>
   filter(vocabulary_id_1 != vocabulary_id_2) |>
-  omop_graph(nodecolourvar = "standard_1",
+  omop_graph(nodecolourvar = "standard_2",
              nodetxtvar = "vocab_only_2",
              nodetxtsize = 7,
-             nodesizevar = "nconcepts",
+             nodesizevar = "nconcepts2",
              nodesize = c(1,50),
              nodealpha = 0.7, #default 0.8
              #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
              #palettebrewer = "PRGn", #"RdBu",
-             #palettedirection = -1, #fails to get strongest colour for single value
              edgecolour = "lightpink",
              graphtitle = "OMOP vocabulary relationships by omopcept",
              legendshow=TRUE)
+
+# troubleshooting issue with colouring
+# e.g. ATC NA got coloured as a C
+#atcfail <- intervocabstandard |>
+intervocabstandard |>
+  #filter(vocab_only_1 %in% c("ATC","Cancer Modifier")) |>  #ooh this one has lots of problems !!
+  filter(vocab_only_1 %in% c("ATC")) |>
+  rename(vocabulary_id_1=vocab_s_1) |>
+  rename(vocabulary_id_2=vocab_s_2) |>
+  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  omop_graph(nodecolourvar = "standard_2",
+             nodetxtsize = 7,
+             nodesizevar = "nconcepts2",
+             nodesize = c(1,50),
+             nodealpha = 0.7, #default 0.8
+             filenamecustom = "wrongatc2",
+             #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
+             #palettebrewer = "PRGn", #"RdBu",
+             edgecolour = "gold",
+             graphtitle = "OMOP vocabulary relationships by omopcept",
+             legendshow=TRUE)
+
+#TODO
+##from ATCFAIL example work out what colours I want bubbles to be
+###&what is going wrong ??
+
 
 # TODO
 # make colour palette more flexible from omop_graph() e.g. allow single colour choice
