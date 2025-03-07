@@ -183,7 +183,7 @@ intervocab |>
 #separate bubbles by standard, classification & NS, adding full 'standard' etc to names
 intervocabstandard |>
   #filter low concept numbers to make plot clearer
-  filter(nconcepts > 1000) |>
+  filter(nconcepts1 > 1000) |>
   filter(nrelationships > 10) |>
   rename(vocabulary_id_1=vocab_standard_1) |>
   rename(vocabulary_id_2=vocab_standard_2) |>
@@ -203,7 +203,7 @@ intervocabstandard |>
 #separate bubbles by standard, add S, C, NA to names
 intervocabstandard |>
   #filter low concept numbers to make plot clearer
-  filter(nconcepts > 5000) |>
+  filter(nconcepts1 > 5000) |>
   filter(nrelationships > 10) |>
   rename(vocabulary_id_1=vocab_s_1) |>
   rename(vocabulary_id_2=vocab_s_2) |>
@@ -223,7 +223,7 @@ intervocabstandard |>
 #separate bubbles by standard, but try setting label to just vocab name
 intervocabstandard |>
   #filter low concept numbers to make plot clearer
-  filter(nconcepts > 5000) |>
+  filter(nconcepts1 > 5000) |>
   filter(nrelationships > 10) |>
   rename(vocabulary_id_1=vocab_s_1) |>
   rename(vocabulary_id_2=vocab_s_2) |>
@@ -243,12 +243,15 @@ intervocabstandard |>
 # troubleshooting issue with colouring
 # e.g. ATC NA got coloured as a C
 #atcfail <- intervocabstandard |>
-intervocabstandard |>
+atcfail <- intervocabstandard |>
   #filter(vocab_only_1 %in% c("ATC","Cancer Modifier")) |>  #ooh this one has lots of problems !!
-  filter(vocab_only_1 %in% c("ATC")) |>
+  #filter(vocab_only_1 %in% c("ATC"))
+  filter(vocab_s_1 %in% c("ATC C")) |>
+  #arrange(standard_2) |>
   rename(vocabulary_id_1=vocab_s_1) |>
-  rename(vocabulary_id_2=vocab_s_2) |>
-  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  rename(vocabulary_id_2=vocab_s_2)
+atcfail |>
+  #filter(vocabulary_id_1 != vocabulary_id_2) |>
   omop_graph(nodecolourvar = "standard_2",
              nodetxtsize = 7,
              nodesizevar = "nconcepts2",
@@ -260,6 +263,13 @@ intervocabstandard |>
              edgecolour = "gold",
              graphtitle = "OMOP vocabulary relationships by omopcept",
              legendshow=TRUE)
+
+# merely rearranging rows fixed the plot problem ??
+# I should look at output from omop_graph_calc() which is list of nodes & edges
+
+ne <- atcfail |> omop_graph_calc()
+
+
 
 #TODO
 ##from ATCFAIL example work out what colours I want bubbles to be
