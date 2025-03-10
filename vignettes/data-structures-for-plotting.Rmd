@@ -1,0 +1,19 @@
+---
+title: "Background to the data structures used for plotting networks and how these are derived from OMOP"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{data-structures-for-plotting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(omopcept)
+```
