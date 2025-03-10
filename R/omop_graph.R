@@ -188,13 +188,16 @@ omop_graph <- function(dfin,
 omgr <- omop_graph
 
 
-#' calculate nodes and edges from omop hierarchy
-#' accepts output from either omop_ancestors(), omop_descendants() or omop_relations
+#' calculate nodes and edges from an omop or other table
+#'
+#' accepts output from either omop_ancestors(), omop_descendants() or omop_relations()
+#'
 #' used by omop_graph(), you are only likely to want to use on it's own to
 #'  a) separate calculation & visualisation so that you can join attributes for visualisation
 #'  b) pass the nodes and edges to a different graph rendering package
 #'
-#' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
+#' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations(),
+#' or any other dataframe with columns containing from & to concepts that can be specified in
 #'
 #' @return list containing edges & nodes tables
 #' @export
@@ -254,10 +257,16 @@ omop_graph_calc <- function(dfin) {
   dfin2 <- dfin |> mutate(from = .data[[lfromto$from]], to = .data[[lfromto$to]])
 
   #challenge to get all nodes from columns from & to, to avoid Invalid (negative) vertex id
+
+  #2025-03-07 trying to fix an issue where nodes sometimes get wrong colour
+
   nodesfrom <- dfin2 |>
-    #select(from,vocabulary_id,domain_id) |>
-    group_by(from) |>
-    slice_head(n=1) |>
+    #group_by(from) |>
+    #slice_head(n=1) |>
+    #2025-03-07 replacing 2 lines above with this 1
+    #fixed colouring issue & should work for most omop things that have links to themselves
+    #but I am looking into for better solution
+    filter(from==to) |>
     rename(name=from)
 
   nodesto <- dfin2 |>
@@ -269,6 +278,14 @@ omop_graph_calc <- function(dfin) {
     group_by(name) |>
     slice_head(n=1)
 
+  #NODES (new trial 2025-03-07) but gave
+  #Error in (function (edges, n = max(edges), directed = TRUE)  :
+  #At rinterface_extra.c:82 : The value nan is not representable as an integer. Invalid value
+  # nodes <- dfin2 |>
+  #   #BEWARE this will only keep first row & any attributes that contains
+  #   distinct(from,to,.keep_all = TRUE)
+
+  #EDGES
   edges <- dfin2 |>
     select(from, to)
 
@@ -511,7 +528,7 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   #allows legend key symbols to be bigger, not sure if required
   guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
   ggraph::geom_node_text(aes(#label=name,
-                             #2025-03-05 try to allow label to be set from other columns
+                             #2025-03-05 to allow label to be set from other columns
                              label=.data[[nodetxtvar]],
                              colour=as.factor(.data[[textcolourvar]])),
                          size=nodetxtsize,
