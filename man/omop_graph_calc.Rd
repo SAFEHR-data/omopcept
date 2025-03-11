@@ -2,23 +2,25 @@
 % Please edit documentation in R/omop_graph.R
 \name{omop_graph_calc}
 \alias{omop_graph_calc}
-\title{calculate nodes and edges from omop hierarchy
-accepts output from either omop_ancestors(), omop_descendants() or omop_relations
-used by omop_graph(), you are only likely to want to use on it's own to
-a) separate calculation & visualisation so that you can join attributes for visualisation
-b) pass the nodes and edges to a different graph rendering package}
+\title{calculate nodes and edges from an omop or other table}
 \usage{
-omop_graph_calc(dfin)
+omop_graph_calc(dfin, nodefromvar = NULL, nodetovar = NULL)
 }
 \arguments{
-\item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
+\item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations(),
+or any other dataframe with columns containing from & to concepts that can be specified in}
+
+\item{nodefromvar}{optional column to define nodes from, without this function will try to set from recognised columns in the dataframe}
+
+\item{nodetovar}{optional column to define nodes to, without this function will try to set from recognised columns in the dataframe}
 }
 \value{
 list containing edges & nodes tables
 }
 \description{
-calculate nodes and edges from omop hierarchy
-accepts output from either omop_ancestors(), omop_descendants() or omop_relations
+accepts output from either omop_ancestors(), omop_descendants() or omop_relations()
+}
+\details{
 used by omop_graph(), you are only likely to want to use on it's own to
 a) separate calculation & visualisation so that you can join attributes for visualisation
 b) pass the nodes and edges to a different graph rendering package

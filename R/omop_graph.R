@@ -3,6 +3,9 @@
 #'
 #' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations
 #'
+#' @param nodefromvar optional column to define nodes from, without this function will try to set from recognised columns in the dataframe
+#' @param nodetovar optional column to define nodes to, without this function will try to set from recognised columns in the dataframe
+#'
 #' @param ggrlayout ggraph layout, default = "graphopt", also "tree" works well, more directional
 #' @param palettebrewer colour brewer palette, default='Dark2', other options e.g. 'Set1' see RColorBrewer::brewer.pal.info
 #' @param palettedirection palette direction, default=1, -1 for reversed
@@ -69,6 +72,8 @@
 # press_descend <- omop_descendants(pressure$concept_id[1])
 # omop_graph(press_descend, filenameroot="bloodpressure",graphtitle="OMOP Blood Pressure")
 omop_graph <- function(dfin,
+                       nodefromvar=NULL,
+                       nodetovar=NULL,
                        ggrlayout='graphopt',
                        palettebrewer='Dark2',
                        palettedirection=1,
@@ -123,7 +128,9 @@ omop_graph <- function(dfin,
 
 
   #calculate nodes and edges
-  graphlist <- omop_graph_calc(dfin)
+  graphlist <- omop_graph_calc(dfin,
+                               nodefromvar=nodefromvar,
+                               nodetovar=nodetovar)
 
   #visualisation
   #need to pass all args from main func
@@ -199,6 +206,9 @@ omgr <- omop_graph
 #' @param dfin dataframe output from either omop_ancestors(), omop_descendants() or omop_relations(),
 #' or any other dataframe with columns containing from & to concepts that can be specified in
 #'
+#' @param nodefromvar optional column to define nodes from, without this function will try to set from recognised columns in the dataframe
+#' @param nodetovar optional column to define nodes to, without this function will try to set from recognised columns in the dataframe
+#'
 #' @return list containing edges & nodes tables
 #' @export
 #' @examples
@@ -208,50 +218,55 @@ omgr <- omop_graph
 # rel <- omop_concept_relationship() |> head(50) |> collect()
 # #note this colours nodes by relationship, not quite sure how it works when nodes inevitably have >1 relationship type
 # omop_graph(rel, nodecolourvar="relationship_id", nodetxtsize=3)
-omop_graph_calc <- function(dfin) {
+omop_graph_calc <- function(dfin,
+                            nodefromvar=NULL,
+                            nodetovar=NULL
+                            ) {
 
   # to detect input type from presence of specific column names
   # then create table with columns named 'from' and 'to' required by ggraph
 
-  # TODO allow user to specify from & to columns as args
-  # create a list with from & to strings
+  # TODO check that from & to are within dfin
 
-  if ("ancestor_name" %in% names(dfin)) {
-    #DESCENDANT TABLE
-    from = 'ancestor_name'
-    to   = 'concept_name'
+  # allows user to specify from & to columns as args (but doesn't yet check)
+  if (is.null(nodefromvar) & is.null(nodetovar))
+  {
+    if ("ancestor_name" %in% names(dfin)) {
+      #DESCENDANT TABLE
+      from = 'ancestor_name'
+      to   = 'concept_name'
 
-  } else if ("descendant_concept_name" %in% names(dfin)) {
-    #ANCESTOR TABLE
-    from = 'descendant_concept_name'
-    to   = 'concept_name'
+    } else if ("descendant_concept_name" %in% names(dfin)) {
+      #ANCESTOR TABLE
+      from = 'descendant_concept_name'
+      to   = 'concept_name'
 
-  } else if ("concept_id_1" %in% names(dfin)) {
+    } else if ("concept_id_1" %in% names(dfin)) {
+      #RELATION TABLE
+      #names not present in relation table, join on because needed to label nodes
+      if (!"concept_name_1" %in% names(dfin)) {
+        dfin <- dfin |> omop_join_name_all(columns="all")
+      }
+      from = 'concept_name_2'
+      to   = 'concept_name_1'
 
-    #RELATION TABLE
-    #names not present in relation table, join on because needed to label nodes
-    if (!"concept_name_1" %in% names(dfin)) {
-      dfin <- dfin |> omop_join_name_all(columns="all")
-    }
-    from = 'concept_name_2'
-    to   = 'concept_name_1'
+    } else if ("ATC_concept_name" %in% names(dfin)) {
 
-  } else if ("ATC_concept_name" %in% names(dfin)) {
+      from = 'ATC_concept_name'
+      to   = 'drug_concept_name'
 
-    from = 'ATC_concept_name'
-    to   = 'drug_concept_name'
+    } else if ("vocabulary_id_1" %in% names(dfin)) {
 
-  } else if ("vocabulary_id_1" %in% names(dfin)) {
+      #from vocab-network-ohdsi.R
+      #dfin2 <- dfin |> mutate(from = vocabulary_id_1, to = vocabulary_id_2)
+      #trying out way of allowing user to set from, to columns
+      from <- 'vocabulary_id_1'
+      to   <- 'vocabulary_id_2'
 
-    #from vocab-network-ohdsi.R
-    #dfin2 <- dfin |> mutate(from = vocabulary_id_1, to = vocabulary_id_2)
-    #trying out way of allowing user to set from, to columns
-    from <- 'vocabulary_id_1'
-    to   <- 'vocabulary_id_2'
-
-  } else
-  {stop("column names unrecognised")}
-
+    } else
+    {stop("column names unrecognised, supply either nodefromvar & nodetovar,",
+          "or an output from omop_ancestors(), omop_descendants() or omop_relations()")}
+  }
   #copying with mutate in case user wants to use original names for vis
   lfromto <- list(from=from, to=to)
   dfin2 <- dfin |> mutate(from = .data[[lfromto$from]], to = .data[[lfromto$to]])

@@ -8,6 +8,8 @@ accepts output from either omop_ancestors(), omop_descendants() or omop_relation
 \usage{
 omop_graph(
   dfin,
+  nodefromvar = NULL,
+  nodetovar = NULL,
   ggrlayout = "graphopt",
   palettebrewer = "Dark2",
   palettedirection = 1,
@@ -54,6 +56,8 @@ omop_graph(
 
 omgr(
   dfin,
+  nodefromvar = NULL,
+  nodetovar = NULL,
   ggrlayout = "graphopt",
   palettebrewer = "Dark2",
   palettedirection = 1,
@@ -100,6 +104,10 @@ omgr(
 }
 \arguments{
 \item{dfin}{dataframe output from either omop_ancestors(), omop_descendants() or omop_relations}
+
+\item{nodefromvar}{optional column to define nodes from, without this function will try to set from recognised columns in the dataframe}
+
+\item{nodetovar}{optional column to define nodes to, without this function will try to set from recognised columns in the dataframe}
 
 \item{ggrlayout}{ggraph layout, default = "graphopt", also "tree" works well, more directional}
 
