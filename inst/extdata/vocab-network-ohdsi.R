@@ -183,11 +183,11 @@ intervocab |>
 #separate bubbles by standard, classification & NS, adding full 'standard' etc to names
 intervocabstandard |>
   #filter low concept numbers to make plot clearer
-  filter(nconcepts1 > 1000) |>
+  filter(nconcepts1 > 5000) |>
   filter(nrelationships > 10) |>
   rename(vocabulary_id_1=vocab_standard_1) |>
   rename(vocabulary_id_2=vocab_standard_2) |>
-  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  #filter(vocabulary_id_1 != vocabulary_id_2) |>
   omop_graph(nodecolourvar = "standard_1",
              nodetxtsize = 7,
              nodesizevar = "nconcepts2",
@@ -208,7 +208,7 @@ intervocabstandard |>
   rename(vocabulary_id_1=vocab_s_1) |>
   rename(vocabulary_id_2=vocab_s_2) |>
   filter(vocabulary_id_1 != vocabulary_id_2) |>
-  omop_graph(nodecolourvar = "standard_1",
+  omop_graph(nodecolourvar = "standard_2",
              nodetxtsize = 7,
              nodesizevar = "nconcepts2",
              nodesize = c(1,50),
@@ -227,7 +227,26 @@ intervocabstandard |>
   filter(nrelationships > 10) |>
   rename(vocabulary_id_1=vocab_s_1) |>
   rename(vocabulary_id_2=vocab_s_2) |>
-  filter(vocabulary_id_1 != vocabulary_id_2) |>
+  #filter(vocabulary_id_1 != vocabulary_id_2) |>
+  omop_graph(nodecolourvar = "standard_2",
+             nodetxtvar = "vocab_only_2",
+             nodetxtsize = 7,
+             nodesizevar = "nconcepts2",
+             nodesize = c(1,50),
+             nodealpha = 0.7, #default 0.8
+             #default palette Dark2 looks better, try later to get blue of OHDSI logo :-)
+             #palettebrewer = "PRGn", #"RdBu",
+             edgecolour = "lightpink",
+             graphtitle = "OMOP vocabulary relationships by omopcept",
+             legendshow=TRUE)
+
+intervocabstandard |>
+  #filter low concept numbers to make plot clearer
+  filter(nconcepts1 > 1000) |>
+  #filter(nrelationships > 10) |>
+  rename(vocabulary_id_1=vocab_s_1) |>
+  rename(vocabulary_id_2=vocab_s_2) |>
+  #filter(vocabulary_id_1 != vocabulary_id_2) |>
   omop_graph(nodecolourvar = "standard_2",
              nodetxtvar = "vocab_only_2",
              nodetxtsize = 7,
@@ -268,13 +287,21 @@ atcfail |>
 # I should look at output from omop_graph_calc() which is list of nodes & edges
 
 ne <- atcfail |> omop_graph_calc()
-
+View(ne$nodes)
 
 
 #TODO
 ##from ATCFAIL example work out what colours I want bubbles to be
 ###&what is going wrong ??
 
+# as a part of this I noticed that there
+# is a dm+d standard bubble similar size to non-standard
+# what are the dm+d standard concepts ?
+dmd_s <- omop_names("",v="dm+d",s="S")
+#all are devices
+#dmd_s |> count(domain_id)
+# domain_id      n
+#   1 Device    212681
 
 # TODO
 # make colour palette more flexible from omop_graph() e.g. allow single colour choice
