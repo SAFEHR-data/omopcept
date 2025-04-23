@@ -254,11 +254,26 @@ omop_graph_calc <- function(dfin) {
   dfin2 <- dfin |> mutate(from = .data[[lfromto$from]], to = .data[[lfromto$to]])
 
   #challenge to get all nodes from columns from & to, to avoid Invalid (negative) vertex id
+
+  #TODO 2025-04-23
+  #first beware that I think I may have exploratory commits on my other laptop
+  #need to fix an issue that sometimes a node can get an incorrect attribute
+  #related to whether it is 'from' or 'to'
+  #so I may need to rename attribute columns
+  #see in gdoc notes 2025-03-11
+  #if the node is a from then it should get attributes from concept_1
+  #if it is a to it should get attributes from concept_2
+  #think this is only an issue when I'm trying to stretch the method
+  #e.g. for the vocab network plots
+  #maybe not for standrad concept_relationship plots
+
   nodesfrom <- dfin2 |>
     #select(from,vocabulary_id,domain_id) |>
     group_by(from) |>
     slice_head(n=1) |>
     rename(name=from)
+    #todo, think I need more renaming here
+    #e.g. for domain & standard I only want one attribute per node
 
   nodesto <- dfin2 |>
     group_by(to) |>
