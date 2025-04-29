@@ -228,6 +228,7 @@ omop_graph_calc <- function(dfin,
 
   # TODO check that from & to are within dfin
 
+  # note tricky to put this in its own function because some examples modify the dataframe too e.g. joining on names
   # allows user to specify from & to columns as args (but doesn't yet check)
   if (is.null(nodefromvar) & is.null(nodetovar))
   {
@@ -271,23 +272,60 @@ omop_graph_calc <- function(dfin,
   lfromto <- list(from=from, to=to)
   dfin2 <- dfin |> mutate(from = .data[[lfromto$from]], to = .data[[lfromto$to]])
 
+  # NEED TO GET
+  # NODES : name & attributes
+  # EDGES : from, to
+
   #challenge to get all nodes from columns from & to, to avoid Invalid (negative) vertex id
 
   #2025-03-07 trying to fix an issue where nodes sometimes get wrong colour
+  #2025-03-11 Aha I think issue is that
+  #for rows in nodesfrom attributes are in from or concept1
+  #            nodesto   attributes are in to or concept2
+  #
+  #Is there a way to get all of nodes from either from or to ?
+  #or is there a way to move the attributes ?
+  #in the atcfail example, just using 'to' works, but fails on others
+  #
+  #DO I need to rename attribute columns in from & to ?
+  #for omop vocab things this should be doable
+  #seems best to get all nodes from FROM
+  #then augment with any nodes in TO that don't appear in FROM after renaming columns
+  #probably need to do some fancy renaming of attribute columns as a part of this
+  #need to work out how to do that for the vocab columns (relations, ancestors etc.)
+  #and what to do for custom examples (like ohdsi-vocab plots)
+
+  #different examples it needs to work for
+  #1 subsetting omop_concept_relationship table
+  #lne1 <- omop_concept_relationship() |> head(50) |> collect() |>
+  #   omop_graph_calc()
+  #View(lne1$nodes)
+
+  #2 omop_relations
+  #lne2 <- omop_relations("Non-invasive blood pressure") |>
+  #   omop_graph_calc()
+  #View(lne2$nodes)
+
+  #3 omop_ancestors
+  lne3 <- omop_ancestors("Non-invasive blood pressure") |>
+    omop_graph_calc()
+  View(lne3$nodes)
+
 
   nodesfrom <- dfin2 |>
-    #group_by(from) |>
-    #slice_head(n=1) |>
+    group_by(from) |>
+    slice_head(n=1) |>
     #2025-03-07 replacing 2 lines above with this 1
     #fixed colouring issue & should work for most omop things that have links to themselves
     #but I am looking into for better solution
-    filter(from==to) |>
+    #filter(from==to) |>
     rename(name=from)
 
   nodesto <- dfin2 |>
     group_by(to) |>
     slice_head(n=1) |>
     rename(name=to)
+
 
   nodes <- bind_rows(nodesfrom,nodesto) |>
     group_by(name) |>
