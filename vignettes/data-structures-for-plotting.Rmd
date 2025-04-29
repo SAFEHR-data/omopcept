@@ -17,3 +17,19 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(omopcept)
 ```
+
+`omopcept` relies on the R packages [`ggraph`](https://ggraph.data-imaginist.com/index.html) and [`tidygraph`](https://tidygraph.data-imaginist.com/) for plotting omop relationships in the `omop_graph()` function.
+
+`omop_graph()` | is divided into two parts 
+-------------- | -------------
+`omop_graph_calc()` | calculates a plotting data structure from OMOP vocabulary data 
+`omop_graph_vis()`  | visualises a data structure created above
+
+
+`omop_graph_calc()` produces two tables one for nodes (points) and one for edges (connections between points). A very simple example could look like this.
+
+nodes
+from to
+
+edges
+
