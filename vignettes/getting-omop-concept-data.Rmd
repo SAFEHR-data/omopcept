@@ -21,9 +21,9 @@ library(omopcept)
 
 `omopcept` requires OMOP concept tables.
 
-In default operation omopcept will download these concept tables from a temporary online filestore we have created.
+In default operation omopcept will download these concept tables from a [repository for a selection of processed vocabularies](https://github.com/SAFEHR-data/omop-vocabs-processed) we have created.
 
-You can also download concept tables from [Athena](https://athena.ohdsi.org/) and then use `omopcept::omop_vocabs_preprocess()` to save these in the `omopcept` package. Note that package results will depend on the subset of vocabularies that you have selected from the Ahena download page.
+You can also download vocabulary tables for your own selection of vocabularies from [Athena](https://athena.ohdsi.org/) and then use `omopcept::omop_vocabs_preprocess()` to save these in the `omopcept` package. Note that package results will depend on the subset of vocabularies that you have selected from the Athena download page.
 
 
 ### Details of vocab storage
