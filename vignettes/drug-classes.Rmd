@@ -62,7 +62,7 @@ Seems that the [CodelistGenerator package](https://github.com/darwin-eu/Codelist
 @param level ATC level. Can be one or more of "ATC 1st", "ATC 2nd", "ATC 3rd", "ATC 4th", and "ATC 5th"
 @param name ATC name of interest. For example, c("Dermatologicals", "Nervous System"), would result in a list of length two with the descendant concepts for these two particular ATC groups.
 
-```{r CodeListGenerator getATCCodes}
+```{r CodeListGenerator getATCCodes, eval=FALSE}
 
 cdm <- mockVocabRef()
 atc1 <- getATCCodes(cdm = cdm, level = "ATC 1st")
