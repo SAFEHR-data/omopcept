@@ -555,6 +555,8 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
 
 if (saveplot)
 {
+  rlang::check_installed("ggplot2") # needed for ggsave
+
   if (!is.null(canvas))
   {
     canvas_specs <- get_plot_dims(canvas)
@@ -593,7 +595,7 @@ if (saveplot)
     dir.create(filepath, recursive = TRUE)
 
 
-  ggsave(ggr, filename=file.path(filepath,filename),
+  ggplot2::ggsave(ggr, filename=file.path(filepath,filename),
          width=width, height=height, units=units, limitsize=FALSE)
   #create.dir=TRUE) #beware create.dir needs ggplot v >3.50
 

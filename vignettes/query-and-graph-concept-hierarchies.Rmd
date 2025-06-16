@@ -29,6 +29,7 @@ Getting started, install from github if you haven't already & use library().
 ```{r setup}
 #remotes::install_github("SAFEHR-data/omopcept")
 library(omopcept)
+library(ggplot2)
 ```
 
 

@@ -21,12 +21,12 @@ Imports:
     rlang,
     arrow,
     stringr,
-    ggplot2,
     readr,
     lubridate
 Suggests:
     igraph,
     tidygraph,
+    ggplot2,
     ggraph,
     knitr,
     rmarkdown,
