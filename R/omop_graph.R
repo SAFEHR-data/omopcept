@@ -416,7 +416,7 @@ omop_graph_vis <- function(
 
 
 # install required packages if not present
-required_packages <- c("igraph","tidygraph","ggraph")
+required_packages <- c("igraph","tidygraph","ggraph", "ggplot2")
 install_package <- function(packname) {
   if (!requireNamespace(packname, quietly = TRUE)) {
     message("Trying to install required package:",packname)
@@ -486,7 +486,7 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
   #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
   #as.factor gets colours to work if numeric
-  ggraph::geom_node_point(aes(size=sizecolumn,
+  ggraph::geom_node_point(ggplot2::aes(size=sizecolumn,
                               #TODO check presence of nodecolourvar in data before here
                               colour=as.factor(.data[[nodecolourvar]])),
                           #TODO re-enable this when worked out how to get it to cope with "connections"
@@ -494,38 +494,39 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
                           alpha=nodealpha,
                           show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
 
-  scale_size_continuous(range = nodesize) +
+  ggplot2::scale_size_continuous(range = nodesize) +
 
   #distiller should cope with larger num cats by interpolation ?
   #no gives Discrete values supplied to continuous scale
   #scale_color_distiller(palette=palettebrewer, direction=palettedirection) +
-  scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
+  ggplot2::scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
 
-  labs(title=graphtitle,subtitle=graphsubtitle,
+  ggplot2::labs(title=graphtitle,subtitle=graphsubtitle,
        caption=caption) +
-  theme(#panel.background=element_blank(),
-    panel.background=element_rect(fill=backcolour, colour=backcolour, size=0.5),
-    plot.background=element_blank(),
+  ggplot2::theme(#panel.background=element_blank(),
+    panel.background=ggplot2::element_rect(fill=backcolour, colour=backcolour, size=0.5),
+    plot.background=ggplot2::element_blank(),
     legend.position = legendpos,
     legend.direction = legenddir,
-    legend.key.size = unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
+    legend.key.size = ggplot2::unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
     #legend.key.height = unit(1, 'cm'),
     #legend.key.width = unit(1, 'cm'),
-    legend.key = element_rect(fill = "white"),
+    legend.key = ggplot2::element_rect(fill = "white"),
     #legend.title = element_text(size=30),
-    legend.title = element_blank(),
-    legend.text = element_text(size=legendtxtsize),
+    legend.title = ggplot2::element_blank(),
+    legend.text = ggplot2::element_text(size=legendtxtsize),
     #hjust=0.5 to make centred
-    plot.title = element_text(size=titletxtsize,
+    plot.title = ggplot2::element_text(size=titletxtsize,
                               colour=titlecolour,
                               hjust=titlehjust),
-    plot.caption = element_text(size=captiontxtsize,
+    plot.caption = ggplot2::element_text(size=captiontxtsize,
+
                                 colour=captioncolour,
                                 hjust=captionhjust),
-    plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
+    plot.subtitle = ggplot2::element_text(size=0.7*titletxtsize, colour=titlecolour)) +
   #allows legend key symbols to be bigger, not sure if required
-  guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
-  ggraph::geom_node_text(aes(#label=name,
+  ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=legendcm*5))) +
+  ggraph::geom_node_text(ggplot2::aes(#label=name,
                              #2025-03-05 try to allow label to be set from other columns
                              label=.data[[nodetxtvar]],
                              colour=as.factor(.data[[textcolourvar]])),
@@ -555,8 +556,6 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
 
 if (saveplot)
 {
-  rlang::check_installed("ggplot2") # needed for ggsave
-
   if (!is.null(canvas))
   {
     canvas_specs <- get_plot_dims(canvas)
