@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 # omopcept
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/SAFEHR-data/omopcept/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SAFEHR-data/omopcept/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **Active development 2025, breaking changes possible**     
