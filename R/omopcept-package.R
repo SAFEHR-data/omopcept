@@ -53,7 +53,6 @@
 # trying importing whole packages rather than having to fiddle
 # with xtra functions as they crop up
 # @import dplyr
-#' @import ggplot2
 # @import igraph
 # @import ggraph
 

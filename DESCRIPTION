@@ -21,18 +21,19 @@ Imports:
     rlang,
     arrow,
     stringr,
-    ggplot2,
     readr,
     lubridate
 Suggests:
     igraph,
     tidygraph,
+    ggplot2,
     ggraph,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     fs,
     purrr,
-    here
+    here,
+    CodelistGenerator
 VignetteBuilder: knitr
 Config/testthat/edition: 3

@@ -307,9 +307,22 @@ omop_graph_calc <- function(dfin,
   #View(lne2$nodes)
 
   #3 omop_ancestors
-  lne3 <- omop_ancestors("Non-invasive blood pressure") |>
-    omop_graph_calc()
-  View(lne3$nodes)
+  # lne3 <- omop_ancestors("Non-invasive blood pressure") |>
+  #   omop_graph_calc()
+  # View(lne3$nodes)
+
+
+  #TODO 2025-04-23
+  #first beware that I think I may have exploratory commits on my other laptop
+  #need to fix an issue that sometimes a node can get an incorrect attribute
+  #related to whether it is 'from' or 'to'
+  #so I may need to rename attribute columns
+  #see in gdoc notes 2025-03-11
+  #if the node is a from then it should get attributes from concept_1
+  #if it is a to it should get attributes from concept_2
+  #think this is only an issue when I'm trying to stretch the method
+  #e.g. for the vocab network plots
+  #maybe not for standrad concept_relationship plots
 
 
   nodesfrom <- dfin2 |>
@@ -320,6 +333,8 @@ omop_graph_calc <- function(dfin,
     #but I am looking into for better solution
     #filter(from==to) |>
     rename(name=from)
+    #todo, think I need more renaming here
+    #e.g. for domain & standard I only want one attribute per node
 
   nodesto <- dfin2 |>
     group_by(to) |>
@@ -471,7 +486,7 @@ omop_graph_vis <- function(
 
 
 # install required packages if not present
-required_packages <- c("igraph","tidygraph","ggraph")
+required_packages <- c("igraph","tidygraph","ggraph", "ggplot2")
 install_package <- function(packname) {
   if (!requireNamespace(packname, quietly = TRUE)) {
     message("Trying to install required package:",packname)
@@ -541,7 +556,7 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
   #geom_edge_link(aes(colour = node.class),edge_alpha=0.6, edge_width=0.1 ) +
   #geom_edge_link(aes(colour = factor(min_levels_of_separation))) +
   #as.factor gets colours to work if numeric
-  ggraph::geom_node_point(aes(size=sizecolumn,
+  ggraph::geom_node_point(ggplot2::aes(size=sizecolumn,
                               #TODO check presence of nodecolourvar in data before here
                               colour=as.factor(.data[[nodecolourvar]])),
                           #TODO re-enable this when worked out how to get it to cope with "connections"
@@ -549,39 +564,40 @@ ggr <- ggraph::ggraph(graphin, layout=ggrlayout) +
                           alpha=nodealpha,
                           show.legend = c(size = FALSE, colour = legendshow, alpha = FALSE)) +
 
-  scale_size_continuous(range = nodesize) +
+  ggplot2::scale_size_continuous(range = nodesize) +
 
   #distiller should cope with larger num cats by interpolation ?
   #no gives Discrete values supplied to continuous scale
   #scale_color_distiller(palette=palettebrewer, direction=palettedirection) +
-  scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
+  ggplot2::scale_color_brewer(palette=palettebrewer, direction=palettedirection) +
 
-  labs(title=graphtitle,subtitle=graphsubtitle,
+  ggplot2::labs(title=graphtitle,subtitle=graphsubtitle,
        caption=caption) +
-  theme(#panel.background=element_blank(),
-    panel.background=element_rect(fill=backcolour, colour=backcolour, size=0.5),
-    plot.background=element_blank(),
+  ggplot2::theme(#panel.background=element_blank(),
+    panel.background=ggplot2::element_rect(fill=backcolour, colour=backcolour, size=0.5),
+    plot.background=ggplot2::element_blank(),
     legend.position = legendpos,
     legend.direction = legenddir,
-    legend.key.size = unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
+    legend.key.size = ggplot2::unit(10*legendcm, 'mm'),#otherwise only int cm seemingly allowed
     #legend.key.height = unit(1, 'cm'),
     #legend.key.width = unit(1, 'cm'),
-    legend.key = element_rect(fill = "white"),
+    legend.key = ggplot2::element_rect(fill = "white"),
     #legend.title = element_text(size=30),
-    legend.title = element_blank(),
-    legend.text = element_text(size=legendtxtsize),
+    legend.title = ggplot2::element_blank(),
+    legend.text = ggplot2::element_text(size=legendtxtsize),
     #hjust=0.5 to make centred
-    plot.title = element_text(size=titletxtsize,
+    plot.title = ggplot2::element_text(size=titletxtsize,
                               colour=titlecolour,
                               hjust=titlehjust),
-    plot.caption = element_text(size=captiontxtsize,
+    plot.caption = ggplot2::element_text(size=captiontxtsize,
+
                                 colour=captioncolour,
                                 hjust=captionhjust),
-    plot.subtitle = element_text(size=0.7*titletxtsize, colour=titlecolour)) +
+    plot.subtitle = ggplot2::element_text(size=0.7*titletxtsize, colour=titlecolour)) +
   #allows legend key symbols to be bigger, not sure if required
-  guides(colour = guide_legend(override.aes = list(size=legendcm*5))) +
-  ggraph::geom_node_text(aes(#label=name,
-                             #2025-03-05 to allow label to be set from other columns
+  ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=legendcm*5))) +
+  ggraph::geom_node_text(ggplot2::aes(#label=name,
+                             #2025-03-05 try to allow label to be set from other columns
                              label=.data[[nodetxtvar]],
                              colour=as.factor(.data[[textcolourvar]])),
                          size=nodetxtsize,
@@ -648,7 +664,7 @@ if (saveplot)
     dir.create(filepath, recursive = TRUE)
 
 
-  ggsave(ggr, filename=file.path(filepath,filename),
+  ggplot2::ggsave(ggr, filename=file.path(filepath,filename),
          width=width, height=height, units=units, limitsize=FALSE)
   #create.dir=TRUE) #beware create.dir needs ggplot v >3.50
 
