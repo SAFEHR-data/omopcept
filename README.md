@@ -5,6 +5,8 @@
 # omopcept
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/SAFEHR-data/omopcept/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SAFEHR-data/omopcept/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **Active development 2025, breaking changes possible**
@@ -153,16 +155,16 @@ omop_names("chemotherapy", v_ids="LOINC")
 #> # A tibble: 71 × 10
 #>    concept_id concept_name              domain_id vocabulary_id concept_class_id
 #>         <int> <chr>                     <chr>     <chr>         <chr>           
-#>  1   45882419 A proper value is applic… Meas Val… LOINC         Answer          
-#>  2   45882273 Information is not avail… Meas Val… LOINC         Answer          
-#>  3   45884441 No information whatsoeve… Meas Val… LOINC         Answer          
-#>  4   45884440 No proper value is appli… Meas Val… LOINC         Answer          
-#>  5   45881771 Received cancer chemothe… Meas Val… LOINC         Answer          
-#>  6   45884510 Chemotherapy/medication … Meas Val… LOINC         Answer          
-#>  7   36309148 Currently receiving chem… Meas Val… LOINC         Answer          
-#>  8    1035179 Chemotherapy - IV         Meas Val… LOINC         Answer          
-#>  9    1035159 Chemotherapy - Oral       Meas Val… LOINC         Answer          
-#> 10    1035128 Chemotherapy - Other      Meas Val… LOINC         Answer          
+#>  1    1035179 Chemotherapy - IV         Meas Val… LOINC         Answer          
+#>  2    1035159 Chemotherapy - Oral       Meas Val… LOINC         Answer          
+#>  3    1035128 Chemotherapy - Other      Meas Val… LOINC         Answer          
+#>  4   45882480 Chemotherapy, NOS         Meas Val… LOINC         Answer          
+#>  5   45876436 Chemotherapy Administered Meas Val… LOINC         Answer          
+#>  6   45884295 Unknown if any chemother… Meas Val… LOINC         Answer          
+#>  7   45880125 No chemotherapy administ… Meas Val… LOINC         Answer          
+#>  8   45879751 Chemotherapy              Meas Val… LOINC         Answer          
+#>  9   45882373 Chemotherapy spill        Meas Val… LOINC         Answer          
+#> 10   45878374 Chemotherapy, single age… Meas Val… LOINC         Answer          
 #> # ℹ 61 more rows
 #> # ℹ 5 more variables: standard_concept <chr>, concept_code <chr>,
 #> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
@@ -171,16 +173,16 @@ omop_names("chemotherapy", v_ids=c("LOINC","SNOMED"), d_ids=c("Observation","Pro
 #> # A tibble: 316 × 10
 #>    concept_id concept_name              domain_id vocabulary_id concept_class_id
 #>         <int> <chr>                     <chr>     <chr>         <chr>           
-#>  1    3046488 Chemotherapy [Minimum Da… Observat… LOINC         Survey          
-#>  2   40768860 Cancer chemotherapy rece… Observat… LOINC         Clinical Observ…
-#>  3   36303659 Guidance for chemoemboli… Procedure LOINC         Clinical Observ…
-#>  4    1024644 Guidance for chemoemboli… Observat… LOINC         LOINC Component 
-#>  5    1030274 Chemotherapy              Observat… LOINC         LOINC Component 
-#>  6    1034150 Chemotherapy in last 14 … Observat… LOINC         LOINC Component 
-#>  7    1034151 Chemotherapy in last 14 … Observat… LOINC         LOINC Component 
-#>  8    3010410 Chemotherapy records      Observat… LOINC         Clinical Observ…
-#>  9    3011998 Date 1st chemotherapy tr… Observat… LOINC         Clinical Observ…
-#> 10   40758122 Chemotherapy in last 14 … Observat… LOINC         Survey          
+#>  1   36305649 Chemotherapy infusion st… Observat… LOINC         Clinical Observ…
+#>  2   36305185 Chemotherapy infusion st… Observat… LOINC         Clinical Observ…
+#>  3   36305554 Chemotherapy infusion st… Observat… LOINC         Clinical Observ…
+#>  4   36305537 Chemotherapy infusion st… Observat… LOINC         Clinical Observ…
+#>  5   36660670 Cancer chemotherapy rece… Observat… LOINC         Clinical Observ…
+#>  6    3046488 Chemotherapy [Minimum Da… Observat… LOINC         Survey          
+#>  7   40768860 Cancer chemotherapy rece… Observat… LOINC         Clinical Observ…
+#>  8   36303659 Guidance for chemoemboli… Procedure LOINC         Clinical Observ…
+#>  9    1024644 Guidance for chemoemboli… Observat… LOINC         LOINC Component 
+#> 10    1004252 Flag for Date 1st chemot… Observat… LOINC         LOINC Component 
 #> # ℹ 306 more rows
 #> # ℹ 5 more variables: standard_concept <chr>, concept_code <chr>,
 #> #   valid_start_date <date>, valid_end_date <date>, invalid_reason <chr>
@@ -237,6 +239,12 @@ relations <- omop_relations(sharp$concept_id,
 
 omop_graph(relations, saveplot=FALSE, graphtitle=NULL, 
            legendshow=FALSE, nodetxtsize=5, textcolourvar="step")
+#> 
+#> The downloaded binary packages are in
+#>  /var/folders/pl/k11lm9710hlgl02nvzx4z9wr0000gp/T//RtmpDoD4KN/downloaded_packages
+#> 
+#> The downloaded binary packages are in
+#>  /var/folders/pl/k11lm9710hlgl02nvzx4z9wr0000gp/T//RtmpDoD4KN/downloaded_packages
 ```
 
 <img src="man/figures/README-omop_graph-1.png" width="100%" />
